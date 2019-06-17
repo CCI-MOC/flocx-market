@@ -1,0 +1,5 @@
+.eggs/
+.DS_Store
+build/
+flocx_market.egg-info/
+*/__pycache__/*
