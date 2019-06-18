@@ -13,4 +13,5 @@ PyMySQL>= 0.9.3
 pytest>= 4.6.3
 tox>= 3.12.1 
 WebTest>=2.0.33
+flake8>= 3.7.7 
 

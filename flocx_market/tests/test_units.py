@@ -18,7 +18,7 @@ from wsgiref import simple_server
 
 import alembic
 
-class TestUnits(TestCase):
 
+class TestUnits(TestCase):
     def test_units(self):
         assert 5 * 5 == 25
