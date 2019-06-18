@@ -4,5 +4,5 @@ build/
 flocx_market.egg-info/
 __pycache__/
 *.pyc
-*.alambie.ini.swo
+*.alembic.ini.swo
 *.alembic.ini.swp
