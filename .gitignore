@@ -3,3 +3,9 @@
 build/
 flocx_market.egg-info/
 */__pycache__/*
+*.pyc
+*.tox
+*.swp
+AUTHORS/
+ChangeLog/
+
