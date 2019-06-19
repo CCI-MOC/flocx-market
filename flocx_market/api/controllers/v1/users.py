@@ -2,7 +2,6 @@ import pecan
 from pecan import request
 from pecan import rest
 from wsme import types as wtypes
-
 from flocx_market.api import expose
 
 
@@ -40,7 +39,7 @@ class UserController(rest.RestController):
 
     @expose.expose()
     def delete(self):
-        print ('Delete user_id: %s' % self.user_id)
+        print('Delete user_id: %s' % self.user_id)
 
 
 class UsersController(rest.RestController):
@@ -65,4 +64,4 @@ class UsersController(rest.RestController):
 
     @expose.expose(None, body=User, status_code=201)
     def post(self, user):
-        print (user)
+        print(user)

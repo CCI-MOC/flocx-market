@@ -11,4 +11,5 @@ wheel>=0.33.4
 WSME>=0.8.0 # MIT
 PyMySQL>= 0.9.3
 tox>= 3.12.1 
+flake8>= 3.7.7 
 
