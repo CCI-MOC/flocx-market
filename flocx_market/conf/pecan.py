@@ -9,24 +9,25 @@
 #    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #    License for the specific language governing permissions and limitations
 #    under the License.
-import sys
 
-from oslo_service import service
-
-from flocx_market.api import service as wsgi_service
-from flocx_market.common import service as flocx_market_service
-import flocx_market.conf
-
-CONF = flocx_market.conf.CONF
+from oslo_config import cfg
 
 
-def main():
-    flocx_market_service.prepare_service(sys.argv)
-    # Build and start the WSGI app
-    launcher = service.ProcessLauncher(CONF, restart_method='mutate')
-    server = wsgi_service.WSGIService('flocx_market_api')
-    launcher.launch_service(server, workers=server.workers)
-    launcher.wait()
+opts = [
+    cfg.StrOpt('root',
+               default='flocx_market.api.controllers.root.RootController'),
+    cfg.ListOpt('modules',
+                default=["flocx_market.api"]),
+    cfg.BoolOpt('debug',
+                default=False),
+    cfg.BoolOpt('auth_enable',
+                default=True)
+]
 
-if __name__ == '__main__':
-    main()
+pecan_group = cfg.OptGroup(
+    'pecan',
+    title='Pecan Options')
+
+
+def register_opts(conf):
+    conf.register_opts(opts, group=pecan_group)
