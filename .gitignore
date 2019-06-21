@@ -1,5 +1,8 @@
 .eggs/
 .DS_Store
+venv3.7/
 build/
 flocx_market.egg-info/
-*/__pycache__/*
+*__pycache__*
+*.idea*
+.tox*
