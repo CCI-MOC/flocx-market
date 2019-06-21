@@ -1,0 +1,9 @@
+[dogpile.cache]
+oslo_cache.dict = oslo_cache.backends.dictionary:DictCacheBackend
+oslo_cache.etcd3gw = oslo_cache.backends.etcd3gw:Etcd3gwCacheBackend
+oslo_cache.memcache_pool = oslo_cache.backends.memcache_pool:PooledMemcachedBackend
+oslo_cache.mongo = oslo_cache.backends.mongo:MongoCacheBackend
+
+[oslo.config.opts]
+oslo.cache = oslo_cache._opts:list_opts
+

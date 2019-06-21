@@ -1,0 +1,8 @@
+action: flake8, msg: getenv
+cwd: /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/.tox
+cmd: /anaconda3/bin/python -m virtualenv --no-download --python /anaconda3/bin/python flake8
+Already using interpreter /anaconda3/bin/python
+Using base prefix '/anaconda3'
+New python executable in /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/.tox/flake8/bin/python
+Installing setuptools, pip, wheel...
+done.

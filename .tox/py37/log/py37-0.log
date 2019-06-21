@@ -1,0 +1,9 @@
+action: py37, msg: getenv
+cwd: /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/.tox
+cmd: /anaconda3/bin/python -m virtualenv --no-download --python /usr/local/opt/python/bin/python3.7 py37
+Using base prefix '/usr/local/Cellar/python/3.7.3/Frameworks/Python.framework/Versions/3.7'
+New python executable in /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/.tox/py37/bin/python3.7
+Also creating executable in /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/.tox/py37/bin/python
+Installing setuptools, pip, wheel...
+done.
+Running virtualenv with interpreter /usr/local/opt/python/bin/python3.7

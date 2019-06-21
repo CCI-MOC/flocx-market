@@ -1,0 +1,94 @@
+Metadata-Version: 2.1
+Name: keystonemiddleware
+Version: 6.1.0
+Summary: Middleware for OpenStack Identity
+Home-page: https://docs.openstack.org/keystonemiddleware/latest/
+Author: OpenStack
+Author-email: openstack-discuss@lists.openstack.org
+License: UNKNOWN
+Platform: UNKNOWN
+Classifier: Environment :: OpenStack
+Classifier: Intended Audience :: Information Technology
+Classifier: Intended Audience :: System Administrators
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 2
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Requires-Dist: keystoneauth1 (>=3.4.0)
+Requires-Dist: oslo.cache (>=1.26.0)
+Requires-Dist: oslo.config (>=5.2.0)
+Requires-Dist: oslo.context (>=2.19.2)
+Requires-Dist: oslo.i18n (>=3.15.3)
+Requires-Dist: oslo.log (>=3.36.0)
+Requires-Dist: oslo.serialization (!=2.19.1,>=2.18.0)
+Requires-Dist: oslo.utils (>=3.33.0)
+Requires-Dist: pbr (!=2.1.0,>=2.0.0)
+Requires-Dist: pycadf (!=2.0.0,>=1.1.0)
+Requires-Dist: python-keystoneclient (>=3.10.0)
+Requires-Dist: requests (>=2.14.2)
+Requires-Dist: six (>=1.10.0)
+Requires-Dist: WebOb (>=1.7.1)
+Provides-Extra: audit_notifications
+Requires-Dist: oslo.messaging (>=5.29.0) ; extra == 'audit_notifications'
+Provides-Extra: test
+Requires-Dist: hacking (<0.11,>=0.10.0) ; extra == 'test'
+Requires-Dist: flake8-docstrings (==0.2.1.post1) ; extra == 'test'
+Requires-Dist: coverage (!=4.4,>=4.0) ; extra == 'test'
+Requires-Dist: cryptography (>=2.1) ; extra == 'test'
+Requires-Dist: fixtures (>=3.0.0) ; extra == 'test'
+Requires-Dist: mock (>=2.0.0) ; extra == 'test'
+Requires-Dist: oslotest (>=3.2.0) ; extra == 'test'
+Requires-Dist: requests-mock (>=1.2.0) ; extra == 'test'
+Requires-Dist: stevedore (>=1.20.0) ; extra == 'test'
+Requires-Dist: stestr (>=2.0.0) ; extra == 'test'
+Requires-Dist: testresources (>=2.0.0) ; extra == 'test'
+Requires-Dist: testtools (>=2.2.0) ; extra == 'test'
+Requires-Dist: python-memcached (>=1.59) ; extra == 'test'
+Requires-Dist: WebTest (>=2.0.27) ; extra == 'test'
+Requires-Dist: oslo.messaging (>=5.29.0) ; extra == 'test'
+Requires-Dist: bandit (!=1.6.0,>=1.1.0) ; extra == 'test'
+
+========================
+Team and repository tags
+========================
+
+.. image:: https://governance.openstack.org/tc/badges/keystonemiddleware.svg
+    :target: https://governance.openstack.org/tc/reference/tags/index.html
+
+.. Change things from this point on
+
+Middleware for the OpenStack Identity API (Keystone)
+====================================================
+
+.. image:: https://img.shields.io/pypi/v/keystonemiddleware.svg
+    :target: https://pypi.org/project/keystonemiddleware/
+    :alt: Latest Version
+
+.. image:: https://img.shields.io/pypi/dm/keystonemiddleware.svg
+    :target: https://pypi.org/project/keystonemiddleware/
+    :alt: Downloads
+
+This package contains middleware modules designed to provide authentication and
+authorization features to web services other than `Keystone
+<https://github.com/openstack/keystone>`. The most prominent module is
+``keystonemiddleware.auth_token``. This package does not expose any CLI or
+Python API features.
+
+For information on contributing, see ``CONTRIBUTING.rst``.
+
+* License: Apache License, Version 2.0
+* Documentation: https://docs.openstack.org/keystonemiddleware/latest/
+* Source: https://git.openstack.org/cgit/openstack/keystonemiddleware
+* Bugs: https://bugs.launchpad.net/keystonemiddleware
+* Release notes: https://docs.openstack.org/releasenotes/keystonemiddleware/
+
+For any other information, refer to the parent project, Keystone:
+
+    https://github.com/openstack/keystone
+
+
+
