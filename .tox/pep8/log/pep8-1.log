@@ -1,132 +1,132 @@
 action: pep8, msg: getenv
-cwd: /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market
-cmd: /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/.tox/pep8/bin/pip install -U -r/Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt -r/Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/test-requirements.txt
-Collecting pbr!=2.1.0,>=2.0.0 (from -r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 4))
-  Using cached https://files.pythonhosted.org/packages/e0/27/a913b227c9053472ea7dda33e409a1e748e50cdd208a955f3d6a20e9a875/pbr-5.3.0-py2.py3-none-any.whl
-Collecting pycodestyle>=2.5.0 (from -r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 5))
+cwd: /Users/filipvukelic/Desktop/projects/test/flocx-market
+cmd: /Users/filipvukelic/Desktop/projects/test/flocx-market/.tox/pep8/bin/pip install -U -r/Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt -r/Users/filipvukelic/Desktop/projects/test/flocx-market/test-requirements.txt
+Collecting pbr!=2.1.0,>=2.0.0 (from -r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 4))
+  Using cached https://files.pythonhosted.org/packages/7a/db/6e2fcd67cb1c7c98f54f7f19e925f8d9b23cffb84dab45528a759215fca5/pbr-5.3.1-py2.py3-none-any.whl
+Collecting pycodestyle>=2.5.0 (from -r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 5))
   Using cached https://files.pythonhosted.org/packages/0e/0c/04a353e104d2f324f8ee5f4b32012618c1c86dd79e52a433b64fceed511b/pycodestyle-2.5.0-py2.py3-none-any.whl
-Collecting Pecan>=1.3.3 (from -r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 6))
-Collecting alembic>=0.8.10 (from -r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 7))
-Collecting keystonemiddleware>=4.17.0 (from -r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 8))
+Collecting Pecan>=1.3.3 (from -r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 6))
+Collecting alembic>=0.8.10 (from -r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 7))
+Collecting keystonemiddleware>=4.17.0 (from -r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 8))
   Using cached https://files.pythonhosted.org/packages/d6/9f/724606d6b31bb17180fad30fa8d042e659257aa2e30899bbe328acebf315/keystonemiddleware-6.1.0-py2.py3-none-any.whl
-Collecting SQLAlchemy!=1.1.5,!=1.1.6,!=1.1.7,!=1.1.8,>=1.0.10 (from -r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 9))
-Requirement already up-to-date: wheel>=0.33.4 in ./.tox/pep8/lib/python3.6/site-packages (from -r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 10)) (0.33.4)
-Collecting WSME>=0.8.0 (from -r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 11))
-Collecting PyMySQL>=0.9.3 (from -r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 12))
+Collecting SQLAlchemy!=1.1.5,!=1.1.6,!=1.1.7,!=1.1.8,>=1.0.10 (from -r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 9))
+Requirement already up-to-date: wheel>=0.33.4 in ./.tox/pep8/lib/python3.6/site-packages (from -r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 10)) (0.33.4)
+Collecting WSME>=0.8.0 (from -r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 11))
+Collecting PyMySQL>=0.9.3 (from -r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 12))
   Using cached https://files.pythonhosted.org/packages/ed/39/15045ae46f2a123019aa968dfcba0396c161c20f855f11dea6796bcaae95/PyMySQL-0.9.3-py2.py3-none-any.whl
-Collecting tox>=3.12.1 (from -r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 13))
+Collecting tox>=3.12.1 (from -r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 13))
   Using cached https://files.pythonhosted.org/packages/d0/50/3daff59797eefc7c2574fbf58c7b82c599c0495e0639f656ba5f1f58cfa2/tox-3.12.1-py2.py3-none-any.whl
-Collecting flake8>=3.7.7 (from -r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 14))
+Collecting flake8>=3.7.7 (from -r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 14))
   Using cached https://files.pythonhosted.org/packages/e9/76/b915bd28976068a9843bf836b789794aa4a8eb13338b23581005cd9177c0/flake8-3.7.7-py2.py3-none-any.whl
-Collecting pytest>=4.6.3 (from -r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/test-requirements.txt (line 13))
+Collecting pytest>=4.6.3 (from -r /Users/filipvukelic/Desktop/projects/test/flocx-market/test-requirements.txt (line 13))
   Using cached https://files.pythonhosted.org/packages/b3/eb/df264c0b1ff4aaf263375dc09aabd9093364f66060be9b26f3a2c166d558/pytest-4.6.3-py2.py3-none-any.whl
-Collecting WebTest>=2.0.33 (from -r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/test-requirements.txt (line 15))
+Collecting WebTest>=2.0.33 (from -r /Users/filipvukelic/Desktop/projects/test/flocx-market/test-requirements.txt (line 15))
   Using cached https://files.pythonhosted.org/packages/47/fd/569d7e5ce6ea92d8ff6dd7a91f125762d88b199f2b4e17d7030a703f241d/WebTest-2.0.33-py2.py3-none-any.whl
-Collecting WebOb>=1.2dev (from Pecan>=1.3.3->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 6))
-  Using cached https://files.pythonhosted.org/packages/06/e1/4acd2b4327fceb4c6446bdbca515f807ab83188526fd654940c00bcf8cc3/WebOb-1.8.5-py2.py3-none-any.whl
-Collecting Mako>=0.4.0 (from Pecan>=1.3.3->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 6))
-Collecting logutils>=0.3 (from Pecan>=1.3.3->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 6))
-Collecting six (from Pecan>=1.3.3->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 6))
+Collecting six (from Pecan>=1.3.3->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 6))
   Using cached https://files.pythonhosted.org/packages/73/fb/00a976f728d0d1fecfe898238ce23f502a721c0ac0ecfedb80e0d88c64e9/six-1.12.0-py2.py3-none-any.whl
-Collecting python-editor>=0.3 (from alembic>=0.8.10->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 7))
+Collecting WebOb>=1.2dev (from Pecan>=1.3.3->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 6))
+  Using cached https://files.pythonhosted.org/packages/06/e1/4acd2b4327fceb4c6446bdbca515f807ab83188526fd654940c00bcf8cc3/WebOb-1.8.5-py2.py3-none-any.whl
+Collecting Mako>=0.4.0 (from Pecan>=1.3.3->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 6))
+Collecting logutils>=0.3 (from Pecan>=1.3.3->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 6))
+Collecting python-editor>=0.3 (from alembic>=0.8.10->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 7))
   Using cached https://files.pythonhosted.org/packages/c6/d3/201fc3abe391bbae6606e6f1d598c15d367033332bd54352b12f35513717/python_editor-1.0.4-py3-none-any.whl
-Collecting python-dateutil (from alembic>=0.8.10->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 7))
+Collecting python-dateutil (from alembic>=0.8.10->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 7))
   Using cached https://files.pythonhosted.org/packages/41/17/c62faccbfbd163c7f57f3844689e3a78bae1f403648a6afb1d0866d87fbb/python_dateutil-2.8.0-py2.py3-none-any.whl
-Collecting oslo.log>=3.36.0 (from keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 8))
-  Using cached https://files.pythonhosted.org/packages/98/a9/8ab877f8159b89a4199b5220b524d861f152adad753c4be8764506763eb9/oslo.log-3.44.0-py2.py3-none-any.whl
-Collecting oslo.utils>=3.33.0 (from keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 8))
-  Using cached https://files.pythonhosted.org/packages/9f/87/0f36497a282db6d6e58d1b80a2ab509a0709c4e1cddd44bcb31f054f4d8b/oslo.utils-3.41.0-py2.py3-none-any.whl
-Collecting oslo.config>=5.2.0 (from keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 8))
+Collecting oslo.config>=5.2.0 (from keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 8))
   Using cached https://files.pythonhosted.org/packages/e3/84/64bb9d404863a2d045a93ba73b768e4365aa7121f3e87bc6f74c537b14d7/oslo.config-6.10.0-py2.py3-none-any.whl
-Collecting oslo.serialization!=2.19.1,>=2.18.0 (from keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 8))
+Collecting oslo.serialization!=2.19.1,>=2.18.0 (from keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 8))
   Using cached https://files.pythonhosted.org/packages/bc/ad/7401e409d946469a9ad90aef8c98e5d39abea9c24e4db803285f9c7d726c/oslo.serialization-2.29.1-py2.py3-none-any.whl
-Collecting pycadf!=2.0.0,>=1.1.0 (from keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 8))
-  Using cached https://files.pythonhosted.org/packages/55/7f/54256b5efecbc558b852c10b4696311643ea014b5ad9f551fdb8ecbf07e2/pycadf-2.9.0-py2.py3-none-any.whl
-Collecting keystoneauth1>=3.4.0 (from keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 8))
+Collecting keystoneauth1>=3.4.0 (from keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 8))
   Using cached https://files.pythonhosted.org/packages/46/f2/96af95841631a053d5312f35f2cd7d87c7d56005fde927a18511a4f4798b/keystoneauth1-3.14.0-py2.py3-none-any.whl
-Collecting oslo.cache>=1.26.0 (from keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 8))
-  Using cached https://files.pythonhosted.org/packages/91/5e/f2a7301951f704994b2f43f584b4e9b7930c8613f23e3d9ffe3c37701201/oslo.cache-1.35.0-py2.py3-none-any.whl
-Collecting oslo.context>=2.19.2 (from keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 8))
-  Using cached https://files.pythonhosted.org/packages/f1/a9/7922909f3cc999276072a0de71dbcc23d7945d66814feee15c63d0c0cbc5/oslo.context-2.22.1-py2.py3-none-any.whl
-Collecting python-keystoneclient>=3.10.0 (from keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 8))
-  Using cached https://files.pythonhosted.org/packages/a1/89/8a05ef1d3b54cbb01268b767b8fc28d3b58c4c831606f5830e76bf50f388/python_keystoneclient-3.19.0-py2.py3-none-any.whl
-Collecting requests>=2.14.2 (from keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 8))
-  Using cached https://files.pythonhosted.org/packages/51/bd/23c926cd341ea6b7dd0b2a00aba99ae0f828be89d72b2190f27c11d4b7fb/requests-2.22.0-py2.py3-none-any.whl
-Collecting oslo.i18n>=3.15.3 (from keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 8))
+Collecting oslo.i18n>=3.15.3 (from keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 8))
   Using cached https://files.pythonhosted.org/packages/61/eb/4732a0f12850ef5ada812d4920c6801b7e394f14969864a91927ed853a2f/oslo.i18n-3.23.1-py2.py3-none-any.whl
-Collecting netaddr>=0.7.12 (from WSME>=0.8.0->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 11))
+Collecting oslo.log>=3.36.0 (from keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 8))
+  Using cached https://files.pythonhosted.org/packages/98/a9/8ab877f8159b89a4199b5220b524d861f152adad753c4be8764506763eb9/oslo.log-3.44.0-py2.py3-none-any.whl
+Collecting requests>=2.14.2 (from keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 8))
+  Using cached https://files.pythonhosted.org/packages/51/bd/23c926cd341ea6b7dd0b2a00aba99ae0f828be89d72b2190f27c11d4b7fb/requests-2.22.0-py2.py3-none-any.whl
+Collecting oslo.utils>=3.33.0 (from keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 8))
+  Using cached https://files.pythonhosted.org/packages/9f/87/0f36497a282db6d6e58d1b80a2ab509a0709c4e1cddd44bcb31f054f4d8b/oslo.utils-3.41.0-py2.py3-none-any.whl
+Collecting pycadf!=2.0.0,>=1.1.0 (from keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 8))
+  Using cached https://files.pythonhosted.org/packages/55/7f/54256b5efecbc558b852c10b4696311643ea014b5ad9f551fdb8ecbf07e2/pycadf-2.9.0-py2.py3-none-any.whl
+Collecting oslo.context>=2.19.2 (from keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 8))
+  Using cached https://files.pythonhosted.org/packages/f1/a9/7922909f3cc999276072a0de71dbcc23d7945d66814feee15c63d0c0cbc5/oslo.context-2.22.1-py2.py3-none-any.whl
+Collecting oslo.cache>=1.26.0 (from keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 8))
+  Using cached https://files.pythonhosted.org/packages/5a/78/d13afeb23050e1875126622ce436591643b155990da5e156d3d5377f7f7f/oslo.cache-1.36.0-py2.py3-none-any.whl
+Collecting python-keystoneclient>=3.10.0 (from keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 8))
+  Using cached https://files.pythonhosted.org/packages/a1/89/8a05ef1d3b54cbb01268b767b8fc28d3b58c4c831606f5830e76bf50f388/python_keystoneclient-3.19.0-py2.py3-none-any.whl
+Collecting netaddr>=0.7.12 (from WSME>=0.8.0->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 11))
   Using cached https://files.pythonhosted.org/packages/ba/97/ce14451a9fd7bdb5a397abf99b24a1a6bb7a1a440b019bebd2e9a0dbec74/netaddr-0.7.19-py2.py3-none-any.whl
-Collecting pytz (from WSME>=0.8.0->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 11))
+Collecting simplegeneric (from WSME>=0.8.0->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 11))
+Collecting pytz (from WSME>=0.8.0->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 11))
   Using cached https://files.pythonhosted.org/packages/3d/73/fe30c2daaaa0713420d0382b16fbb761409f532c56bdcc514bf7b6262bb6/pytz-2019.1-py2.py3-none-any.whl
-Collecting simplegeneric (from WSME>=0.8.0->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 11))
-Collecting pluggy<1,>=0.3.0 (from tox>=3.12.1->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 13))
+Collecting pluggy<1,>=0.3.0 (from tox>=3.12.1->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 13))
   Using cached https://files.pythonhosted.org/packages/06/ee/de89e0582276e3551df3110088bf20844de2b0e7df2748406876cc78e021/pluggy-0.12.0-py2.py3-none-any.whl
-Collecting py<2,>=1.4.17 (from tox>=3.12.1->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 13))
+Collecting py<2,>=1.4.17 (from tox>=3.12.1->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 13))
   Using cached https://files.pythonhosted.org/packages/76/bc/394ad449851729244a97857ee14d7cba61ddb268dce3db538ba2f2ba1f0f/py-1.8.0-py2.py3-none-any.whl
-Collecting virtualenv>=14.0.0 (from tox>=3.12.1->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 13))
-  Using cached https://files.pythonhosted.org/packages/c4/9a/a3f62ac5122a65dec34ad4b5ed8d802633dae4bc06a0fc62e55fe3e96fe1/virtualenv-16.6.1-py2.py3-none-any.whl
-Collecting toml>=0.9.4 (from tox>=3.12.1->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 13))
-  Using cached https://files.pythonhosted.org/packages/a2/12/ced7105d2de62fa7c8fb5fce92cc4ce66b57c95fb875e9318dba7f8c5db0/toml-0.10.0-py2.py3-none-any.whl
-Requirement already satisfied, skipping upgrade: setuptools>=30.0.0 in ./.tox/pep8/lib/python3.6/site-packages (from tox>=3.12.1->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 13)) (41.0.1)
-Collecting filelock<4,>=3.0.0 (from tox>=3.12.1->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 13))
+Collecting filelock<4,>=3.0.0 (from tox>=3.12.1->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 13))
   Using cached https://files.pythonhosted.org/packages/93/83/71a2ee6158bb9f39a90c0dea1637f81d5eef866e188e1971a1b1ab01a35a/filelock-3.0.12-py3-none-any.whl
-Collecting mccabe<0.7.0,>=0.6.0 (from flake8>=3.7.7->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 14))
-  Using cached https://files.pythonhosted.org/packages/87/89/479dc97e18549e21354893e4ee4ef36db1d237534982482c3681ee6e7b57/mccabe-0.6.1-py2.py3-none-any.whl
-Collecting entrypoints<0.4.0,>=0.3.0 (from flake8>=3.7.7->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 14))
-  Using cached https://files.pythonhosted.org/packages/ac/c6/44694103f8c221443ee6b0041f69e2740d89a25641e62fb4f2ee568f2f9c/entrypoints-0.3-py2.py3-none-any.whl
-Collecting pyflakes<2.2.0,>=2.1.0 (from flake8>=3.7.7->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 14))
+Collecting virtualenv>=14.0.0 (from tox>=3.12.1->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 13))
+  Using cached https://files.pythonhosted.org/packages/c4/9a/a3f62ac5122a65dec34ad4b5ed8d802633dae4bc06a0fc62e55fe3e96fe1/virtualenv-16.6.1-py2.py3-none-any.whl
+Collecting toml>=0.9.4 (from tox>=3.12.1->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 13))
+  Using cached https://files.pythonhosted.org/packages/a2/12/ced7105d2de62fa7c8fb5fce92cc4ce66b57c95fb875e9318dba7f8c5db0/toml-0.10.0-py2.py3-none-any.whl
+Requirement already satisfied, skipping upgrade: setuptools>=30.0.0 in ./.tox/pep8/lib/python3.6/site-packages (from tox>=3.12.1->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 13)) (41.0.1)
+Collecting pyflakes<2.2.0,>=2.1.0 (from flake8>=3.7.7->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 14))
   Using cached https://files.pythonhosted.org/packages/84/f2/ed0ffb887f8138a8fe5a621b8c0bb9598bfb3989e029f6c6a85ee66628ee/pyflakes-2.1.1-py2.py3-none-any.whl
-Collecting importlib-metadata>=0.12 (from pytest>=4.6.3->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/test-requirements.txt (line 13))
-  Using cached https://files.pythonhosted.org/packages/bd/23/dce4879ec58acf3959580bfe769926ed8198727250c5e395e6785c764a02/importlib_metadata-0.18-py2.py3-none-any.whl
-Collecting more-itertools>=4.0.0; python_version > "2.7" (from pytest>=4.6.3->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/test-requirements.txt (line 13))
+Collecting entrypoints<0.4.0,>=0.3.0 (from flake8>=3.7.7->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 14))
+  Using cached https://files.pythonhosted.org/packages/ac/c6/44694103f8c221443ee6b0041f69e2740d89a25641e62fb4f2ee568f2f9c/entrypoints-0.3-py2.py3-none-any.whl
+Collecting mccabe<0.7.0,>=0.6.0 (from flake8>=3.7.7->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 14))
+  Using cached https://files.pythonhosted.org/packages/87/89/479dc97e18549e21354893e4ee4ef36db1d237534982482c3681ee6e7b57/mccabe-0.6.1-py2.py3-none-any.whl
+Collecting more-itertools>=4.0.0; python_version > "2.7" (from pytest>=4.6.3->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/test-requirements.txt (line 13))
   Using cached https://files.pythonhosted.org/packages/b3/73/64fb5922b745fc1daee8a2880d907d2a70d9c7bb71eea86fcb9445daab5e/more_itertools-7.0.0-py3-none-any.whl
-Collecting packaging (from pytest>=4.6.3->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/test-requirements.txt (line 13))
-  Using cached https://files.pythonhosted.org/packages/91/32/58bc30e646e55eab8b21abf89e353f59c0cc02c417e42929f4a9546e1b1d/packaging-19.0-py2.py3-none-any.whl
-Collecting attrs>=17.4.0 (from pytest>=4.6.3->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/test-requirements.txt (line 13))
-  Using cached https://files.pythonhosted.org/packages/23/96/d828354fa2dbdf216eaa7b7de0db692f12c234f7ef888cc14980ef40d1d2/attrs-19.1.0-py2.py3-none-any.whl
-Collecting wcwidth (from pytest>=4.6.3->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/test-requirements.txt (line 13))
-  Using cached https://files.pythonhosted.org/packages/7e/9f/526a6947247599b084ee5232e4f9190a38f398d7300d866af3ab571a5bfe/wcwidth-0.1.7-py2.py3-none-any.whl
-Collecting atomicwrites>=1.0 (from pytest>=4.6.3->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/test-requirements.txt (line 13))
+Collecting atomicwrites>=1.0 (from pytest>=4.6.3->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/test-requirements.txt (line 13))
   Using cached https://files.pythonhosted.org/packages/52/90/6155aa926f43f2b2a22b01be7241be3bfd1ceaf7d0b3267213e8127d41f4/atomicwrites-1.3.0-py2.py3-none-any.whl
-Collecting waitress>=0.8.5 (from WebTest>=2.0.33->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/test-requirements.txt (line 15))
+Collecting packaging (from pytest>=4.6.3->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/test-requirements.txt (line 13))
+  Using cached https://files.pythonhosted.org/packages/91/32/58bc30e646e55eab8b21abf89e353f59c0cc02c417e42929f4a9546e1b1d/packaging-19.0-py2.py3-none-any.whl
+Collecting attrs>=17.4.0 (from pytest>=4.6.3->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/test-requirements.txt (line 13))
+  Using cached https://files.pythonhosted.org/packages/23/96/d828354fa2dbdf216eaa7b7de0db692f12c234f7ef888cc14980ef40d1d2/attrs-19.1.0-py2.py3-none-any.whl
+Collecting wcwidth (from pytest>=4.6.3->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/test-requirements.txt (line 13))
+  Using cached https://files.pythonhosted.org/packages/7e/9f/526a6947247599b084ee5232e4f9190a38f398d7300d866af3ab571a5bfe/wcwidth-0.1.7-py2.py3-none-any.whl
+Collecting importlib-metadata>=0.12 (from pytest>=4.6.3->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/test-requirements.txt (line 13))
+  Using cached https://files.pythonhosted.org/packages/bd/23/dce4879ec58acf3959580bfe769926ed8198727250c5e395e6785c764a02/importlib_metadata-0.18-py2.py3-none-any.whl
+Collecting waitress>=0.8.5 (from WebTest>=2.0.33->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/test-requirements.txt (line 15))
   Using cached https://files.pythonhosted.org/packages/41/e0/366785e4b9b4d212df4c3b084153bf7f5e5ab355928f5465144e5fc98494/waitress-1.3.0-py2.py3-none-any.whl
-Collecting beautifulsoup4 (from WebTest>=2.0.33->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/test-requirements.txt (line 15))
+Collecting beautifulsoup4 (from WebTest>=2.0.33->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/test-requirements.txt (line 15))
   Using cached https://files.pythonhosted.org/packages/1d/5d/3260694a59df0ec52f8b4883f5d23b130bc237602a1411fa670eae12351e/beautifulsoup4-4.7.1-py3-none-any.whl
-Collecting MarkupSafe>=0.9.2 (from Mako>=0.4.0->Pecan>=1.3.3->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 6))
+Collecting MarkupSafe>=0.9.2 (from Mako>=0.4.0->Pecan>=1.3.3->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 6))
   Using cached https://files.pythonhosted.org/packages/f0/00/a6aea33f5598b080b86d6b6d1214b51afe3ffa6100b902d5aa465080083f/MarkupSafe-1.1.1-cp36-cp36m-macosx_10_6_intel.whl
-Collecting debtcollector>=1.19.0 (from oslo.log>=3.36.0->keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 8))
+Collecting debtcollector>=1.2.0 (from oslo.config>=5.2.0->keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 8))
   Using cached https://files.pythonhosted.org/packages/59/33/d2a0fb2e8b1b51cec64e121ba4bbe0e3abdc597732074d425e0bde4aadb8/debtcollector-1.21.0-py2.py3-none-any.whl
-Collecting iso8601>=0.1.11 (from oslo.utils>=3.33.0->keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 8))
-  Using cached https://files.pythonhosted.org/packages/ef/57/7162609dab394d38bbc7077b7ba0a6f10fb09d8b7701ea56fa1edc0c4345/iso8601-0.1.12-py2.py3-none-any.whl
-Collecting netifaces>=0.10.4 (from oslo.utils>=3.33.0->keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 8))
-  Using cached https://files.pythonhosted.org/packages/af/7c/9ad12fb2356743fab96794a5c9f2048021dcce58804f2622b1840243079d/netifaces-0.10.9-cp36-cp36m-macosx_10_13_x86_64.whl
-Collecting pyparsing>=2.1.0 (from oslo.utils>=3.33.0->keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 8))
-  Using cached https://files.pythonhosted.org/packages/dd/d9/3ec19e966301a6e25769976999bd7bbe552016f0d32b577dc9d63d2e0c49/pyparsing-2.4.0-py2.py3-none-any.whl
-Collecting stevedore>=1.20.0 (from oslo.config>=5.2.0->keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 8))
-  Using cached https://files.pythonhosted.org/packages/c6/dc/6ee92bccfe3c0448786b30b693e6060d62ec8c4a3ec9a287bac1c1a8d8c9/stevedore-1.30.1-py2.py3-none-any.whl
-Collecting rfc3986>=1.2.0 (from oslo.config>=5.2.0->keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 8))
+Collecting rfc3986>=1.2.0 (from oslo.config>=5.2.0->keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 8))
   Using cached https://files.pythonhosted.org/packages/00/8d/9d56bfe43997f1864fe0891be69bc239ded98e69c9f56eb9eaa5b1789660/rfc3986-1.3.2-py2.py3-none-any.whl
-Collecting PyYAML>=3.12 (from oslo.config>=5.2.0->keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 8))
-Collecting msgpack>=0.5.2 (from oslo.serialization!=2.19.1,>=2.18.0->keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 8))
-Collecting os-service-types>=1.2.0 (from keystoneauth1>=3.4.0->keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 8))
+Collecting PyYAML>=3.12 (from oslo.config>=5.2.0->keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 8))
+Collecting stevedore>=1.20.0 (from oslo.config>=5.2.0->keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 8))
+  Using cached https://files.pythonhosted.org/packages/c6/dc/6ee92bccfe3c0448786b30b693e6060d62ec8c4a3ec9a287bac1c1a8d8c9/stevedore-1.30.1-py2.py3-none-any.whl
+Collecting msgpack>=0.5.2 (from oslo.serialization!=2.19.1,>=2.18.0->keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 8))
+Collecting os-service-types>=1.2.0 (from keystoneauth1>=3.4.0->keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 8))
   Using cached https://files.pythonhosted.org/packages/10/2d/318b2b631f68e0fc221ba8f45d163bf810cdb795cf242fe85ad3e5d45639/os_service_types-1.7.0-py2.py3-none-any.whl
-Collecting dogpile.cache>=0.6.2 (from oslo.cache>=1.26.0->keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 8))
-Collecting certifi>=2017.4.17 (from requests>=2.14.2->keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 8))
-  Using cached https://files.pythonhosted.org/packages/69/1b/b853c7a9d4f6a6d00749e94eb6f3a041e342a885b87340b79c1ef73e3a78/certifi-2019.6.16-py2.py3-none-any.whl
-Collecting chardet<3.1.0,>=3.0.2 (from requests>=2.14.2->keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 8))
-  Using cached https://files.pythonhosted.org/packages/bc/a9/01ffebfb562e4274b6487b4bb1ddec7ca55ec7510b22e4c51f14098443b8/chardet-3.0.4-py2.py3-none-any.whl
-Collecting urllib3!=1.25.0,!=1.25.1,<1.26,>=1.21.1 (from requests>=2.14.2->keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 8))
-  Using cached https://files.pythonhosted.org/packages/e6/60/247f23a7121ae632d62811ba7f273d0e58972d75e58a94d329d51550a47d/urllib3-1.25.3-py2.py3-none-any.whl
-Collecting idna<2.9,>=2.5 (from requests>=2.14.2->keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 8))
-  Using cached https://files.pythonhosted.org/packages/14/2c/cd551d81dbe15200be1cf41cd03869a46fe7226e7450af7a6545bfc474c9/idna-2.8-py2.py3-none-any.whl
-Collecting Babel!=2.4.0,>=2.3.4 (from oslo.i18n>=3.15.3->keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 8))
+Collecting iso8601>=0.1.11 (from keystoneauth1>=3.4.0->keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 8))
+  Using cached https://files.pythonhosted.org/packages/ef/57/7162609dab394d38bbc7077b7ba0a6f10fb09d8b7701ea56fa1edc0c4345/iso8601-0.1.12-py2.py3-none-any.whl
+Collecting Babel!=2.4.0,>=2.3.4 (from oslo.i18n>=3.15.3->keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 8))
   Using cached https://files.pythonhosted.org/packages/2c/60/f2af68eb046c5de5b1fe6dd4743bf42c074f7141fe7b2737d3061533b093/Babel-2.7.0-py2.py3-none-any.whl
-Collecting zipp>=0.5 (from importlib-metadata>=0.12->pytest>=4.6.3->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/test-requirements.txt (line 13))
+Collecting idna<2.9,>=2.5 (from requests>=2.14.2->keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 8))
+  Using cached https://files.pythonhosted.org/packages/14/2c/cd551d81dbe15200be1cf41cd03869a46fe7226e7450af7a6545bfc474c9/idna-2.8-py2.py3-none-any.whl
+Collecting urllib3!=1.25.0,!=1.25.1,<1.26,>=1.21.1 (from requests>=2.14.2->keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 8))
+  Using cached https://files.pythonhosted.org/packages/e6/60/247f23a7121ae632d62811ba7f273d0e58972d75e58a94d329d51550a47d/urllib3-1.25.3-py2.py3-none-any.whl
+Collecting chardet<3.1.0,>=3.0.2 (from requests>=2.14.2->keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 8))
+  Using cached https://files.pythonhosted.org/packages/bc/a9/01ffebfb562e4274b6487b4bb1ddec7ca55ec7510b22e4c51f14098443b8/chardet-3.0.4-py2.py3-none-any.whl
+Collecting certifi>=2017.4.17 (from requests>=2.14.2->keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 8))
+  Using cached https://files.pythonhosted.org/packages/69/1b/b853c7a9d4f6a6d00749e94eb6f3a041e342a885b87340b79c1ef73e3a78/certifi-2019.6.16-py2.py3-none-any.whl
+Collecting pyparsing>=2.1.0 (from oslo.utils>=3.33.0->keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 8))
+  Using cached https://files.pythonhosted.org/packages/dd/d9/3ec19e966301a6e25769976999bd7bbe552016f0d32b577dc9d63d2e0c49/pyparsing-2.4.0-py2.py3-none-any.whl
+Collecting netifaces>=0.10.4 (from oslo.utils>=3.33.0->keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 8))
+  Using cached https://files.pythonhosted.org/packages/af/7c/9ad12fb2356743fab96794a5c9f2048021dcce58804f2622b1840243079d/netifaces-0.10.9-cp36-cp36m-macosx_10_13_x86_64.whl
+Collecting dogpile.cache>=0.6.2 (from oslo.cache>=1.26.0->keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 8))
+Collecting zipp>=0.5 (from importlib-metadata>=0.12->pytest>=4.6.3->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/test-requirements.txt (line 13))
   Using cached https://files.pythonhosted.org/packages/a0/0f/9bf71d438d2e9d5fd0e4569ea4d1a2b6f5a524c234c6d221b494298bb4d1/zipp-0.5.1-py2.py3-none-any.whl
-Collecting soupsieve>=1.2 (from beautifulsoup4->WebTest>=2.0.33->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/test-requirements.txt (line 15))
+Collecting soupsieve>=1.2 (from beautifulsoup4->WebTest>=2.0.33->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/test-requirements.txt (line 15))
   Using cached https://files.pythonhosted.org/packages/b9/a5/7ea40d0f8676bde6e464a6435a48bc5db09b1a8f4f06d41dd997b8f3c616/soupsieve-1.9.1-py2.py3-none-any.whl
-Collecting wrapt>=1.7.0 (from debtcollector>=1.19.0->oslo.log>=3.36.0->keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 8))
-Collecting decorator (from dogpile.cache>=0.6.2->oslo.cache>=1.26.0->keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt (line 8))
+Collecting wrapt>=1.7.0 (from debtcollector>=1.2.0->oslo.config>=5.2.0->keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 8))
+Collecting decorator (from dogpile.cache>=0.6.2->oslo.cache>=1.26.0->keystonemiddleware>=4.17.0->-r /Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt (line 8))
   Using cached https://files.pythonhosted.org/packages/5f/88/0075e461560a1e750a0dcbf77f1d9de775028c37a19a346a6c565a257399/decorator-4.4.0-py2.py3-none-any.whl
-Installing collected packages: pbr, pycodestyle, waitress, WebOb, soupsieve, beautifulsoup4, six, WebTest, MarkupSafe, Mako, logutils, Pecan, python-editor, SQLAlchemy, python-dateutil, alembic, msgpack, netaddr, iso8601, pytz, wrapt, debtcollector, netifaces, pyparsing, Babel, oslo.i18n, oslo.utils, PyYAML, oslo.serialization, stevedore, certifi, chardet, urllib3, idna, requests, rfc3986, oslo.config, oslo.context, oslo.log, pycadf, os-service-types, keystoneauth1, decorator, dogpile.cache, oslo.cache, python-keystoneclient, keystonemiddleware, simplegeneric, WSME, PyMySQL, zipp, importlib-metadata, pluggy, py, virtualenv, toml, filelock, tox, mccabe, entrypoints, pyflakes, flake8, more-itertools, packaging, attrs, wcwidth, atomicwrites, pytest
-Successfully installed Babel-2.7.0 Mako-1.0.12 MarkupSafe-1.1.1 Pecan-1.3.3 PyMySQL-0.9.3 PyYAML-5.1.1 SQLAlchemy-1.3.5 WSME-0.9.3 WebOb-1.8.5 WebTest-2.0.33 alembic-1.0.10 atomicwrites-1.3.0 attrs-19.1.0 beautifulsoup4-4.7.1 certifi-2019.6.16 chardet-3.0.4 debtcollector-1.21.0 decorator-4.4.0 dogpile.cache-0.7.1 entrypoints-0.3 filelock-3.0.12 flake8-3.7.7 idna-2.8 importlib-metadata-0.18 iso8601-0.1.12 keystoneauth1-3.14.0 keystonemiddleware-6.1.0 logutils-0.3.5 mccabe-0.6.1 more-itertools-7.0.0 msgpack-0.6.1 netaddr-0.7.19 netifaces-0.10.9 os-service-types-1.7.0 oslo.cache-1.35.0 oslo.config-6.10.0 oslo.context-2.22.1 oslo.i18n-3.23.1 oslo.log-3.44.0 oslo.serialization-2.29.1 oslo.utils-3.41.0 packaging-19.0 pbr-5.3.0 pluggy-0.12.0 py-1.8.0 pycadf-2.9.0 pycodestyle-2.5.0 pyflakes-2.1.1 pyparsing-2.4.0 pytest-4.6.3 python-dateutil-2.8.0 python-editor-1.0.4 python-keystoneclient-3.19.0 pytz-2019.1 requests-2.22.0 rfc3986-1.3.2 simplegeneric-0.8.1 six-1.12.0 soupsieve-1.9.1 stevedore-1.30.1 toml-0.10.0 tox-3.12.1 urllib3-1.25.3 virtualenv-16.6.1 waitress-1.3.0 wcwidth-0.1.7 wrapt-1.11.2 zipp-0.5.1
+Installing collected packages: pbr, pycodestyle, six, waitress, WebOb, soupsieve, beautifulsoup4, WebTest, MarkupSafe, Mako, logutils, Pecan, python-editor, python-dateutil, SQLAlchemy, alembic, wrapt, debtcollector, idna, urllib3, chardet, certifi, requests, netaddr, pytz, Babel, oslo.i18n, rfc3986, PyYAML, stevedore, oslo.config, msgpack, pyparsing, netifaces, iso8601, oslo.utils, oslo.serialization, os-service-types, keystoneauth1, oslo.context, oslo.log, pycadf, decorator, dogpile.cache, oslo.cache, python-keystoneclient, keystonemiddleware, simplegeneric, WSME, PyMySQL, zipp, importlib-metadata, pluggy, py, filelock, virtualenv, toml, tox, pyflakes, entrypoints, mccabe, flake8, more-itertools, atomicwrites, packaging, attrs, wcwidth, pytest
+Successfully installed Babel-2.7.0 Mako-1.0.12 MarkupSafe-1.1.1 Pecan-1.3.3 PyMySQL-0.9.3 PyYAML-5.1.1 SQLAlchemy-1.3.5 WSME-0.9.3 WebOb-1.8.5 WebTest-2.0.33 alembic-1.0.10 atomicwrites-1.3.0 attrs-19.1.0 beautifulsoup4-4.7.1 certifi-2019.6.16 chardet-3.0.4 debtcollector-1.21.0 decorator-4.4.0 dogpile.cache-0.7.1 entrypoints-0.3 filelock-3.0.12 flake8-3.7.7 idna-2.8 importlib-metadata-0.18 iso8601-0.1.12 keystoneauth1-3.14.0 keystonemiddleware-6.1.0 logutils-0.3.5 mccabe-0.6.1 more-itertools-7.0.0 msgpack-0.6.1 netaddr-0.7.19 netifaces-0.10.9 os-service-types-1.7.0 oslo.cache-1.36.0 oslo.config-6.10.0 oslo.context-2.22.1 oslo.i18n-3.23.1 oslo.log-3.44.0 oslo.serialization-2.29.1 oslo.utils-3.41.0 packaging-19.0 pbr-5.3.1 pluggy-0.12.0 py-1.8.0 pycadf-2.9.0 pycodestyle-2.5.0 pyflakes-2.1.1 pyparsing-2.4.0 pytest-4.6.3 python-dateutil-2.8.0 python-editor-1.0.4 python-keystoneclient-3.19.0 pytz-2019.1 requests-2.22.0 rfc3986-1.3.2 simplegeneric-0.8.1 six-1.12.0 soupsieve-1.9.1 stevedore-1.30.1 toml-0.10.0 tox-3.12.1 urllib3-1.25.3 virtualenv-16.6.1 waitress-1.3.0 wcwidth-0.1.7 wrapt-1.11.2 zipp-0.5.1

@@ -28,7 +28,7 @@ def _deactivate(args):
 _deactivate(["nondestructive"])
 aliases["deactivate"] = _deactivate
 
-$VIRTUAL_ENV = r"/Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/.tox/pep8"
+$VIRTUAL_ENV = r"/Users/filipvukelic/Desktop/projects/test/flocx-market/.tox/pep8"
 
 $_OLD_VIRTUAL_PATH = $PATH
 $PATH = $PATH[:]

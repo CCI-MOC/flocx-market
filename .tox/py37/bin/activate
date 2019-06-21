@@ -40,7 +40,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="/Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/.tox/py37"
+VIRTUAL_ENV="/Users/filipvukelic/Desktop/projects/test/flocx-market/.tox/py37"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

@@ -1,4 +1,4 @@
 4a204ff99078840980ecde5095259779 /anaconda3/bin/python
 3.12.1 0 1 0
-00000000000000000000000000000000 -r/Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/requirements.txt
-00000000000000000000000000000000 -r/Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/test-requirements.txt
+00000000000000000000000000000000 -r/Users/filipvukelic/Desktop/projects/test/flocx-market/requirements.txt
+00000000000000000000000000000000 -r/Users/filipvukelic/Desktop/projects/test/flocx-market/test-requirements.txt

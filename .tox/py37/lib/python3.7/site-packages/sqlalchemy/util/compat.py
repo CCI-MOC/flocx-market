@@ -9,9 +9,9 @@
 
 import collections
 import contextlib
+import inspect
 import operator
 import sys
-import time
 
 
 py36 = sys.version_info >= (3, 6)
@@ -44,19 +44,6 @@ FullArgSpec = collections.namedtuple(
     ],
 )
 
-FullArgSpec = collections.namedtuple(
-    "FullArgSpec",
-    [
-        "args",
-        "varargs",
-        "varkw",
-        "defaults",
-        "kwonlyargs",
-        "kwonlydefaults",
-        "annotations",
-    ],
-)
-
 try:
     import threading
 except ImportError:
@@ -70,6 +57,45 @@ else:
     safe_kwarg = str
 
 
+def inspect_getfullargspec(func):
+    """Fully vendored version of getfullargspec from Python 3.3."""
+
+    if inspect.ismethod(func):
+        func = func.__func__
+    if not inspect.isfunction(func):
+        raise TypeError("{!r} is not a Python function".format(func))
+
+    co = func.__code__
+    if not inspect.iscode(co):
+        raise TypeError("{!r} is not a code object".format(co))
+
+    nargs = co.co_argcount
+    names = co.co_varnames
+    nkwargs = co.co_kwonlyargcount if py3k else 0
+    args = list(names[:nargs])
+    kwonlyargs = list(names[nargs : nargs + nkwargs])
+    step = 0
+
+    nargs += nkwargs
+    varargs = None
+    if co.co_flags & inspect.CO_VARARGS:
+        varargs = co.co_varnames[nargs]
+        nargs = nargs + 1
+    varkw = None
+    if co.co_flags & inspect.CO_VARKEYWORDS:
+        varkw = co.co_varnames[nargs]
+
+    return FullArgSpec(
+        args,
+        varargs,
+        varkw,
+        func.__defaults__,
+        kwonlyargs,
+        func.__kwdefaults__ if py3k else None,
+        func.__annotations__ if py3k else {},
+    )
+
+
 if py3k:
     import base64
     import builtins
@@ -78,7 +104,6 @@ if py3k:
     import pickle
 
     from functools import reduce
-    from inspect import getfullargspec as inspect_getfullargspec
     from io import BytesIO as byte_buffer
     from io import StringIO
     from itertools import zip_longest
@@ -149,7 +174,6 @@ else:
 
     from StringIO import StringIO  # noqa
     from cStringIO import StringIO as byte_buffer  # noqa
-    from inspect import getargspec as _getargspec
     from itertools import izip_longest as zip_longest  # noqa
     from urllib import quote  # noqa
     from urllib import quote_plus  # noqa
@@ -167,9 +191,6 @@ else:
     binary_type = str
     text_type = unicode  # noqa
     int_types = int, long  # noqa
-
-    def inspect_getfullargspec(func):
-        return FullArgSpec(*_getargspec(func)[0:4] + ([], None, {}))
 
     callable = callable  # noqa
     cmp = cmp  # noqa
@@ -326,11 +347,6 @@ elif py2k:
 else:
     from inspect import formatargspec as inspect_formatargspec  # noqa
 
-
-if win32 or jython:
-    time_func = time.clock
-else:
-    time_func = time.time
 
 # Fix deprecation of accessing ABCs straight from collections module
 # (which will stop working in 3.8).

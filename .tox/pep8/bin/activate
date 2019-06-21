@@ -40,7 +40,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="/Users/filipvukelic/Desktop/projects/pecan/pecan-env/flocx-market/.tox/pep8"
+VIRTUAL_ENV="/Users/filipvukelic/Desktop/projects/test/flocx-market/.tox/pep8"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"
