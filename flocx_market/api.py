@@ -7,7 +7,6 @@ from resources.offer import Offer, OfferList
 
 app = Flask(__name__)
 
-app.config['DEBUG'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'mysql+pymysql://flocx_market:qwerty123@127.0.0.1:3306/flocx_market')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['PROPAGATE_EXCEPTIONS'] = True
@@ -24,4 +23,4 @@ if __name__ == '__main__':
     def create_tables():
         db.create_all()
 
-    app.run(port=5000)
+    app.run(port=5000, debug=True)
