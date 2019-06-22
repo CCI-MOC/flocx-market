@@ -2,7 +2,7 @@ from db import db
 
 class OfferModel(db.Model):
 	__tablename__ = 'offers'
-	marketplace_offer_id = db.Column(db.String(64), primary_key=True, unique=True)
+	marketplace_offer_id = db.Column(db.String(64), primary_key=True, autoincrement=False)
 	provider_id = db.Column(db.String(64), nullable=False)
 	creator_id = db.Column(db.String(64), nullable=False #username that created the offer
 	marketplace_date_created = db.Column(db.DateTime(timezone=True), nullable=False)

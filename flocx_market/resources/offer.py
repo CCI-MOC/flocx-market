@@ -7,7 +7,7 @@ class Offer(Resource)
     parser.add_argument('marketplace_offer_id',
                         required=True,
                         help="marketplace_offer_id needed"
-                       )
+                       )xw
     parser.add_argument('provider_id',
                         required=True,
                         help="provider_id needed
@@ -51,12 +51,12 @@ class Offer(Resource)
         if offer:
             return offer.json()
         return {'message': 'Offer not found'}, 404
-
-    def post(self, marketplace_offer_id, provider_id, creator_id, marketplace_date_created, status, server_id, start_time, end_time, server_config, cost):
-        if OfferModel.find_by_id(marketplace_offer_id):
-            return {'message': "An item with marketplace_offer_id '{}' already exists.".format(marketplace_offer_id)}, 400
+# marketplace_offer_id, provider_id, creator_id, marketplace_date_created, status, server_id, start_time, end_time, server_config, cost
+    def post(self):
         data = Offer.parser.parse_args()
-        offer = OfferModel(marketplace_offer_id, **data)
+        if OfferModel.find_by_id(data['marketplace_offer_id']):
+            return {'message': "An offer with marketplace_offer_id '{}' already exists.".format(data['marketplace_offer_id'])}, 400
+        offer = OfferModel(**data)
         try:
             offer.save_to_db()
         except:
@@ -81,4 +81,4 @@ class Offer(Resource)
 
 class OfferList(Resource):
     def get(self):
-        return {"offers": list(map(lambda x: x.json(), OfferModel.query.all()))}
+        return {"offers": [x.json() for x in OfferModel.query.all()]}
