@@ -1,5 +1,5 @@
-from flocx_market.db import db
-from flocx_market.db import sqlalchemy_jsonfield
+from db import db
+from db import sqlalchemy_jsonfield
 
 class OfferModel(db.Model):
     __tablename__ = 'offers'

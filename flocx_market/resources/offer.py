@@ -1,5 +1,5 @@
 from flask_restful import Resource, reqparse
-from flocx_market.models.offer import OfferModel
+from models.offer import OfferModel
 
 
 class Offer(Resource):
@@ -71,7 +71,7 @@ class Offer(Resource):
             offer.delete_from_db()
             return {'message': 'Offer deleted.'}
         return {'message': 'Offer not found.'}, 404
-    
+
 
     def put(self, marketplace_offer_id):
         data = Offer.parse.parse_args()
