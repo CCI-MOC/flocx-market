@@ -12,7 +12,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['PROPAGATE_EXCEPTIONS'] = True
 api = Api(app)
 
-api.add_resource(Offer, '/offer/<string:marketplace_offer_id>')
+api.add_resource(Offer, '/offer', '/offer/<string:marketplace_offer_id>')
 api.add_resource(OfferList, '/offers')
 
 if __name__ == '__main__':
