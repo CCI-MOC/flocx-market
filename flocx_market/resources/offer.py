@@ -53,7 +53,7 @@ class Offer(Resource):
         return {'message': 'Offer not found'}, 404
 
 # marketplace_offer_id, provider_id, creator_id, marketplace_date_created, status, server_id, start_time, end_time, server_config, cost
-    def post(self):
+    def post(self, marketplace_offer_id):
         data = Offer.parser.parse_args()
         if OfferModel.find_by_id(data['marketplace_offer_id']):
             return {'message': "An offer with marketplace_offer_id '{}' already exists.".format(data['marketplace_offer_id'])}, 400
