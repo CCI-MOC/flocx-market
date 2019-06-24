@@ -1,23 +1,18 @@
-from db import db
+from flocx_market.db import db
+from flocx_market.db import sqlalchemy_jsonfield
 
 class OfferModel(db.Model):
-	__tablename__ = 'offers'
-	marketplace_offer_id = db.Column(db.String(64), primary_key=True, autoincrement=False)
-	provider_id = db.Column(db.String(64), nullable=False)
-	creator_id = db.Column(db.String(64), nullable=False #username that created the offer
-	marketplace_date_created = db.Column(db.DateTime(timezone=True), nullable=False)
-	status = db.Column(db.String(15), nullable=False, default = 'available')
-	server_id = db.Column(db.String(64), nullable=False, unique=True)
-	start_time = db.Column(db.DateTime(timezone=True), nullable=False)
-	end_time = db.Column(db.DateTime(timezone=True), nullable=False)
-	server_config =  db.Column(db.sqlalchemy_jsonfield.JSONField(
-            # MariaDB does not support JSON for now
-            enforce_string=True,
-            # MariaDB connector requires additional parameters for correct UTF-8
-            enforce_unicode=False
-        ),
-        nullable=False)
-	cost = Column(db.Float, nullable=False)
+    __tablename__ = 'offers'
+    marketplace_offer_id = db.Column(db.String(64), primary_key=True, autoincrement=False)
+    provider_id = db.Column(db.String(64), nullable=False)
+    creator_id = db.Column(db.String(64), nullable=False) #username that created the offer
+    marketplace_date_created = db.Column(db.DateTime(timezone=True), nullable=False)
+    status = db.Column(db.String(15), nullable=False, default = 'available')
+    server_id = db.Column(db.String(64), nullable=False, unique=True)
+    start_time = db.Column(db.DateTime(timezone=True), nullable=False)
+    end_time = db.Column(db.DateTime(timezone=True), nullable=False)
+    server_config = db.Column(sqlalchemy_jsonfield.JSONField(enforce_string=True,enforce_unicode=False), nullable=False)
+    cost = db.Column(db.Float, nullable=False)
 
     def __init__(self, marketplace_offer_id, provider_id, creator_id, marketplace_date_created, status, server_id, start_time, end_time, server_config, cost):
         self.marketplace_offer_id = marketplace_offer_id
@@ -42,7 +37,7 @@ class OfferModel(db.Model):
         'start_time': self.start_time,
         'end_time': self.end_time,
         'server_config': self.server_config,
-        'cost': self.cost
+        'cost': str(self.cost)
         }
 
     @classmethod
