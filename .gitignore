@@ -5,5 +5,6 @@ flocx_market.egg-info/
 */__pycache__/*
 .idea/
 .tox/
-AUTHORS/
-ChangeLog/
+AUTHORS
+ChangeLog
+etc/flocx-market/flocx-market.conf.sample

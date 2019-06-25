@@ -5,7 +5,7 @@ opts = [
     cfg.HostAddressOpt('host_ip',
                        default='0.0.0.0'),
     cfg.PortOpt('port',
-                default=8080),
+                default=8081),
     cfg.IntOpt('max_limit',
                default=1000),
     cfg.StrOpt('public_endpoint'),
