@@ -10,6 +10,18 @@ SQLAlchemy!=1.1.5,!=1.1.6,!=1.1.7,!=1.1.8,>=1.0.10 # MIT
 wheel>=0.33.4
 WSME>=0.8.0 # MIT
 PyMySQL>= 0.9.3
-tox>= 3.12.1 
+tox>= 3.12.1
 flake8>= 3.7.7 
-
+oslo.concurrency>=3.26.0 # Apache-2.0
+oslo.config>=5.2.0 # Apache-2.0
+oslo.db>=4.27.0 # Apache-2.0
+oslo.i18n>=3.15.3 # Apache-2.0
+oslo.log>=3.36.0 # Apache-2.0
+oslo.messaging>=5.29.0 # Apache-2.0
+oslo.middleware>=3.31.0 # Apache-2.0
+oslo.policy>=1.30.0 # Apache-2.0
+oslo.serialization!=2.19.1,>=2.18.0 # Apache-2.0
+oslo.service!=1.28.1,>=1.24.0 # Apache-2.0
+oslo.upgradecheck>=0.1.0 # Apache-2.0
+oslo.utils>=3.33.0 # Apache-2.0
+oslo.versionedobjects>=1.31.2 # Apache-2.0
