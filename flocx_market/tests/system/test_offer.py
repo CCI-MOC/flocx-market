@@ -2,6 +2,7 @@ from unittest import TestCase
 from flocx_market.cmd.api import app
 import json
 
+
 class TestOffer(TestCase):
     def test_offer(self):
         with app.test_client() as c:
@@ -20,6 +21,5 @@ class TestOffer(TestCase):
                     'start_time': 'time',
                     'end_time': 'time',
                     'server_config': 'json',
-                    'cost': '13.5'
-                }
+                    'cost': '13.5'}
             )

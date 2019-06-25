@@ -3,3 +3,7 @@
 build/
 flocx_market.egg-info/
 */__pycache__/*
+.idea/
+.tox/
+AUTHORS/
+ChangeLog/
