@@ -1,0 +1,7 @@
+CHANGES
+=======
+
+* Flake 8 tests TG-57
+* travis file for CI - TG-41
+* The initial project framework for the Marketplace service
+* Creating a sample Read me file
