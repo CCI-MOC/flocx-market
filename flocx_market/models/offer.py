@@ -1,5 +1,5 @@
-from db import db
-from db import sqlalchemy_jsonfield
+from flocx_market.db import db
+import sqlalchemy_jsonfield
 
 class OfferModel(db.Model):
     __tablename__ = 'offers'
@@ -26,19 +26,14 @@ class OfferModel(db.Model):
         self.server_config = server_config
         self.cost = cost
 
-    def json(self):
-        return {
-        'marketplace_offer_id': self.marketplace_offer_id,
-        'provider_id': self.provider_id,
-        'creator_id': self.creator_id,
-        'marketplace_date_created': self.marketplace_date_created.isoformat(),
-        'status': self.status,
-        'server_id': self.server_id,
-        'start_time': self.start_time.isoformat(),
-        'end_time': self.end_time.isoformat(),
-        'server_config': self.server_config,
-        'cost': self.cost
-        }
+    def as_dict(self):
+        d = {}
+        for col in self.__table__.columns:
+            if col.name in ['marketplace_date_created', 'start_time', 'end_time']:
+                d[col.name] = getattr(self,  col.name).isoformat()
+            else:
+                d[col.name] = getattr(self, col.name)
+        return d
 
     @classmethod
     def find_by_id(cls, marketplace_offer_id):

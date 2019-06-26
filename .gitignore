@@ -6,3 +6,4 @@ flocx_market.egg-info/
 *__pycache__*
 *.idea*
 .tox*
+etc/flocx-market/flocx-market.conf.sample
