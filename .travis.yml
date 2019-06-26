@@ -2,10 +2,5 @@ dist: xenial
 language: python
 python:
   - "3.7"
-# command to install dependencies
-install:
-  - python setup.py install
-  - pip install -r test-requirements.txt
-# command to run tests
 script:
   - tox
