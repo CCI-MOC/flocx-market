@@ -1,5 +1,6 @@
 .eggs/
 .DS_Store
+venv3.7/
 build/
 flocx_market.egg-info/
 */__pycache__/*
@@ -7,5 +8,10 @@ flocx_market.egg-info/
 .tox/
 AUTHORS
 ChangeLog
+<<<<<<< HEAD
 etc/flocx-market/flocx-market.conf.sample
 *.pyc
+*__pycache__*
+*.idea*
+.tox*
+etc/flocx-market/flocx-market.conf.sample
