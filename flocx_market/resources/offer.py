@@ -1,6 +1,17 @@
 from flask_restful import Resource, reqparse
 from flocx_market.models.offer import OfferModel
-
+from flocx_market.resources.validator import Validator
+from flask import abort
+from flask import request
+# A helper function to wrap the raised exception in the case 
+# of an invalid token.
+def create_validator():
+    try:
+        token = request.headers.get("X-Auth-Token")
+        v = Validator(token)
+    except:
+        abort(403)
+    return v
 
 class Offer(Resource):
     parser = reqparse.RequestParser()
@@ -47,6 +58,7 @@ class Offer(Resource):
                         )
 
     def get(self, marketplace_offer_id):
+
         offer = OfferModel.find_by_id(marketplace_offer_id)
         if offer:
             return offer.json()
@@ -81,4 +93,5 @@ class Offer(Resource):
 
 class OfferList(Resource):
     def get(self):
+        create_validator()
         return {"offers": [x.json() for x in OfferModel.query.all()]}
