@@ -8,3 +8,4 @@ flocx_market.egg-info/
 AUTHORS
 ChangeLog
 etc/flocx-market/flocx-market.conf.sample
+*.pyc
