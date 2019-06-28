@@ -85,6 +85,19 @@ def test_commit_subject_length(commit, max_subject_length):
         '{} characters'.format(max_subject_length))
 
 
+def test_commit_line_length(commit):
+    '''Verify the length of the commit subject
+
+    This will fail if lines in the message are not
+    wrapped to < 75 characters.'''
+    message = commit.message.splitlines()
+    assert len(message) > 1
+
+    for line in message:
+        assert len(line) < 75, (
+            'Commit message body should be wrapped at 75 characters')
+
+
 def test_commit_has_reference(commit):
     '''Verify that a commit includes a bug/issue/task/etc reference'''
     has_gh_issue_refs = re.findall(r'#\d+', commit.message)
