@@ -13,7 +13,7 @@ opts = [
     cfg.BoolOpt('enable_ssl_api',
                 default=False),
     cfg.BoolOpt('auth_enable',
-                default=True)
+                default=False)
 ]
 
 api_group = cfg.OptGroup(
