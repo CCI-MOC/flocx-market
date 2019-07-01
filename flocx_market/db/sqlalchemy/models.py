@@ -1,6 +1,7 @@
 from oslo_db.sqlalchemy import models
 from sqlalchemy.ext.declarative import declarative_base
 import sqlalchemy_jsonfield
+import datetime
 
 from flocx_market.db.orm import orm
 
@@ -12,12 +13,11 @@ class FLOCXMarketBase(models.ModelBase):
     def to_dict(self):
         d = {}
         for col in self.__table__.columns:
-            if col.name in [
-                    'marketplace_date_created', 'start_time', 'end_time'
-            ]:
-                d[col.name] = getattr(self, col.name).isoformat()
+            val = getattr(self, col.name)
+            if type(val) == datetime.datetime:
+                d[col.name] = val.isoformat()
             else:
-                d[col.name] = getattr(self, col.name)
+                d[col.name] = val
         return d
 
 
