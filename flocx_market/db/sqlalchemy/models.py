@@ -7,7 +7,6 @@ from flocx_market.db.orm import orm
 
 
 class FLOCXMarketBase(models.ModelBase):
-
     metadata = None
 
     def to_dict(self):
@@ -39,9 +38,10 @@ class Bid(Base):
     duration = orm.Column(orm.Integer, nullable=False)
     status = orm.Column(orm.String(15), nullable=False, default='available')
     server_config_query = orm.Column(sqlalchemy_jsonfield.JSONField(
-                                     enforce_string=True,
-                                     enforce_unicode=False), nullable=False)
+        enforce_string=True,
+        enforce_unicode=False), nullable=False)
     cost = orm.Column(orm.Float, nullable=False)
+    contracts = orm.relationship('Contract', lazy='dynamic')
 
 
 class Offer(Base):
@@ -65,3 +65,25 @@ class Offer(Base):
         nullable=False,
     )
     cost = orm.Column(orm.Float, nullable=False)
+    contract_id = orm.Column(orm.String(64),
+                             orm.ForeignKey('contracts.contract_id'),
+                             nullable=True)
+    contract = orm.relationship('Contract')
+
+
+class Contract(Base):
+    __tablename__ = 'contracts'
+    contract_id = orm.Column(
+        orm.String(64),
+        primary_key=True,
+        autoincrement=False,
+    )
+    time_created = orm.Column(orm.DateTime(timezone=True), nullable=False)
+    status = orm.Column(orm.String(15), nullable=False, default='available')
+    start_time = orm.Column(orm.DateTime(timezone=True), nullable=False)
+    end_time = orm.Column(orm.DateTime(timezone=True), nullable=False)
+    cost = orm.Column(orm.Float, nullable=False)
+    bid_id = orm.Column(orm.String(64),
+                        orm.ForeignKey('bids.marketplace_bid_id'))
+    bid = orm.relationship('Bid')
+    offers = orm.relationship('Offer', lazy='dynamic')

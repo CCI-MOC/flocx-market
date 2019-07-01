@@ -4,7 +4,6 @@ from oslo_utils import uuidutils
 import flocx_market.conf
 from flocx_market.db.sqlalchemy import models
 
-
 CONF = flocx_market.conf.CONF
 _engine_facade = None
 
@@ -101,3 +100,46 @@ def bid_destroy(marketplace_bid_id):
     if bid_ref:
         get_session().query(models.Bid).filter_by(
             marketplace_bid_id=marketplace_bid_id).delete()
+
+
+# contract
+def contract_get(contract_id):
+    return get_session().query(models.Contract).filter_by(
+        contract_id=contract_id).first()
+
+
+def contract_get_all():
+    return get_session().query(models.Contract).all()
+
+
+def contract_create(values):
+    values['contract_id'] = uuidutils.generate_uuid()
+    # exception for foreign key constraint needed here
+    offers = values['offers']
+    contract_id_val = dict(
+        contract_id=values['contract_id'])
+
+    del values['offers']
+    contract_ref = models.Contract()
+    contract_ref.update(values)
+    contract_ref.save(get_session())
+
+    # update foreign key for offers
+    for offer in offers:
+        offer_update(offer, contract_id_val)
+    return contract_ref
+
+
+def contract_update(contract_id, values):
+    contract_ref = contract_get(contract_id)
+    values.pop('contract_id', None)
+    contract_ref.update(values)
+    contract_ref.save(get_session())
+    return contract_ref
+
+
+def contract_destroy(contract_id):
+    contract_ref = contract_get(contract_id)
+    if contract_ref:
+        get_session().query(models.Contract).filter_by(
+            contract_id=contract_id).delete()

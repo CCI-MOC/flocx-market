@@ -22,6 +22,7 @@ test_offer_1 = offer.Offer(
     status='available',
     server_config={'bar': 'foo'},
     cost=0.0,
+    contract_id=None
 )
 
 test_offer_2 = offer.Offer(
@@ -35,6 +36,7 @@ test_offer_2 = offer.Offer(
     status='available',
     server_config={'foo': 'bar'},
     cost=0.0,
+    contract_id=None
 )
 
 
