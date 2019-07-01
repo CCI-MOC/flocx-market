@@ -169,5 +169,3 @@ def test_invalid_data_type():
     with raises(ValueError):
         exp = [["inventory.memory.physical_mb", "<=", "755-*37"]]
         match_specs(exp, data)
-        exp = [["inventory.system_vendor.product_name", "endswith", ["M620"]]]
-        match_specs(exp, data)
