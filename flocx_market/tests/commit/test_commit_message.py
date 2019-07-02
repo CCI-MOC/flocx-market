@@ -1,5 +1,6 @@
 # pylint: disable=missing-docstring,redefined-outer-name,no-self-use,invalid-name
 
+from functools import wraps
 import os
 import re
 import subprocess
@@ -81,6 +82,25 @@ def pytest_generate_tests(metafunc):
     metafunc.parametrize('commit_id', commits)
 
 
+def skip_if_fixup(func):
+    '''A decorator to skip tests for fixup commits.
+
+    A fixup commit (e.g., one generated with `git commit --fixup ...`) will
+    not pass the commit checks. This decorator will skip tests using
+    pytest.skip() if the commit being tested appears to be a fixup commit.
+    '''
+
+    @wraps(func)
+    def wrapper(commit_message, *args, **kwargs):
+        if commit_message.startswith('fixup!'):
+            pytest.skip('skipping commit checks for fixup commit')
+
+        return func(commit_message, *args, **kwargs)
+
+    return wrapper
+
+
+@skip_if_fixup
 def test_commit_subject_and_body(commit_message):
     '''Verify that a commit has a subject and body separated by a blank line'''
     message = commit_message.splitlines()
@@ -91,6 +111,7 @@ def test_commit_subject_and_body(commit_message):
         'Commit message must have a blank line after the subject')
 
 
+@skip_if_fixup
 def test_commit_subject_no_period(commit_message):
     '''Verify that a commit message does not end with a "."'''
     subject = commit_message.splitlines()[0]
@@ -98,6 +119,7 @@ def test_commit_subject_no_period(commit_message):
         'Commit messages should not end with a period (".")')
 
 
+@skip_if_fixup
 def test_commit_subject_length(commit_message, max_subject_length):
     '''Verify the length of the commit subject
 
@@ -110,6 +132,7 @@ def test_commit_subject_length(commit_message, max_subject_length):
         '{} characters'.format(max_subject_length))
 
 
+@skip_if_fixup
 def test_commit_line_length(commit_message):
     '''Verify the length of the commit subject
 
@@ -123,6 +146,7 @@ def test_commit_line_length(commit_message):
                 'Commit message body should be wrapped at 75 characters')
 
 
+@skip_if_fixup
 def test_commit_has_reference(commit_message):
     '''Verify that a commit includes a bug/issue/task/etc reference'''
     has_gh_issue_refs = re.findall(r'#\d+', commit_message)
