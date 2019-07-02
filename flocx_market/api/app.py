@@ -1,20 +1,25 @@
-import pecan
-from pecan import make_app
-from flocx_market import model
-from flocx_market.api import config as api_config
+import os
+from flask import Flask
+from flask import Blueprint
+from flask import jsonify
+import flocx_market.conf
+CONF = flocx_market.conf.CONF
+flocx_market_api_bp = Blueprint("flocx_market_api_bp", __name__)
 
 
-def get_pecan_config():
-    filename = api_config.__file__.replace('.pyc', '.py')   # get the absolute path of the pecan config.py
-    return pecan.configuration.conf_from_file(filename)
+@flocx_market_api_bp.route('/')
+def index():
+    flocx_market_url = CONF.api.host_ip + ':' + str(CONF.api.port)
+    version = {"versions":
+               {"values": [{"status": "in progress",
+                            "updated": "2019-07-02T00:00:00Z",
+                            "media-types": [{"base": "application/json", "name": "flocx-market"}],
+                            "links": [{"href": flocx_market_url, "rel": "self"}]}]
+                }}
+    return jsonify(version)
 
 
-def setup_app():
-    config = get_pecan_config()
-    model.init_model()
-    app_conf = dict(config.app)
-    app = pecan.make_app(
-        app_conf.pop('root'),
-        logging=getattr(config, 'logging', {}),
-        **app_conf)
+def create_app(app_name):
+    app = Flask(app_name)
+    app.register_blueprint(flocx_market_api_bp)
     return app
