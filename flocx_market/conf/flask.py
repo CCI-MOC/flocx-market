@@ -15,3 +15,4 @@ flask_group = cfg.OptGroup(
 
 def register_opts(conf):
     conf.register_opts(opts, group=flask_group)
+    conf.register_cli_opts(opts, group=flask_group)

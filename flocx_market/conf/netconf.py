@@ -11,3 +11,4 @@ opts = [
 
 def register_opts(conf):
     conf.register_opts(opts)
+    conf.register_cli_opts(opts)
