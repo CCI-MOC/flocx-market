@@ -4,6 +4,7 @@ from flocx_market.api.offer import Offer
 from flocx_market.api.root import Root
 import flocx_market.conf
 
+from keystonemiddleware import auth_token
 
 CONF = flocx_market.conf.CONF
 
@@ -21,4 +22,8 @@ def create_app(app_name):
                      '/offer/',
                      '/offer/<string:marketplace_offer_id>')
     api.add_resource(Root, '/')
+
+    if CONF.api.auth_enable:
+        app = auth_token.AuthProtocol(app, dict(CONF.keystone_authtoken))
+
     return app

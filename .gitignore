@@ -11,3 +11,4 @@ etc/flocx-market/flocx-market.conf.sample
 *.pyc
 __pycache__/
 .tox/
+.coverage
