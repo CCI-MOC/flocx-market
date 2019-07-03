@@ -1,11 +1,13 @@
-.eggs/
-.DS_Store
-build/
-flocx_market.egg-info/
-*/__pycache__/*
-.idea/
-.tox/
+# Please keep this file sorted alphabetically.
+
 AUTHORS
+build/
 ChangeLog
+.DS_Store
+.eggs/
 etc/flocx-market/flocx-market.conf.sample
+*.egg-info/
+.idea/
 *.pyc
+__pycache__/
+.tox/
