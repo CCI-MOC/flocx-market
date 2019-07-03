@@ -1,17 +1,10 @@
-# The order of packages is significant, because pip processes them in the order
-# of appearance. Changing the order has an impact on the overall integration
-# process, which may cause wedges in the gate later.
-pbr!=2.1.0,>=2.0.0 # Apache-2.0
-pycodestyle>=2.5.0
-Flask>=1.0.3
+# Please keep this file sorted alphabetically.
+
 alembic>=0.8.10 # MIT
-keystonemiddleware>=4.17.0 # Apache-2.0
-SQLAlchemy!=1.1.5,!=1.1.6,!=1.1.7,!=1.1.8,>=1.0.10 # MIT
-wheel>=0.33.4
-WSME>=0.8.0 # MIT
-PyMySQL>= 0.9.3
-tox>= 3.12.1
 flake8>= 3.7.7 
+Flask>=1.0.3
+jmespath>=0.9.4
+keystonemiddleware>=4.17.0 # Apache-2.0
 oslo.concurrency>=3.26.0 # Apache-2.0
 oslo.config>=5.2.0 # Apache-2.0
 oslo.db>=4.27.0 # Apache-2.0
@@ -25,4 +18,9 @@ oslo.service!=1.28.1,>=1.24.0 # Apache-2.0
 oslo.upgradecheck>=0.1.0 # Apache-2.0
 oslo.utils>=3.33.0 # Apache-2.0
 oslo.versionedobjects>=1.31.2 # Apache-2.0
-jmespath>=0.9.4
+pbr!=2.1.0,>=2.0.0 # Apache-2.0
+pycodestyle>=2.5.0
+PyMySQL>= 0.9.3
+SQLAlchemy!=1.1.5,!=1.1.6,!=1.1.7,!=1.1.8,>=1.0.10 # MIT
+wheel>=0.33.4
+WSME>=0.8.0 # MIT
