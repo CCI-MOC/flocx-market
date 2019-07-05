@@ -1,8 +1,8 @@
 # Please keep this file sorted alphabetically.
 
 alembic>=0.8.10 # MIT
-flake8>= 3.7.7
 eventlet==0.24.1
+flake8>= 3.7.7
 Flask>=1.0.3
 jmespath>=0.9.4
 keystonemiddleware>=4.17.0 # Apache-2.0
