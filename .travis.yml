@@ -5,5 +5,5 @@ python:
 install:
   - pip install tox
 script:
-  - tox -e commit
-  - tox
+  - tox -q -e commit
+  - tox -q
