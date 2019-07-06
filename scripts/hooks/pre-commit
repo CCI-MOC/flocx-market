@@ -1,0 +1,11 @@
+#!/bin/sh
+
+cat <<EOF
+#
+# Running pre-commit hook
+#
+
+EOF
+set -e
+export TEST_ONLY_INDEX=true
+tox -q -e pep8
