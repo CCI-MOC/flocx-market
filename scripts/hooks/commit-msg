@@ -1,0 +1,10 @@
+#!/bin/sh
+
+cat <<EOF
+#
+# Running commit-msg hook
+#
+
+EOF
+set -e
+tox -q -e commit -- --message-from-file "$1"
