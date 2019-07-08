@@ -28,14 +28,17 @@ def test_service_cli_valid(find_config_files):
 
     CONF.clear()
     args = ['dummy', '--api-port', '8085', '--api-host_ip', '0.0.0.1',
-            '--api-public_endpoint', '/index', '--api-api_workers', '5', '--api-enable_ssl',
-            '--flask-noSQLALCHEMY_TRACK_MODIFICATIONS', '--flask-PROPAGATE_EXCEPTIONS', '--host', 'imhost']
+            '--api-public_endpoint', '/index', '--api-api_workers', '5',
+            '--api-enable_ssl', '--flask-noSQLALCHEMY_TRACK_MODIFICATIONS',
+            '--flask-PROPAGATE_EXCEPTIONS', '--host', 'imhost']
 
     flocx_market_service.prepare_service(argv=args)
     assert(CONF.api.port == int(args[args.index('--api-port') + 1]))
     assert(CONF.api.host_ip == str(args[args.index('--api-host_ip') + 1]))
-    assert(CONF.api.public_endpoint == str(args[args.index('--api-public_endpoint') + 1]))
-    assert(CONF.api.api_workers == int(args[args.index('--api-api_workers') + 1]))
+    assert(CONF.api.public_endpoint ==
+           str(args[args.index('--api-public_endpoint') + 1]))
+    assert(CONF.api.api_workers ==
+           int(args[args.index('--api-api_workers') + 1]))
     assert(CONF.api.enable_ssl_api)
 
     assert(CONF.api.max_limit == 1000)

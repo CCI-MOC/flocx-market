@@ -1,7 +1,6 @@
 from flask_restful import Resource
 from flask import request
 from flocx_market.db.sqlalchemy.offer_api import OfferApi
-from flask import jsonify
 
 
 class Offer(Resource):

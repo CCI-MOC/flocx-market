@@ -1,6 +1,5 @@
 from flask import jsonify
 from flask_restful import Resource
-from flocx_market.db.sqlalchemy.offer_api import OfferApi
 import flocx_market.conf
 
 CONF = flocx_market.conf.CONF

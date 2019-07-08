@@ -1,4 +1,3 @@
-import flask
 import json
 import pytest
 
@@ -30,10 +29,22 @@ def test_root_status_code(test_app):
 def test_root_data(test_app):
     response = test_app.get("/", follow_redirects=True)
     flocx_market_url = CONF.api.host_ip + ":" + str(CONF.api.port)
-    version = {"versions":
-               {"values": [{"status": "in progress",
-                            "updated": "2019-07-02T00:00:00Z",
-                            "media-types": [{"base": "application/json", "name": "flocx-market"}],
-                            "links": [{"href": flocx_market_url, "rel": "self"}]}]
-                }}
+    version = {
+        "versions": {
+            "values": [{
+                "status":
+                "in progress",
+                "updated":
+                "2019-07-02T00:00:00Z",
+                "media-types": [{
+                    "base": "application/json",
+                    "name": "flocx-market"
+                }],
+                "links": [{
+                    "href": flocx_market_url,
+                    "rel": "self"
+                }]
+            }]
+        }
+    }
     assert json.loads(response.data) == version
