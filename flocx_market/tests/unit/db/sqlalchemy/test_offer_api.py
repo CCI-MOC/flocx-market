@@ -34,13 +34,10 @@ def test_offer_create(app, db, session):
 def test_offer_create_invalid(app, db, session):
     data = dict(test_offer_data)
     del data['provider_id']
+    offer = OfferApi(**data)
 
-    offer = None
-
-    with pytest.raises(TypeError):
-        offer = OfferApi(**data)
-
-    assert offer is None
+    with pytest.raises(IntegrityError):
+        offer.save_to_db()
 
 
 def test_offer_delete(app, db, session):
