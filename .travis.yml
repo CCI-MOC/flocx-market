@@ -3,7 +3,10 @@ language: python
 python:
   - "3.7"
 install:
-  - pip install tox
+  - pip install tox codecov
 script:
   - tox -q -e commit
   - tox -q
+
+after_script:
+  - codecov
