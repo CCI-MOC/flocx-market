@@ -4,7 +4,6 @@ from flocx_market.common.service import prepare_service
 from flocx_market.conf import CONF
 from flocx_market.api.app import create_app
 from flocx_market.db.orm import orm
-from flocx_market.db.sqlalchemy.offer_api import OfferApi
 
 
 class test_app_config:

@@ -1,5 +1,3 @@
-# pylint: disable=missing-docstring,redefined-outer-name,no-self-use,invalid-name
-
 from functools import wraps
 import os
 import re

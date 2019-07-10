@@ -1,9 +1,6 @@
 import datetime
 import pytest
 
-from flocx_market.conf import CONF
-from flocx_market.api.app import create_app
-from flocx_market.db.orm import orm
 from flocx_market.db.sqlalchemy.offer_api import OfferApi
 
 from sqlalchemy.exc import IntegrityError

@@ -98,11 +98,17 @@ def test_str_not_eq_op():
 
 
 def test_str_start_op():
-    exp = [["inventory.system_vendor.product_name", "startswith", "M620"]]
+    exp = [
+        ["inventory.system_vendor.product_name", "startswith", "M620"]
+    ]
     assert (not match_specs(exp, data))
-    exp = [["inventory.system_vendor.product_name", "startswith", "PowerEdge"]]
+    exp = [
+        ["inventory.system_vendor.product_name", "startswith", "PowerEdge"]
+    ]
     assert (match_specs(exp, data))
-    exp = [["inventory.system_vendor.product_name", "!startswith", "PowerEdge"]]
+    exp = [
+        ["inventory.system_vendor.product_name", "!startswith", "PowerEdge"]
+    ]
     assert (not match_specs(exp, data))
 
 
