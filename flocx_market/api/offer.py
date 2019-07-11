@@ -8,7 +8,7 @@ class Offer(Resource):
     @classmethod
     def get(cls, marketplace_offer_id=None):
         if marketplace_offer_id is None:
-            return OfferList.get()
+            return OfferList.get()['offers']
 
         offer = OfferApi.find_by_id(marketplace_offer_id)
         if offer:
@@ -18,8 +18,7 @@ class Offer(Resource):
     @classmethod
     def post(cls):
         data = request.get_json(force=True)
-        data_for_offer = [x for x in data.values()]
-        offer = OfferApi(*data_for_offer)
+        offer = OfferApi(**data)
         offer.save_to_db()
         return offer.as_dict(), 201
 

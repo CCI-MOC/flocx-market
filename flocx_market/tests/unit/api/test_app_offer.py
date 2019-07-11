@@ -43,12 +43,11 @@ def test_get_offers(mock_query, client):
     mock_query.all.return_value = test_result
     response = client.get("/offer", follow_redirects=True)
     assert response.status_code == 200
-    assert 'offers' in response.json
-    assert len(response.json['offers']) == 2
+    assert len(response.json) == 2
     assert any(x['provider_id'] == test_offer_1.provider_id
-               for x in response.json['offers'])
+               for x in response.json)
     assert any(x['provider_id'] == test_offer_2.provider_id
-               for x in response.json['offers'])
+               for x in response.json)
 
 
 @mock.patch('flocx_market.api.offer.OfferApi.find_by_id')
