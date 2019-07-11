@@ -98,23 +98,21 @@ def test_str_not_eq_op():
 
 
 def test_str_start_op():
-    exp = [
-        ["inventory.system_vendor.product_name", "startswith", "M620"]
-    ]
+    exp = [["inventory.system_vendor.product_name", "startswith", "M620"]]
     assert (not match_specs(exp, data))
-    exp = [
-        ["inventory.system_vendor.product_name", "startswith", "PowerEdge"]
-    ]
+    exp = [["inventory.system_vendor.product_name", "startswith", "PowerEdge"]]
     assert (match_specs(exp, data))
-    exp = [
-        ["inventory.system_vendor.product_name", "!startswith", "PowerEdge"]
-    ]
+    exp = [["inventory.system_vendor.product_name",
+            "!startswith",
+            "PowerEdge"]]
     assert (not match_specs(exp, data))
 
 
 def test_str_end_op():
     exp = [["inventory.system_vendor.product_name", "endswith", "M620"]]
     assert (match_specs(exp, data))
+    exp = [["inventory.system_vendor.product_name", "endswith", ["M620"]]]
+    assert (not match_specs(exp, data))
     exp = [["inventory.system_vendor.product_name", "endswith", "PowerEdge"]]
     assert (not match_specs(exp, data))
     exp = [["inventory.system_vendor.product_name", "!endswith", "PowerEdge"]]
@@ -149,26 +147,19 @@ def test_list_in_op():
 
 
 def test_none_op():
-    exp = [["root_disk.rotational", "null", "null"]]
+    exp = [["root_disk.rotational", None, "null"]]
     assert (match_specs(exp, data))
-    exp = [["root_disk.test_", "null", "null"]]
-    assert (not match_specs(exp, data))
-
-
-def test_none_var_and_op():
-    exp = [[None, "null", "null"]]
-    assert (not match_specs(exp, data))
-    exp = [[None, None, "null"]]
-    assert (not match_specs(exp, data))
-    exp = [[None, "null", None]]
+    exp = [["root_disk.test_", None, "null"]]
     assert (not match_specs(exp, data))
 
 
 def test_unknown_op():
-    exp = [["cpus", "xyz", ["32", "64", "99"]]]
-    assert (not match_specs(exp, data))
-    exp = [["cpus", "bleh", ["64", "99"]]]
-    assert (not match_specs(exp, data))
+    with raises(ValueError):
+        exp = [["cpus", "xyz", ["32", "64", "99"]]]
+        match_specs(exp, data)
+    with raises(ValueError):
+        exp = [["cpus", "bleh", ["64", "99"]]]
+        match_specs(exp, data)
 
 
 def test_invalid_data_type():
