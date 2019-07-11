@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime, timedelta
 import pytest
 
 from oslo_db.exception import DBError
@@ -6,7 +6,7 @@ from oslo_db.exception import DBError
 from flocx_market.db.sqlalchemy import api
 
 
-now = datetime.datetime.utcnow()
+now = datetime.utcnow()
 
 test_offer_data = dict(
     provider_id='2345',
@@ -14,8 +14,8 @@ test_offer_data = dict(
     marketplace_date_created=now,
     status='available',
     server_id='4567',
-    start_time=now,
-    end_time=now,
+    start_time=now - timedelta(days=1),
+    end_time=now + timedelta(days=1),
     server_config={'foo': 'bar'},
     cost=0.0,
 )
@@ -26,8 +26,8 @@ test_offer_data_2 = dict(
     marketplace_date_created=now,
     status='available',
     server_id='456789',
-    start_time=now,
-    end_time=now,
+    start_time=now - timedelta(days=2),
+    end_time=now - timedelta(days=1),
     server_config={'foo': 'bar'},
     cost=0.0,
 )
@@ -48,6 +48,21 @@ def test_offer_get_all(app, db, session):
     api.offer_create(test_offer_data_2)
 
     assert len(api.offer_get_all()) == 2
+
+
+def test_offer_get_all_to_be_expired(app, db, session):
+    api.offer_create(test_offer_data)
+    api.offer_create(test_offer_data_2)
+
+    offers = api.offer_get_all()
+    assert(offers[0].end_time > now)
+    assert(offers[1].end_time < now)
+
+    assert len(api.offer_get_all()) == 2
+    assert len(api.offer_get_all_unexpired()) == 2
+
+    api.offer_update(offers[1].marketplace_offer_id, dict(status='expired'))
+    assert len(api.offer_get_all_unexpired()) == 1
 
 
 def test_offer_create(app, db, session):
