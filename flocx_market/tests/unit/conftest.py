@@ -7,8 +7,6 @@ from flocx_market.db.orm import orm
 
 
 class test_app_config:
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
-    SQLALCHEMY_TRACK_MODIFICATIONS = True
     TESTING = True
 
 
@@ -18,11 +16,19 @@ def app():
     prepare_service()
     CONF.database.connection = 'sqlite:///:memory:'
     app = create_app('testing')
+    app.config.from_object(test_app_config)
     orm.init_app(app)
     ctx = app.app_context()
     ctx.push()
     yield app
     ctx.push()
+
+
+@pytest.fixture(scope='session')
+def client(app):
+    _client = app.test_client()
+    _client.testing = True
+    return _client
 
 
 @pytest.fixture()
