@@ -110,6 +110,6 @@ def test_update_offer_missing(mock_save_to_db, mock_find_by_id,
                               client):
     mock_find_by_id.return_value = None
     res = client.put('/offer/does-not-exist',
-        data=json.dumps(dict(status='testing')))
+                     data=json.dumps(dict(status='testing')))
     assert res.status_code == 404
     assert mock_save_to_db.call_count == 0
