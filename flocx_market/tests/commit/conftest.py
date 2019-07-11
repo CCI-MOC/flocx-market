@@ -8,3 +8,10 @@ def pytest_addoption(parser):
         action='store',
         help='Read commit message from named file'
     )
+
+    parser.addoption(
+        '--block-fixups',
+        action='store_true',
+        default=False,
+        help='Block fixup commits',
+    )

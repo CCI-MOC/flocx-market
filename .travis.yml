@@ -5,7 +5,7 @@ python:
 install:
   - pip install tox codecov
 script:
-  - tox -q -e commit
+  - tox -q -e commit -- --block-fixups
   - tox -q
 
 after_script:
