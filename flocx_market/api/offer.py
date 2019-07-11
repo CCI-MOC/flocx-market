@@ -6,7 +6,10 @@ from flocx_market.db.sqlalchemy.offer_api import OfferApi
 class Offer(Resource):
 
     @classmethod
-    def get(cls, marketplace_offer_id):
+    def get(cls, marketplace_offer_id=None):
+        if marketplace_offer_id is None:
+            return OfferList.get()
+
         offer = OfferApi.find_by_id(marketplace_offer_id)
         if offer:
             return offer.as_dict()
@@ -32,6 +35,9 @@ class Offer(Resource):
     def put(cls, marketplace_offer_id):
         data = request.get_json(force=True)
         offer = OfferApi.find_by_id(marketplace_offer_id)
+        if offer is None:
+            return {'message': 'Offer not found'}, 404
+
         offer.status = data['status']
         offer.save_to_db()
         return offer.as_dict()

@@ -16,6 +16,6 @@ def create_app(app_name):
     )
     app.config['PROPAGATE_EXCEPTIONS'] = CONF.flask.PROPAGATE_EXCEPTIONS
     api = Api(app)
-    api.add_resource(Offer, '/offer', '/offers/<string:marketplace_offer_id>')
+    api.add_resource(Offer, '/offer', '/offer/<string:marketplace_offer_id>')
     api.add_resource(Root, '/')
     return app
