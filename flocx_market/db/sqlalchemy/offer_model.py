@@ -1,5 +1,3 @@
-import uuid
-
 from flocx_market.db.orm import orm
 import sqlalchemy_jsonfield
 
@@ -10,7 +8,6 @@ class OfferModel(orm.Model):
         orm.String(64),
         primary_key=True,
         autoincrement=False,
-        default=lambda: uuid.uuid4().hex,
     )
     provider_id = orm.Column(orm.String(64), nullable=False)
     creator_id = orm.Column(orm.String(64), nullable=False)
@@ -26,3 +23,14 @@ class OfferModel(orm.Model):
         nullable=False,
     )
     cost = orm.Column(orm.Float, nullable=False)
+
+    def to_dict(self):
+        d = {}
+        for col in self.__table__.columns:
+            if col.name in [
+                    'marketplace_date_created', 'start_time', 'end_time'
+            ]:
+                d[col.name] = getattr(self, col.name).isoformat()
+            else:
+                d[col.name] = getattr(self, col.name)
+        return d

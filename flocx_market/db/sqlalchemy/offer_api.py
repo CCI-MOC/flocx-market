@@ -1,28 +1,36 @@
+from oslo_utils import uuidutils
+
 from flocx_market.db.orm import orm
 from flocx_market.db.sqlalchemy.offer_model import OfferModel
 
 
-class OfferApi(OfferModel):
-    def as_dict(self):
-        d = {}
-        for col in self.__table__.columns:
-            if col.name in [
-                    'marketplace_date_created', 'start_time', 'end_time'
-            ]:
-                d[col.name] = getattr(self, col.name).isoformat()
-            else:
-                d[col.name] = getattr(self, col.name)
-        return d
+def get(marketplace_offer_id):
+    return OfferModel.query.filter_by(
+        marketplace_offer_id=marketplace_offer_id).first()
 
-    @classmethod
-    def find_by_id(cls, marketplace_offer_id):
-        return cls.query.filter_by(
-            marketplace_offer_id=marketplace_offer_id).first()
 
-    def save_to_db(self):
-        orm.session.add(self)
-        orm.session.commit()
+def get_all():
+    return OfferModel.query.all()
 
-    def delete_from_db(self):
-        orm.session.delete(self)
+
+def create(values):
+    values['marketplace_offer_id'] = uuidutils.generate_uuid()
+    offer_ref = OfferModel(**values)
+    orm.session.add(offer_ref)
+    orm.session.commit()
+    return offer_ref
+
+
+def update(marketplace_offer_id, values):
+    values.pop('marketplace_offer_id', None)
+    OfferModel.query.filter_by(
+        marketplace_offer_id=marketplace_offer_id).update(values)
+    orm.session.commit()
+    return get(marketplace_offer_id)
+
+
+def destroy(marketplace_offer_id):
+    offer_ref = get(marketplace_offer_id)
+    if offer_ref:
+        orm.session.delete(offer_ref)
         orm.session.commit()

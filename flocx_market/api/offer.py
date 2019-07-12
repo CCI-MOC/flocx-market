@@ -1,6 +1,6 @@
 from flask_restful import Resource
 from flask import request
-from flocx_market.db.sqlalchemy.offer_api import OfferApi
+from flocx_market.db.sqlalchemy import offer_api
 
 
 class Offer(Resource):
@@ -10,39 +10,38 @@ class Offer(Resource):
         if marketplace_offer_id is None:
             return OfferList.get()['offers']
 
-        offer = OfferApi.find_by_id(marketplace_offer_id)
+        offer = offer_api.get(marketplace_offer_id)
         if offer:
-            return offer.as_dict()
+            return offer.to_dict()
         return {'message': 'Offer not found'}, 404
 
     @classmethod
     def post(cls):
         data = request.get_json(force=True)
-        offer = OfferApi(**data)
-        offer.save_to_db()
-        return offer.as_dict(), 201
+        offer = offer_api.create(**data)
+        return offer.to_dict(), 201
 
     @classmethod
     def delete(cls, marketplace_offer_id):
-        offer = OfferApi.find_by_id(marketplace_offer_id)
+        offer = offer_api.get(marketplace_offer_id)
         if offer:
-            offer.delete_from_db()
+            offer_api.destroy(marketplace_offer_id)
             return {'message': 'Offer deleted.'}
         return {'message': 'Offer not found.'}, 404
 
     @classmethod
     def put(cls, marketplace_offer_id):
         data = request.get_json(force=True)
-        offer = OfferApi.find_by_id(marketplace_offer_id)
+        offer = offer_api.get(marketplace_offer_id)
         if offer is None:
             return {'message': 'Offer not found'}, 404
 
         offer.status = data['status']
-        offer.save_to_db()
-        return offer.as_dict()
+        offer_api.update(marketplace_offer_id, offer.to_dict())
+        return offer.to_dict()
 
 
 class OfferList(Resource):
     @classmethod
     def get(cls):
-        return {"offers": [x.as_dict() for x in OfferApi.query.all()]}
+        return {"offers": [x.to_dict() for x in offer_api.get_all()]}
