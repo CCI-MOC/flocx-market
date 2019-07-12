@@ -3,7 +3,7 @@ import json
 from unittest import mock
 
 import flocx_market.conf
-from flocx_market.db.sqlalchemy.offer_model import OfferModel
+from flocx_market.db.sqlalchemy import models
 
 
 CONF = flocx_market.conf.CONF
@@ -11,7 +11,7 @@ CONF = flocx_market.conf.CONF
 now = datetime.datetime.utcnow()
 
 
-test_offer_1 = OfferModel(
+test_offer_1 = models.Offer(
     marketplace_date_created=now,
     marketplace_offer_id='test_offer_1',
     provider_id='1234',
@@ -24,7 +24,7 @@ test_offer_1 = OfferModel(
     cost=0.0,
 )
 
-test_offer_2 = OfferModel(
+test_offer_2 = models.Offer(
     marketplace_offer_id='test_offer_2',
     marketplace_date_created=now,
     provider_id='2345',
@@ -38,7 +38,7 @@ test_offer_2 = OfferModel(
 )
 
 
-@mock.patch('flocx_market.db.sqlalchemy.offer_api.get_all')
+@mock.patch('flocx_market.db.sqlalchemy.api.offer_get_all')
 def test_get_offers(mock_get_all, client):
     test_result = [test_offer_1, test_offer_2]
     mock_get_all.return_value = test_result
@@ -51,7 +51,7 @@ def test_get_offers(mock_get_all, client):
                for x in response.json)
 
 
-@mock.patch('flocx_market.db.sqlalchemy.offer_api.get')
+@mock.patch('flocx_market.db.sqlalchemy.api.offer_get')
 def test_get_offer(mock_get, client):
     mock_get.return_value = test_offer_1
     response = client.get('/offer/{}'.format(
@@ -61,15 +61,15 @@ def test_get_offer(mock_get, client):
     assert response.json['marketplace_offer_id'] == 'test_offer_1'
 
 
-@mock.patch('flocx_market.db.sqlalchemy.offer_api.get')
+@mock.patch('flocx_market.db.sqlalchemy.api.offer_get')
 def test_get_offer_missing(mock_get, client):
     mock_get.return_value = None
     response = client.get('/offer/does-not-exist')
     assert response.status_code == 404
 
 
-@mock.patch('flocx_market.db.sqlalchemy.offer_api.destroy')
-@mock.patch('flocx_market.db.sqlalchemy.offer_api.get')
+@mock.patch('flocx_market.db.sqlalchemy.api.offer_destroy')
+@mock.patch('flocx_market.db.sqlalchemy.api.offer_get')
 def test_delete_offer(mock_get, mock_destroy, client):
     mock_get.return_value = test_offer_1
     response = client.delete('/offer/{}'.format(
@@ -78,14 +78,14 @@ def test_delete_offer(mock_get, mock_destroy, client):
     assert mock_destroy.call_count == 1
 
 
-@mock.patch('flocx_market.db.sqlalchemy.offer_api.get')
+@mock.patch('flocx_market.db.sqlalchemy.api.offer_get')
 def test_delete_offer_missing(mock_get, client):
     mock_get.return_value = None
     response = client.delete('/offer/does-not-exist')
     assert response.status_code == 404
 
 
-@mock.patch('flocx_market.db.sqlalchemy.offer_api.create')
+@mock.patch('flocx_market.db.sqlalchemy.api.offer_create')
 def test_create_offer(mock_create, client):
     mock_create.return_value = test_offer_1
     res = client.post('/offer', data=json.dumps(test_offer_1.to_dict()))
@@ -94,8 +94,8 @@ def test_create_offer(mock_create, client):
     assert res.json == test_offer_1.to_dict()
 
 
-@mock.patch('flocx_market.db.sqlalchemy.offer_api.update')
-@mock.patch('flocx_market.db.sqlalchemy.offer_api.get')
+@mock.patch('flocx_market.db.sqlalchemy.api.offer_update')
+@mock.patch('flocx_market.db.sqlalchemy.api.offer_get')
 def test_update_offer(mock_get, mock_update, client):
     mock_get.return_value = test_offer_1
     mock_update.return_value = test_offer_1
@@ -106,8 +106,8 @@ def test_update_offer(mock_get, mock_update, client):
     assert res.json['status'] == 'testing'
 
 
-@mock.patch('flocx_market.db.sqlalchemy.offer_api.update')
-@mock.patch('flocx_market.db.sqlalchemy.offer_api.get')
+@mock.patch('flocx_market.db.sqlalchemy.api.offer_update')
+@mock.patch('flocx_market.db.sqlalchemy.api.offer_get')
 def test_update_offer_missing(mock_get, mock_update, client):
     mock_get.return_value = None
     res = client.put('/offer/does-not-exist',

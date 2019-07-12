@@ -1,7 +1,7 @@
 import datetime
 import pytest
 
-from flocx_market.db.sqlalchemy import offer_api
+from flocx_market.db.sqlalchemy import api
 
 from sqlalchemy.exc import IntegrityError
 
@@ -21,8 +21,8 @@ test_offer_data = dict(
 
 
 def test_offer_create(app, db, session):
-    offer = offer_api.create(test_offer_data)
-    check = offer_api.get(offer.marketplace_offer_id)
+    offer = api.offer_create(test_offer_data)
+    check = api.offer_get(offer.marketplace_offer_id)
 
     assert check.to_dict() == offer.to_dict()
 
@@ -32,21 +32,21 @@ def test_offer_create_invalid(app, db, session):
     del data['provider_id']
 
     with pytest.raises(IntegrityError):
-        offer_api.create(data)
+        api.offer_create(data)
 
 
 def test_offer_delete(app, db, session):
-    offer = offer_api.create(test_offer_data)
-    offer_api.destroy(offer.marketplace_offer_id)
-    check = offer_api.get(offer.marketplace_offer_id)
+    offer = api.offer_create(test_offer_data)
+    api.offer_destroy(offer.marketplace_offer_id)
+    check = api.offer_get(offer.marketplace_offer_id)
     assert check is None
 
 
 def test_offer_update(app, db, session):
-    offer = offer_api.create(test_offer_data)
-    offer = offer_api.update(
+    offer = api.offer_create(test_offer_data)
+    offer = api.offer_update(
         offer.marketplace_offer_id, dict(status='testing'))
-    check = offer_api.get(offer.marketplace_offer_id)
+    check = api.offer_get(offer.marketplace_offer_id)
 
     assert check.status == 'testing'
     assert check.creator_id == '3456'

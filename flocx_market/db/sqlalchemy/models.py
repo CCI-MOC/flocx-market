@@ -2,7 +2,7 @@ from flocx_market.db.orm import orm
 import sqlalchemy_jsonfield
 
 
-class OfferModel(orm.Model):
+class Offer(orm.Model):
     __tablename__ = "offers"
     marketplace_offer_id = orm.Column(
         orm.String(64),
