@@ -94,14 +94,15 @@ def test_create_offer(mock_save_to_db, mock_offer, client):
     assert res.json == test_offer_1.as_dict()
 
 
-@mock.patch('flocx_market.api.offer.OfferApi')
+@mock.patch('flocx_market.api.offer.OfferApi.find_by_id')
 @mock.patch('flocx_market.api.offer.OfferApi.save_to_db')
-def test_update_offer(mock_save_to_db, mock_offer, client):
-    mock_offer.return_value = test_offer_1
-    res = client.post('/offer', data=json.dumps(test_offer_1.as_dict()))
-    assert res.status_code == 201
+def test_update_offer(mock_save_to_db, mock_find_by_id, client):
+    mock_find_by_id.return_value = test_offer_1
+    res = client.put('/offer/{}'.format(test_offer_1.marketplace_offer_id),
+                     data=json.dumps(dict(status='testing')))
+    assert res.status_code == 200
     assert mock_save_to_db.call_count == 1
-    assert res.json == test_offer_1.as_dict()
+    assert res.json['status'] == 'testing'
 
 
 @mock.patch('flocx_market.api.offer.OfferApi.find_by_id')
