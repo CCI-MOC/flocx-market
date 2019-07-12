@@ -39,12 +39,12 @@ def test_service_cli_valid(find_config_files):
            str(args[args.index('--api-public_endpoint') + 1]))
     assert(CONF.api.api_workers ==
            int(args[args.index('--api-api_workers') + 1]))
-    assert(CONF.api.enable_ssl_api)
+    assert(CONF.api.enable_ssl_api is True)
 
     assert(CONF.api.max_limit == 1000)
 
     assert(CONF.flask.SQLALCHEMY_TRACK_MODIFICATIONS is False)
-    assert(CONF.flask.PROPAGATE_EXCEPTIONS)
+    assert(CONF.flask.PROPAGATE_EXCEPTIONS is True)
 
     assert(CONF.host == str(args[args.index('--host') + 1]))
 
