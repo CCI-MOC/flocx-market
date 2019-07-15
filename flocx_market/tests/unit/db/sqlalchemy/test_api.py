@@ -1,9 +1,9 @@
 import datetime
 import pytest
 
-from flocx_market.db.sqlalchemy import api
+from oslo_db.exception import DBError
 
-from sqlalchemy.exc import IntegrityError
+from flocx_market.db.sqlalchemy import api
 
 
 now = datetime.datetime.utcnow()
@@ -31,7 +31,7 @@ def test_offer_create_invalid(app, db, session):
     data = dict(test_offer_data)
     del data['provider_id']
 
-    with pytest.raises(IntegrityError):
+    with pytest.raises(DBError):
         api.offer_create(data)
 
 
