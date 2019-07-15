@@ -2,6 +2,7 @@ from flask import Flask
 from flask_restful import Api
 from flocx_market.api.offer import Offer
 from flocx_market.api.root import Root
+from flocx_market.api.bid import Bid
 import flocx_market.conf
 
 from keystonemiddleware import auth_token
@@ -21,6 +22,10 @@ def create_app(app_name):
                      '/offer',
                      '/offer/',
                      '/offer/<string:marketplace_offer_id>')
+    api.add_resource(Bid,
+                     '/bid',
+                     '/bid/',
+                     '/bid/<string:marketplace_bid_id>')
     api.add_resource(Root, '/')
 
     if CONF.api.auth_enable:
