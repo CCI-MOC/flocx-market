@@ -13,9 +13,7 @@
 from oslo_concurrency import processutils
 from oslo_service import service
 from oslo_service import wsgi
-from flask_migrate import Migrate
 from flocx_market.api import app
-from flocx_market.db.orm import orm
 import flocx_market.conf
 
 
@@ -27,8 +25,6 @@ class WSGIService(service.ServiceBase):
     def __init__(self, name):
         self.name = name
         self.app = app.create_app(app_name='flocx-market')
-        Migrate(self.app, orm)
-        orm.init_app(self.app)
 
         self.workers = (
             CONF.api.api_workers or processutils.get_worker_count()

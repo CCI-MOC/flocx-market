@@ -2,8 +2,6 @@ import json
 import flocx_market.conf
 
 CONF = flocx_market.conf.CONF
-CONF.set_override("auth_enable", False,
-                  group='api')
 
 
 def test_root_status_code(client):

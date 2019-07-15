@@ -15,6 +15,9 @@ class test_app_config:
 @pytest.fixture(scope='session')
 def app():
     CONF.clear()
+    CONF.set_override("auth_enable", False,
+                      group='api')
+
     prepare_service()
     CONF.set_override('connection', 'sqlite:///:memory:',
                       group='database')
