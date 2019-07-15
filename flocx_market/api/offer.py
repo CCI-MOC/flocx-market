@@ -18,7 +18,7 @@ class Offer(Resource):
     @classmethod
     def post(cls):
         data = request.get_json(force=True)
-        offer = dbapi.offer_create(**data)
+        offer = dbapi.offer_create(data)
         return offer.to_dict(), 201
 
     @classmethod

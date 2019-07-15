@@ -38,7 +38,6 @@ def client(app):
 def db(app):
     db_api.setup_db()
     yield db_api
-    db_api.get_session().query(db_models.Offer).delete()
     db_api.drop_db()
 
 
@@ -46,5 +45,7 @@ def db(app):
 def session(db):
     session = db.get_session()
     yield session
-    # Guess what doesn't work with oslo db sessions...
-    # session.rollback()
+    session.close()
+    engine = db_api.get_facade().get_engine()
+    for table in db_models.Base.metadata.sorted_tables:
+        engine.execute(table.delete())

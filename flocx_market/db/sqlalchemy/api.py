@@ -50,7 +50,8 @@ def offer_get_all():
 
 def offer_create(values):
     values['marketplace_offer_id'] = uuidutils.generate_uuid()
-    offer_ref = models.Offer(**values)
+    offer_ref = models.Offer()
+    offer_ref.update(values)
     offer_ref.save(get_session())
     return offer_ref
 
@@ -68,3 +69,35 @@ def offer_destroy(marketplace_offer_id):
     if offer_ref:
         get_session().query(models.Offer).filter_by(
             marketplace_offer_id=marketplace_offer_id).delete()
+
+
+def bid_get(marketplace_bid_id):
+    return get_session().query(models.Bid).filter_by(
+        marketplace_bid_id=marketplace_bid_id).first()
+
+
+def bid_get_all():
+    return get_session().query(models.Bid).all()
+
+
+def bid_create(values):
+    values['marketplace_bid_id'] = uuidutils.generate_uuid()
+    bid_ref = models.Bid()
+    bid_ref.update(values)
+    bid_ref.save(get_session())
+    return bid_ref
+
+
+def bid_update(marketplace_bid_id, values):
+    bid_ref = bid_get(marketplace_bid_id)
+    values.pop('marketplace_bid_id', None)
+    bid_ref.update(values)
+    bid_ref.save(get_session())
+    return bid_ref
+
+
+def bid_destroy(marketplace_bid_id):
+    bid_ref = bid_get(marketplace_bid_id)
+    if bid_ref:
+        get_session().query(models.Bid).filter_by(
+            marketplace_bid_id=marketplace_bid_id).delete()

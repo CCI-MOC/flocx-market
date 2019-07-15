@@ -7,6 +7,7 @@ from flocx_market.db.sqlalchemy import api
 
 
 now = datetime.datetime.utcnow()
+
 test_offer_data = dict(
     provider_id='2345',
     creator_id='3456',
@@ -18,6 +19,16 @@ test_offer_data = dict(
     server_config={'foo': 'bar'},
     cost=0.0,
 )
+
+test_bid_data = dict(creator_bid_id="12a59a51-b4d6-497d-9f75-f56c409305c8",
+                     creator_id="12a59a51-b4d6-497d-9f75-f56c409305c8",
+                     server_quantity=2,
+                     start_time=now,
+                     end_time=now,
+                     duration=16400,
+                     status="available",
+                     server_config_query={'foo': 'bar'},
+                     cost=11.5)
 
 
 def test_offer_create(app, db, session):
@@ -50,3 +61,26 @@ def test_offer_update(app, db, session):
 
     assert check.status == 'testing'
     assert check.creator_id == '3456'
+
+
+def test_bid_create(app, db, session):
+    bid = api.bid_create(test_bid_data)
+    check = api.bid_get(bid.marketplace_bid_id)
+
+    assert check.to_dict() == bid.to_dict()
+
+
+def test_bid_create_invalid(app, db, session):
+    data = dict(test_bid_data)
+    del data['creator_bid_id']
+
+    with pytest.raises(DBError):
+        api.bid_create(data)
+    test_bid_data['creator_bid_id'] = '12a59a51-b4d6-497d-9f75-f56c409305c8'
+
+
+def test_bid_delete(app, db, session):
+    bid = api.bid_create(test_bid_data)
+    api.bid_destroy(bid.marketplace_bid_id)
+    check = api.bid_get(bid.marketplace_bid_id)
+    assert check is None
