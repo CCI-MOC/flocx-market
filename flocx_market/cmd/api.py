@@ -27,3 +27,7 @@ def main():
     server = wsgi_service.WSGIService('flocx_market_api')
     launcher.launch_service(server, workers=server.workers)
     launcher.wait()
+
+
+if __name__ == '__main__':
+    sys.exit(main())
