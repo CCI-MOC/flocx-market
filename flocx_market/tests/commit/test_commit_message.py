@@ -155,3 +155,10 @@ def test_commit_has_reference(commit_message):
         'Use TG-nn to reference a Taiga task/story, or #nnn to reference a '
         'GitHub issue.'
     )
+
+
+def test_commit_not_fixup(commit_message, request):
+    if not request.config.option.block_fixups:
+        pytest.skip('Use --block-fixups to block fixup commits')
+
+    assert not commit_message.startswith('fixup!')
