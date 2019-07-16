@@ -1,8 +1,50 @@
-from flocx_market.db.orm import orm
+from oslo_db.sqlalchemy import models
+from sqlalchemy.ext.declarative import declarative_base
 import sqlalchemy_jsonfield
 
+from flocx_market.db.orm import orm
 
-class Offer(orm.Model):
+
+class FLOCXMarketBase(models.ModelBase):
+
+    metadata = None
+
+    def to_dict(self):
+        d = {}
+        for col in self.__table__.columns:
+            if col.name in [
+                    'marketplace_date_created', 'start_time', 'end_time'
+            ]:
+                d[col.name] = getattr(self, col.name).isoformat()
+            else:
+                d[col.name] = getattr(self, col.name)
+        return d
+
+
+Base = declarative_base(cls=FLOCXMarketBase)
+
+
+class Bid(Base):
+    __tablename__ = 'bids'
+    marketplace_bid_id = orm.Column(
+        orm.String(64),
+        primary_key=True,
+        autoincrement=False,
+    )
+    creator_bid_id = orm.Column(orm.String(64), nullable=False)
+    creator_id = orm.Column(orm.String(64), nullable=False)
+    server_quantity = orm.Column(orm.Integer, nullable=False)
+    start_time = orm.Column(orm.DateTime(timezone=True), nullable=False)
+    end_time = orm.Column(orm.DateTime(timezone=True), nullable=False)
+    duration = orm.Column(orm.Integer, nullable=False)
+    status = orm.Column(orm.String(15), nullable=False, default='available')
+    server_config_query = orm.Column(sqlalchemy_jsonfield.JSONField(
+                                     enforce_string=True,
+                                     enforce_unicode=False), nullable=False)
+    cost = orm.Column(orm.Float, nullable=False)
+
+
+class Offer(Base):
     __tablename__ = "offers"
     marketplace_offer_id = orm.Column(
         orm.String(64),
@@ -23,14 +65,3 @@ class Offer(orm.Model):
         nullable=False,
     )
     cost = orm.Column(orm.Float, nullable=False)
-
-    def to_dict(self):
-        d = {}
-        for col in self.__table__.columns:
-            if col.name in [
-                    'marketplace_date_created', 'start_time', 'end_time'
-            ]:
-                d[col.name] = getattr(self, col.name).isoformat()
-            else:
-                d[col.name] = getattr(self, col.name)
-        return d

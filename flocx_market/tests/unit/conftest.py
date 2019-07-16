@@ -4,6 +4,8 @@ from flocx_market.common.service import prepare_service
 from flocx_market.conf import CONF
 from flocx_market.api.app import create_app
 from flocx_market.db.orm import orm
+from flocx_market.db.sqlalchemy import api as db_api
+from flocx_market.db.sqlalchemy import models as db_models
 
 
 class test_app_config:
@@ -14,7 +16,8 @@ class test_app_config:
 def app():
     CONF.clear()
     prepare_service()
-    CONF.database.connection = 'sqlite:///:memory:'
+    CONF.set_override('connection', 'sqlite:///:memory:',
+                      group='database')
     app = create_app('testing')
     app.config.from_object(test_app_config)
     orm.init_app(app)
@@ -33,14 +36,16 @@ def client(app):
 
 @pytest.fixture()
 def db(app):
-    orm.create_all()
-    yield orm
-    orm.drop_all()
+    db_api.setup_db()
+    yield db_api
+    db_api.drop_db()
 
 
 @pytest.fixture()
 def session(db):
-    session = db.session()
+    session = db.get_session()
     yield session
-    if not session.transaction.is_active:
-        session.rollback()
+    session.close()
+    engine = db_api.get_facade().get_engine()
+    for table in db_models.Base.metadata.sorted_tables:
+        engine.execute(table.delete())
