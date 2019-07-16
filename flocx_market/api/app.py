@@ -1,6 +1,5 @@
 from flask import Flask
 from flask_restful import Api
-from flask_migrate import Migrate
 from flocx_market.api.offer import Offer
 from flocx_market.api.root import Root
 from flocx_market.api.bid import Bid
@@ -30,7 +29,6 @@ def create_app(app_name):
                      '/bid/<string:marketplace_bid_id>')
     api.add_resource(Root, '/')
 
-    Migrate(app, orm)
     orm.init_app(app)
 
     if CONF.api.auth_enable:
