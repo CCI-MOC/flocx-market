@@ -1,8 +1,10 @@
 from flask import Flask
 from flask_restful import Api
+from flask_migrate import Migrate
 from flocx_market.api.offer import Offer
 from flocx_market.api.root import Root
 from flocx_market.api.bid import Bid
+from flocx_market.db.orm import orm
 import flocx_market.conf
 
 from keystonemiddleware import auth_token
@@ -27,6 +29,9 @@ def create_app(app_name):
                      '/bid/',
                      '/bid/<string:marketplace_bid_id>')
     api.add_resource(Root, '/')
+
+    Migrate(app, orm)
+    orm.init_app(app)
 
     if CONF.api.auth_enable:
         app = auth_token.AuthProtocol(app, dict(CONF.keystone_authtoken))
