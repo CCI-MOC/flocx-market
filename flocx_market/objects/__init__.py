@@ -3,4 +3,4 @@
 
 
 def register_all():
-    pass
+    __import__('flocx_market.objects.bid')
