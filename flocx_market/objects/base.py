@@ -2,10 +2,12 @@ from oslo_log import log
 from oslo_versionedobjects import base as object_base
 import datetime
 
+
 LOG = log.getLogger(__name__)
 
 
 class FLOCXMarketObject(object_base.VersionedObject):
+
     OBJ_SERIAL_NAMESPACE = 'flocx_market_object'
     OBJ_PROJECT_NAMESPACE = 'flocx_market'
 
