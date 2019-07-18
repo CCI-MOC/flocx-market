@@ -3,4 +3,6 @@
 
 
 def register_all():
-    pass
+
+    __import__('flocx_market.objects.bid')
+    __import__('flocx_market.objects.offer')
