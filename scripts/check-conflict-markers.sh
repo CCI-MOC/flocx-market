@@ -5,7 +5,7 @@ TOP=$(git rev-parse --show-toplevel)
 
 prepare_files_for_testing "check for conflict markers"
 
-if find . -name .tox -prune -o -type f -print0 |
+if find . -name '.*' -prune -o -type f -print0 |
 	xargs -0 grep -Hn -E '^(<{7}|>{7}|={7})( |$)'; then
 
 	echo "ERROR: found conflict markers" >&2
