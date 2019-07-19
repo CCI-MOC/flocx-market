@@ -29,12 +29,14 @@ test_bid_2 = dict(marketplace_bid_id="1232",
 
 @mock.patch('flocx_market.db.sqlalchemy.api.bid_create')
 def test_create(bid_create):
+    bid_create.return_value = test_bid_1
     bid.Bid.create(test_bid_1)
     bid_create.assert_called_once()
 
 
 @mock.patch('flocx_market.db.sqlalchemy.api.bid_get')
 def test_get(bid_get):
+    bid_get.return_value = test_bid_2
     b = bid.Bid(**test_bid_2)
     bid.Bid.get(b.marketplace_bid_id)
     bid_get.assert_called_once()
@@ -60,7 +62,8 @@ def test_destroy(bid_destroy):
 
 @mock.patch('flocx_market.db.sqlalchemy.api.bid_update')
 def test_save(bid_update):
+    bid_update.return_value = test_bid_1
     b = bid.Bid(**test_bid_1)
-    test_bid_1['status'] = "busy"
-    b.save(test_bid_1)
+    b.status = "busy"
+    b.save()
     bid_update.assert_called_once()
