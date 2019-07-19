@@ -33,12 +33,14 @@ test_offer_2 = dict(
 
 @mock.patch('flocx_market.db.sqlalchemy.api.offer_create')
 def test_create(offer_create):
+    offer_create.return_value = test_offer_1
     offer.Offer.create(test_offer_1)
     offer_create.assert_called_once()
 
 
 @mock.patch('flocx_market.db.sqlalchemy.api.offer_get')
 def test_get(offer_get):
+    offer_get.return_value = test_offer_1
     o = offer.Offer(**test_offer_1)
     offer.Offer.get(o.marketplace_offer_id)
     offer_get.assert_called_once()
@@ -64,7 +66,8 @@ def test_destroy(offer_destroy):
 
 @mock.patch('flocx_market.db.sqlalchemy.api.offer_update')
 def test_save(offer_update):
+    offer_update.return_value = test_offer_1
     o = offer.Offer(**test_offer_1)
-    test_offer_1['status'] = "busy"
-    o.save(test_offer_1)
+    o.status = "busy"
+    o.save()
     offer_update.assert_called_once()

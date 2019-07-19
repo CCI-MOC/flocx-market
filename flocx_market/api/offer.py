@@ -34,4 +34,8 @@ class Offer(Resource):
         o = offer.Offer.get(marketplace_offer_id)
         if o is None:
             return {'message': 'Offer not found.'}, 404
-        return o.save(data).to_dict()
+        # we only allow status field to be modified
+        if 'status' in data:
+            o.status = data['status']
+            return o.save().to_dict()
+        return o.to_dict()

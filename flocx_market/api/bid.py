@@ -34,4 +34,8 @@ class Bid(Resource):
         b = bid.Bid.get(marketplace_bid_id)
         if b is None:
             return {'message': 'Bid not found.'}, 404
-        return b.save(data).to_dict()
+        # we only allow status field to be modified
+        if 'status' in data:
+            b.status = data['status']
+            return b.save().to_dict()
+        return b.to_dict()

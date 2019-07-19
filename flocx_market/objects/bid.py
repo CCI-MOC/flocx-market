@@ -1,8 +1,11 @@
+from oslo_versionedobjects import base as versioned_objects_base
+
 import flocx_market.db.sqlalchemy.api as db
 from flocx_market.objects import base
 from flocx_market.objects import fields
 
 
+@versioned_objects_base.VersionedObjectRegistry.register
 class Bid(base.FLOCXMarketObject):
 
     fields = {
@@ -34,8 +37,8 @@ class Bid(base.FLOCXMarketObject):
             else:
                 return cls._from_db_object(cls(), b)
 
-    def destroy(cls):
-        db.bid_destroy(cls.marketplace_bid_id)
+    def destroy(self):
+        db.bid_destroy(self.marketplace_bid_id)
         return True
 
     @classmethod
@@ -43,7 +46,8 @@ class Bid(base.FLOCXMarketObject):
         all_bids = db.bid_get_all()
         return cls._from_db_object_list(all_bids)
 
-    def save(cls, data):
-        cls.status = data['status']
-        db.bid_update(cls.marketplace_bid_id, data)
-        return cls
+    def save(self):
+        updates = self.obj_get_changes()
+        db_bid = db.bid_update(
+            self.marketplace_bid_id, updates)
+        return self._from_db_object(self, db_bid)

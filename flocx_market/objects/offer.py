@@ -1,8 +1,11 @@
+from oslo_versionedobjects import base as versioned_objects_base
+
 import flocx_market.db.sqlalchemy.api as db
 from flocx_market.objects import base
 from flocx_market.objects import fields
 
 
+@versioned_objects_base.VersionedObjectRegistry.register
 class Offer(base.FLOCXMarketObject):
 
     fields = {
@@ -34,8 +37,8 @@ class Offer(base.FLOCXMarketObject):
             else:
                 return cls._from_db_object(cls(), o)
 
-    def destroy(cls):
-        db.offer_destroy(cls.marketplace_offer_id)
+    def destroy(self):
+        db.offer_destroy(self.marketplace_offer_id)
         return True
 
     @classmethod
@@ -43,7 +46,8 @@ class Offer(base.FLOCXMarketObject):
         all_offers = db.offer_get_all()
         return cls._from_db_object_list(all_offers)
 
-    def save(cls, data):
-        cls.status = data['status']
-        db.offer_update(cls.marketplace_offer_id, data)
-        return cls
+    def save(self):
+        updates = self.obj_get_changes()
+        db_offer = db.offer_update(
+            self.marketplace_offer_id, updates)
+        return self._from_db_object(self, db_offer)
