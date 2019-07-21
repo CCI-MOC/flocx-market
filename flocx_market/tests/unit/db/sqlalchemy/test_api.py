@@ -120,3 +120,51 @@ def test_bid_update(app, db, session):
 
     assert check.status == 'testing'
     assert check.creator_id == '12a59a51-b4d6-497d-9f75-f56c409305c8'
+
+
+def create_test_contract_data():
+    bid = api.bid_create(test_bid_data)
+    offer = api.offer_create(test_offer_data)
+
+    contract_data = dict(
+        time_created=now,
+        status='available',
+        start_time=now,
+        end_time=now,
+        cost=0.0,
+        bid_id=bid.marketplace_bid_id,
+        offers=[offer.marketplace_offer_id]
+    )
+    return contract_data
+
+
+def test_contract_create(app, db, session):
+    contract = api.contract_create(create_test_contract_data())
+    check = api.contract_get(contract.contract_id)
+
+    assert check.to_dict() == contract.to_dict()
+
+
+def test_contract_create_invalid(app, db, session):
+    data = create_test_contract_data()
+    del data['cost']
+    print(data)
+    with pytest.raises(DBError):
+        api.contract_create(data)
+
+
+def test_contract_delete(app, db, session):
+    contract = api.contract_create(create_test_contract_data())
+    api.contract_destroy(contract.contract_id)
+    check = api.contract_get(contract.contract_id)
+    assert check is None
+
+
+def test_contract_update(app, db, session):
+    contract = api.contract_create(create_test_contract_data())
+    contract = api.contract_update(
+        contract.contract_id, dict(status='testing'))
+    check = api.contract_get(contract.contract_id)
+
+    assert check.status == 'testing'
+    assert check.cost == 0.0

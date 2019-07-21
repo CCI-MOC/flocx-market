@@ -15,6 +15,7 @@ test_offer_1 = dict(
     end_time=now,
     server_config={'foo': 'bar'},
     cost=0.0,
+    contract_id=None
 )
 
 test_offer_2 = dict(
@@ -28,6 +29,7 @@ test_offer_2 = dict(
     end_time=now,
     server_config={'foo': 'bar'},
     cost=0.0,
+    contract_id=None
 )
 
 
