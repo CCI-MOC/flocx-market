@@ -16,7 +16,6 @@ class Contract(base.FLOCXMarketObject):
         'end_time': fields.DateTimeField(nullable=True),
         'cost': fields.FloatField(),
         'bid_id': fields.StringField(),
-        'bid': fields.ObjectField('bid.Bid', nullable=True)
     }
 
     def to_dict(self):
@@ -60,3 +59,12 @@ class Contract(base.FLOCXMarketObject):
         updates = self.obj_get_changes()
         db_contract = db.contract_update(self.contract_id, updates)
         return self._from_db_object(self, db_contract)
+
+    @classmethod
+    def get_all_unexpired(cls):
+        unexpired = db.contract_get_all_unexpired()
+        return cls._from_db_object_list(unexpired)
+
+    def expire(self):
+        self.status = 'expired'
+        self.save()
