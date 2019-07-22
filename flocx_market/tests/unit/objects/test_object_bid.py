@@ -67,3 +67,20 @@ def test_save(bid_update):
     b.status = "busy"
     b.save()
     bid_update.assert_called_once()
+
+
+@mock.patch('flocx_market.objects.bid.Bid._from_db_object_list')
+@mock.patch('flocx_market.objects.bid.db.bid_get_all_unexpired')
+def test_update_to_expire(get_all, _from_db_object_list):
+
+    bid.Bid.get_all_unexpired()
+
+    get_all.assert_called_once()
+
+
+@mock.patch('flocx_market.objects.bid.Bid.save')
+def test_expire(save):
+    o = bid.Bid(**test_bid_1)
+    o.expire()
+
+    save.assert_called_once()

@@ -32,15 +32,27 @@ test_offer_data_2 = dict(
     cost=0.0,
 )
 
-test_bid_data = dict(creator_bid_id="12a59a51-b4d6-497d-9f75-f56c409305c8",
-                     creator_id="12a59a51-b4d6-497d-9f75-f56c409305c8",
-                     server_quantity=2,
-                     start_time=now,
-                     end_time=now,
-                     duration=16400,
-                     status="available",
-                     server_config_query={'foo': 'bar'},
-                     cost=11.5)
+
+test_bid_data_1 = dict(creator_bid_id="12a59a51-b4d6-497d-9f75-f56c409305c8",
+                       creator_id="12a59a51-b4d6-497d-9f75-f56c409305c8",
+                       server_quantity=2,
+                       start_time=now - timedelta(days=2),
+                       end_time=now - timedelta(days=1),
+                       duration=16400,
+                       status="available",
+                       server_config_query={'foo': 'bar'},
+                       cost=11.5)
+
+
+test_bid_data_2 = dict(creator_bid_id="12a59a51-b4d6-497d-9f75-f56c409305c8",
+                       creator_id="12a59a51-b4d6-497d-9f75-f56c409305c8",
+                       server_quantity=2,
+                       start_time=now - timedelta(days=2),
+                       end_time=now + timedelta(days=1),
+                       duration=16400,
+                       status="available",
+                       server_config_query={'foo': 'bar'},
+                       cost=11.5)
 
 
 def test_offer_get_all(app, db, session):
@@ -98,37 +110,50 @@ def test_offer_update(app, db, session):
 
 
 def test_bid_get_all(app, db, session):
-    api.bid_create(test_bid_data)
-    api.bid_create(test_bid_data)
+    api.bid_create(test_bid_data_1)
+    api.bid_create(test_bid_data_2)
 
     assert len(api.bid_get_all()) == 2
 
 
+def test_bid_get_all_to_be_expired(app, db, session):
+    api.bid_create(test_bid_data_1)
+    api.bid_create(test_bid_data_2)
+
+    bids = api.bid_get_all()
+
+    assert len(api.bid_get_all()) == 2
+    assert len(api.bid_get_all_unexpired()) == 2
+
+    api.bid_update(bids[1].marketplace_bid_id, dict(status='expired'))
+    assert len(api.bid_get_all_unexpired()) == 1
+
+
 def test_bid_create(app, db, session):
-    bid = api.bid_create(test_bid_data)
+    bid = api.bid_create(test_bid_data_1)
     check = api.bid_get(bid.marketplace_bid_id)
 
     assert check.to_dict() == bid.to_dict()
 
 
 def test_bid_create_invalid(app, db, session):
-    data = dict(test_bid_data)
+    data = dict(test_bid_data_1)
     del data['creator_bid_id']
 
     with pytest.raises(DBError):
         api.bid_create(data)
-    test_bid_data['creator_bid_id'] = '12a59a51-b4d6-497d-9f75-f56c409305c8'
+    test_bid_data_1['creator_bid_id'] = '12a59a51-b4d6-497d-9f75-f56c409305c8'
 
 
 def test_bid_delete(app, db, session):
-    bid = api.bid_create(test_bid_data)
+    bid = api.bid_create(test_bid_data_1)
     api.bid_destroy(bid.marketplace_bid_id)
     check = api.bid_get(bid.marketplace_bid_id)
     assert check is None
 
 
 def test_bid_update(app, db, session):
-    bid = api.bid_create(test_bid_data)
+    bid = api.bid_create(test_bid_data_1)
     bid = api.bid_update(
         bid.marketplace_bid_id, dict(status='testing'))
     check = api.bid_get(bid.marketplace_bid_id)
@@ -138,18 +163,19 @@ def test_bid_update(app, db, session):
 
 
 def create_test_contract_data():
-    bid = api.bid_create(test_bid_data)
+    bid = api.bid_create(test_bid_data_1)
     offer = api.offer_create(test_offer_data)
 
     contract_data = dict(
         time_created=now,
         status='available',
-        start_time=now,
-        end_time=now,
+        start_time=now - timedelta(days=2),
+        end_time=now - timedelta(days=1),
         cost=0.0,
         bid_id=bid.marketplace_bid_id,
         offers=[offer.marketplace_offer_id]
     )
+
     return contract_data
 
 
@@ -183,3 +209,12 @@ def test_contract_update(app, db, session):
 
     assert check.status == 'testing'
     assert check.cost == 0.0
+
+
+def test_contract_get_all_to_be_expired(app, db, session):
+    contract = api.contract_create(create_test_contract_data())
+
+    assert len(api.contract_get_all_unexpired()) == 1
+
+    api.contract_update(contract.contract_id, dict(status='expired'))
+    assert len(api.contract_get_all_unexpired()) == 0

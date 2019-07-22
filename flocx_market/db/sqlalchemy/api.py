@@ -80,6 +80,11 @@ def bid_get(marketplace_bid_id):
         marketplace_bid_id=marketplace_bid_id).first()
 
 
+def bid_get_all_unexpired():
+    return get_session().query(models.Bid)\
+        .filter(models.Bid.status != 'expired').all()
+
+
 def bid_get_all():
     return get_session().query(models.Bid).all()
 
@@ -115,6 +120,11 @@ def contract_get(contract_id):
 
 def contract_get_all():
     return get_session().query(models.Contract).all()
+
+
+def contract_get_all_unexpired():
+    return get_session().query(models.Contract)\
+        .filter(models.Contract.status != 'expired').all()
 
 
 def contract_create(values):
