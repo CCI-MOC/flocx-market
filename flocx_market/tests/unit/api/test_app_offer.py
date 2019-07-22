@@ -7,6 +7,8 @@ from flocx_market.objects import offer
 
 
 CONF = flocx_market.conf.CONF
+CONF.set_override(group='api', name='auth_enable', override=False)
+
 
 now = datetime.datetime.utcnow()
 

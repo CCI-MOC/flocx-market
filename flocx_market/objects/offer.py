@@ -52,3 +52,12 @@ class Offer(base.FLOCXMarketObject):
         db_offer = db.offer_update(
             self.marketplace_offer_id, updates)
         return self._from_db_object(self, db_offer)
+
+    @classmethod
+    def get_all_unexpired(cls):
+        unexpired = db.offer_get_all_unexpired()
+        return cls._from_db_object_list(unexpired)
+
+    def expire(self):
+        self.status = 'expired'
+        self.save()

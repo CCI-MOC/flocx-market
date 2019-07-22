@@ -47,6 +47,11 @@ def offer_get_all():
     return get_session().query(models.Offer).all()
 
 
+def offer_get_all_unexpired():
+    return get_session().query(models.Offer)\
+        .filter(models.Offer.status != 'expired').all()
+
+
 def offer_create(values):
     values['marketplace_offer_id'] = uuidutils.generate_uuid()
     offer_ref = models.Offer()
