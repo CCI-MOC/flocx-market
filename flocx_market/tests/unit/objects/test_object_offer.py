@@ -7,7 +7,6 @@ now = datetime.datetime.utcnow()
 test_offer_1 = dict(
     marketplace_offer_id='1234',
     provider_id='2345',
-    creator_id='3456',
     marketplace_date_created=now,
     status='available',
     server_id='4567',
@@ -15,13 +14,13 @@ test_offer_1 = dict(
     end_time=now,
     server_config={'foo': 'bar'},
     cost=0.0,
-    contract_id=None
+    contract_id=None,
+    project_id='5599'
 )
 
 test_offer_2 = dict(
     marketplace_offer_id='124',
     provider_id='2345',
-    creator_id='3456',
     marketplace_date_created=now,
     status='available',
     server_id='456789',
@@ -29,7 +28,8 @@ test_offer_2 = dict(
     end_time=now,
     server_config={'foo': 'bar'},
     cost=0.0,
-    contract_id=None
+    contract_id=None,
+    project_id='5599'
 )
 
 

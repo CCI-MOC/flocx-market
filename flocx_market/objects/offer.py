@@ -11,7 +11,6 @@ class Offer(base.FLOCXMarketObject):
     fields = {
         'marketplace_offer_id': fields.StringField(),
         'provider_id': fields.StringField(),
-        'creator_id': fields.StringField(),
         'marketplace_date_created': fields.DateTimeField(nullable=True),
         'status': fields.StringField(),
         'server_id': fields.StringField(),
@@ -19,7 +18,8 @@ class Offer(base.FLOCXMarketObject):
         'end_time': fields.DateTimeField(nullable=True),
         'server_config': fields.FlexibleDictField(nullable=True),
         'cost': fields.FloatField(),
-        'contract_id': fields.StringField(nullable=True)
+        'contract_id': fields.StringField(nullable=True),
+        'project_id': fields.StringField()
     }
 
     @classmethod
