@@ -1,6 +1,6 @@
 # FLOCX Marketplace
 
-flocx-market is an OpenStack service for acting as a FLOCX marketplace to communicate with a FLOCX provider. [More details on FLOCX](https://github.com/CCI-MOC/flocx)
+flocx-market is an OpenStack service for acting as a FLOCX marketplace to communicate with a FLOCX provider. [More details on FLOCX](https://cci-moc.github.io/flocx/)
 
 
 ### Installation
