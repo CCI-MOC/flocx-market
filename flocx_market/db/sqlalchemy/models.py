@@ -51,6 +51,11 @@ class Offer(Base):
         primary_key=True,
         autoincrement=False,
     )
+    provider_offer_id = orm.Column(
+        orm.String(64),
+        nullable=False,
+        unique=True,
+    )
     provider_id = orm.Column(orm.String(64), nullable=False)
     marketplace_date_created = orm.Column(orm.DateTime(timezone=True),
                                           nullable=False)

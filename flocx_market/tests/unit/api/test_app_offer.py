@@ -15,6 +15,7 @@ now = datetime.datetime.utcnow()
 
 test_offer_1 = offer.Offer(
     marketplace_date_created=now,
+    provider_offer_id='a41fadc1-6ae9-47e5-a74e-2dcf2b4dd55a',
     marketplace_offer_id='test_offer_1',
     provider_id='1234',
     server_id='3456',
@@ -29,6 +30,7 @@ test_offer_1 = offer.Offer(
 
 test_offer_2 = offer.Offer(
     marketplace_offer_id='test_offer_2',
+    provider_offer_id='141fadc1-6ae9-47e5-a74e-2dcf2b4dd554',
     marketplace_date_created=now,
     provider_id='2345',
     server_id='4567',

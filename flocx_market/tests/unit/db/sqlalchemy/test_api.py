@@ -9,6 +9,7 @@ from flocx_market.db.sqlalchemy import api
 now = datetime.utcnow()
 
 test_offer_data = dict(
+    provider_offer_id='a41fadc1-6ae9-47e5-a74e-2dcf2b4dd55a',
     provider_id='2345',
     marketplace_date_created=now,
     status='available',
@@ -20,6 +21,7 @@ test_offer_data = dict(
     project_id='5599')
 
 test_offer_data_2 = dict(
+    provider_offer_id='141fadc1-6ae9-47e5-a74e-2dcf2b4dd554',
     provider_id='2345',
     marketplace_date_created=now,
     status='available',
