@@ -6,6 +6,7 @@ now = datetime.datetime.utcnow()
 
 test_offer_1 = dict(
     marketplace_offer_id='1234',
+    provider_offer_id='a41fadc1-6ae9-47e5-a74e-2dcf2b4dd55a',
     provider_id='2345',
     marketplace_date_created=now,
     status='available',
@@ -20,6 +21,7 @@ test_offer_1 = dict(
 
 test_offer_2 = dict(
     marketplace_offer_id='124',
+    provider_offer_id='141fadc1-6ae9-47e5-a74e-2dcf2b4dd554',
     provider_id='2345',
     marketplace_date_created=now,
     status='available',

@@ -10,6 +10,7 @@ class Offer(base.FLOCXMarketObject):
 
     fields = {
         'marketplace_offer_id': fields.StringField(),
+        'provider_offer_id': fields.StringField(),
         'provider_id': fields.StringField(),
         'marketplace_date_created': fields.DateTimeField(nullable=True),
         'status': fields.StringField(),
