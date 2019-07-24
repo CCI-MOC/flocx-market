@@ -12,25 +12,25 @@ now = datetime.datetime.utcnow()
 
 test_bid_1 = bid.Bid(marketplace_bid_id='test_bid_1',
                      creator_bid_id="1234",
-                     creator_id="2345",
                      server_quantity=2,
                      start_time=now,
                      end_time=now,
                      duration=16400,
                      status="available",
                      server_config_query={'foo': 'bar'},
-                     cost=11.5)
+                     cost=11.5,
+                     project_id='5599')
 
 test_bid_2 = bid.Bid(marketplace_bid_id='test_bid_2',
                      creator_bid_id="2345",
-                     creator_id="3456",
                      server_quantity=2,
                      start_time=now,
                      end_time=now,
                      duration=16400,
                      status="available",
                      server_config_query={'foo': 'bar'},
-                     cost=11.5)
+                     cost=11.5,
+                     project_id='5599')
 
 
 @mock.patch('flocx_market.objects.bid.Bid.get_all')
@@ -40,10 +40,6 @@ def test_get_bids(mock_get_all, client):
     response = client.get("/bid", follow_redirects=True)
     assert response.status_code == 200
     assert len(response.json) == 2
-    assert any(x['creator_id'] == test_bid_1.creator_id
-               for x in response.json)
-    assert any(x['creator_id'] == test_bid_2.creator_id
-               for x in response.json)
 
 
 @mock.patch('flocx_market.objects.bid.Bid.get')

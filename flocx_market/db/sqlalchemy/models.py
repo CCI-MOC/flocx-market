@@ -31,7 +31,6 @@ class Bid(Base):
         autoincrement=False,
     )
     creator_bid_id = orm.Column(orm.String(64), nullable=False)
-    creator_id = orm.Column(orm.String(64), nullable=False)
     server_quantity = orm.Column(orm.Integer, nullable=False)
     start_time = orm.Column(orm.DateTime(timezone=True), nullable=False)
     end_time = orm.Column(orm.DateTime(timezone=True), nullable=False)
@@ -42,6 +41,7 @@ class Bid(Base):
         enforce_unicode=False), nullable=False)
     cost = orm.Column(orm.Float, nullable=False)
     contracts = orm.relationship('Contract', lazy='dynamic')
+    project_id = orm.Column(orm.String(64), nullable=False)
 
 
 class Offer(Base):
@@ -52,7 +52,6 @@ class Offer(Base):
         autoincrement=False,
     )
     provider_id = orm.Column(orm.String(64), nullable=False)
-    creator_id = orm.Column(orm.String(64), nullable=False)
     marketplace_date_created = orm.Column(orm.DateTime(timezone=True),
                                           nullable=False)
     status = orm.Column(orm.String(15), nullable=False, default="available")
@@ -69,6 +68,7 @@ class Offer(Base):
                              orm.ForeignKey('contracts.contract_id'),
                              nullable=True)
     contract = orm.relationship('Contract')
+    project_id = orm.Column(orm.String(64), nullable=False)
 
 
 class Contract(Base):
@@ -87,3 +87,4 @@ class Contract(Base):
                         orm.ForeignKey('bids.marketplace_bid_id'))
     bid = orm.relationship('Bid')
     offers = orm.relationship('Offer', lazy='dynamic')
+    project_id = orm.Column(orm.String(64), nullable=False)

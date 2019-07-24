@@ -24,7 +24,8 @@ test_contract_dict = dict(contract_id='test_contract_2',
                           cost=0.0,
                           bid_id='test_bid_2',
                           bid=None,
-                          offers=['test_offer_1']
+                          offers=['test_offer_1'],
+                          project_id='5599'
                           )
 
 

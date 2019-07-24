@@ -16,6 +16,7 @@ class Contract(base.FLOCXMarketObject):
         'end_time': fields.DateTimeField(nullable=True),
         'cost': fields.FloatField(),
         'bid_id': fields.StringField(),
+        'project_id': fields.StringField()
     }
 
     def to_dict(self):
