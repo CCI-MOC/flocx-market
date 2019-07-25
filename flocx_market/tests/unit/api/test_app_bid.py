@@ -1,6 +1,7 @@
 import datetime
 import json
 from unittest import mock
+from oslo_context import context as ctx
 
 import flocx_market.conf
 from flocx_market.objects import bid
@@ -32,6 +33,9 @@ test_bid_2 = bid.Bid(marketplace_bid_id='test_bid_2',
                      cost=11.5,
                      project_id='5599')
 
+scoped_context = ctx.RequestContext(is_admin=False,
+                                    project_id='5599')
+
 
 @mock.patch('flocx_market.objects.bid.Bid.get_all')
 def test_get_bids(mock_get_all, client):
@@ -48,7 +52,7 @@ def test_get_bid(mock_get, client):
     response = client.get('/bid/{}'.format(
         test_bid_1.marketplace_bid_id))
     assert response.status_code == 200
-    mock_get.assert_called_with('test_bid_1')
+    mock_get.assert_called_once()
     assert response.json['marketplace_bid_id'] == 'test_bid_1'
 
 

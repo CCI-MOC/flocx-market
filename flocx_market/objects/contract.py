@@ -32,40 +32,40 @@ class Contract(base.FLOCXMarketObject):
         return ret
 
     @classmethod
-    def get(cls, contract_id):
+    def get(cls, contract_id, context):
         if contract_id is None:
             return None
         else:
-            c = db.contract_get(contract_id)
+            c = db.contract_get(contract_id, context)
             if c is None:
                 return None
             else:
                 return cls._from_db_object(cls(), c)
 
     @classmethod
-    def get_all(cls):
-        all_contracts = db.contract_get_all()
+    def get_all(cls, context):
+        all_contracts = db.contract_get_all(context)
         return cls._from_db_object_list(all_contracts)
 
     @classmethod
-    def create(cls, data):
-        c = db.contract_create(data)
+    def create(cls, data, context):
+        c = db.contract_create(data, context)
         return cls._from_db_object(cls(), c)
 
-    def destroy(self):
-        db.contract_destroy(self.contract_id)
+    def destroy(self, context):
+        db.contract_destroy(self.contract_id, context)
         return True
 
-    def save(self):
+    def save(self, context):
         updates = self.obj_get_changes()
-        db_contract = db.contract_update(self.contract_id, updates)
+        db_contract = db.contract_update(self.contract_id, updates, context)
         return self._from_db_object(self, db_contract)
 
     @classmethod
-    def get_all_unexpired(cls):
-        unexpired = db.contract_get_all_unexpired()
+    def get_all_unexpired(cls, context):
+        unexpired = db.contract_get_all_unexpired(context)
         return cls._from_db_object_list(unexpired)
 
-    def expire(self):
+    def expire(self, context):
         self.status = 'expired'
-        self.save()
+        self.save(context)

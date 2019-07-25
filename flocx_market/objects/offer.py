@@ -23,41 +23,41 @@ class Offer(base.FLOCXMarketObject):
     }
 
     @classmethod
-    def create(cls, data):
-        o = db.offer_create(data)
+    def create(cls, data, context):
+        o = db.offer_create(data, context)
         return cls._from_db_object(cls(), o)
 
     @classmethod
-    def get(cls, offer_id):
+    def get(cls, offer_id, context):
         if offer_id is None:
             return None
         else:
-            o = db.offer_get(offer_id)
+            o = db.offer_get(offer_id, context)
             if o is None:
                 return None
             else:
                 return cls._from_db_object(cls(), o)
 
-    def destroy(self):
-        db.offer_destroy(self.marketplace_offer_id)
+    def destroy(self, context):
+        db.offer_destroy(self.marketplace_offer_id, context)
         return True
 
     @classmethod
-    def get_all(cls):
-        all_offers = db.offer_get_all()
+    def get_all(cls, context):
+        all_offers = db.offer_get_all(context)
         return cls._from_db_object_list(all_offers)
 
-    def save(self):
+    def save(self, context):
         updates = self.obj_get_changes()
         db_offer = db.offer_update(
-            self.marketplace_offer_id, updates)
+            self.marketplace_offer_id, updates, context)
         return self._from_db_object(self, db_offer)
 
     @classmethod
-    def get_all_unexpired(cls):
-        unexpired = db.offer_get_all_unexpired()
+    def get_all_unexpired(cls, context):
+        unexpired = db.offer_get_all_unexpired(context)
         return cls._from_db_object_list(unexpired)
 
-    def expire(self):
+    def expire(self, context):
         self.status = 'expired'
-        self.save()
+        self.save(context)
