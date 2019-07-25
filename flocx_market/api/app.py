@@ -1,5 +1,7 @@
 from flask import Flask
 from flask_restful import Api
+from flocx_market.api.offer_contract_relationship \
+    import OfferContractRelationship
 from flocx_market.api.contract import Contract
 from flocx_market.api.offer import Offer
 from flocx_market.api.root import Root
@@ -32,6 +34,12 @@ def create_app(app_name):
                      '/contract',
                      '/contract/',
                      '/contract/<string:contract_id>')
+    api.add_resource(
+        OfferContractRelationship,
+        '/offer_contract_relationship',
+        '/offer_contract_relationship/',
+        '/offer_contract_relationship/'
+        '<string:marketplace_offer_id>/<string:contract_id>')
     api.add_resource(Root, '/')
 
     orm.init_app(app)

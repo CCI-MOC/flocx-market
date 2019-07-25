@@ -178,6 +178,13 @@ def create_test_contract_data():
     return contract_data
 
 
+def test_contract_get_all(app, db, session):
+    contract_data = create_test_contract_data()
+    api.contract_create(contract_data)
+
+    assert len(api.contract_get_all()) == 1
+
+
 def test_contract_create(app, db, session):
     contract = api.contract_create(create_test_contract_data())
     check = api.contract_get(contract.contract_id)
@@ -216,3 +223,75 @@ def test_contract_get_all_to_be_expired(app, db, session):
 
     api.contract_update(contract.contract_id, dict(status='expired'))
     assert len(api.contract_get_all_unexpired()) == 0
+
+
+def create_test_contract_data_for_ocr():
+    bid = api.bid_create(test_bid_data_1)
+    offer = api.offer_create(test_offer_data)
+
+    contract_data = dict(
+        time_created=now,
+        status='available',
+        start_time=now - timedelta(days=2),
+        end_time=now - timedelta(days=1),
+        cost=0.0,
+        bid_id=bid.marketplace_bid_id,
+        offers=[offer.marketplace_offer_id],
+        project_id='5599'
+    )
+
+    return contract_data, offer.marketplace_offer_id
+
+
+# contract_offer_relationship
+def test_offer_contract_relationship_get_all(app, db, session):
+    contract_data, _ = create_test_contract_data_for_ocr()
+    api.contract_create(contract_data)
+
+    assert len(api.offer_contract_relationship_get_all()) == 1
+
+
+def test_offer_contract_relationship_create(app, db, session):
+    contract_data, offer_test_id = create_test_contract_data_for_ocr()
+    contract = api.contract_create(contract_data)
+    ocr = api.offer_contract_relationship_get(offer_test_id,
+                                              contract.contract_id)
+    assert contract.contract_id == ocr.contract_id
+
+
+def test_offer_contract_relationship_delete(app, db, session):
+    contract_data, offer_test_id = create_test_contract_data_for_ocr()
+    contract = api.contract_create(contract_data)
+    api.offer_contract_relationship_destroy(contract.contract_id,
+                                            offer_test_id)
+    check = api.offer_contract_relationship_get(contract.contract_id,
+                                                offer_test_id)
+    assert check is None
+
+
+def test_offer_contract_relationship_update(app, db, session):
+    contract_data, offer_test_id = create_test_contract_data_for_ocr()
+    contract = api.contract_create(contract_data)
+    ocr = api.offer_contract_relationship_get(offer_test_id,
+                                              contract.contract_id)
+    api.offer_contract_relationship_update(
+        ocr.marketplace_offer_id,
+        ocr.contract_id,
+        dict(status='testing'))
+    check = api.offer_contract_relationship_get(offer_test_id,
+                                                contract.contract_id)
+
+    assert check.status == 'testing'
+    assert check.marketplace_offer_id == offer_test_id
+
+
+def test_offer_contract_relationship_get_all_to_be_expired(app, db, session):
+    contract_data, offer_test_id = create_test_contract_data_for_ocr()
+    contract = api.contract_create(contract_data)
+    api.offer_contract_relationship_get(offer_test_id, contract.contract_id)
+
+    assert len(api.offer_contract_relationship_get_all_unexpired()) == 1
+
+    api.offer_contract_relationship_update(offer_test_id, contract.contract_id,
+                                           dict(status='expired'))
+    assert len(api.offer_contract_relationship_get_all_unexpired()) == 0

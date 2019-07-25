@@ -19,7 +19,6 @@ class Offer(base.FLOCXMarketObject):
         'end_time': fields.DateTimeField(nullable=True),
         'server_config': fields.FlexibleDictField(nullable=True),
         'cost': fields.FloatField(),
-        'contract_id': fields.StringField(nullable=True),
         'project_id': fields.StringField()
     }
 
