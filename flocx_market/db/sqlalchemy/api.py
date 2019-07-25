@@ -131,8 +131,6 @@ def contract_create(values):
     values['contract_id'] = uuidutils.generate_uuid()
     # exception for foreign key constraint needed here
     offers = values['offers']
-    contract_id_val = dict(
-        contract_id=values['contract_id'])
 
     del values['offers']
     contract_ref = models.Contract()
@@ -140,8 +138,11 @@ def contract_create(values):
     contract_ref.save(get_session())
 
     # update foreign key for offers
-    for offer in offers:
-        offer_update(offer, contract_id_val)
+    for offer_id in offers:
+        ocr_data = dict(contract_id=values['contract_id'],
+                        marketplace_offer_id=offer_id,
+                        status='unretrieved')
+        offer_contract_relationship_create(ocr_data)
     return contract_ref
 
 
@@ -158,3 +159,65 @@ def contract_destroy(contract_id):
     if contract_ref:
         get_session().query(models.Contract).filter_by(
             contract_id=contract_id).delete()
+
+
+# offer_contract_relationship
+def offer_contract_relationship_get(marketplace_offer_id=None,
+                                    contract_id=None):
+
+    if (contract_id is not None) and (marketplace_offer_id is None):
+        return get_session().query(models.OfferContractRelationship).filter_by(
+            contract_id=contract_id).all()
+
+    elif (contract_id is None) and (marketplace_offer_id is not None):
+        return get_session().query(models.OfferContractRelationship).filter_by(
+            marketplace_offer_id=marketplace_offer_id).all()
+    elif (contract_id is not None) and (marketplace_offer_id is not None):
+        return get_session().query(models.OfferContractRelationship) \
+            .filter(models.OfferContractRelationship.contract_id
+                    == contract_id and
+                    models.OfferContractRelationship.marketplace_offer_id
+                    == marketplace_offer_id).first()
+
+
+def offer_contract_relationship_get_all():
+    return get_session().query(models.OfferContractRelationship).all()
+
+
+def offer_contract_relationship_get_all_unexpired():
+    return get_session().query(models.OfferContractRelationship)\
+        .filter(models.OfferContractRelationship.status != 'expired').all()
+
+
+def offer_contract_relationship_create(values):
+    values['offer_contract_relationship_id'] = uuidutils.generate_uuid()
+    # exception for foreign key constraint needed here
+    offer_contract_relationship_ref = models.OfferContractRelationship()
+    offer_contract_relationship_ref.update(values)
+    offer_contract_relationship_ref.save(get_session())
+    return offer_contract_relationship_ref
+
+
+def offer_contract_relationship_update(contract_id,
+                                       marketplace_offer_id, values):
+    offer_contract_relationship_ref = offer_contract_relationship_get(
+        contract_id, marketplace_offer_id)
+
+    values.pop('contract_id', None)
+    values.pop('marketplace_offer_id', None)
+    offer_contract_relationship_ref.update(values)
+    offer_contract_relationship_ref.save(get_session())
+    return offer_contract_relationship_ref
+
+
+def offer_contract_relationship_destroy(contract_id,
+                                        marketplace_offer_id):
+    offer_contract_relationship_ref = offer_contract_relationship_get(
+        contract_id, marketplace_offer_id)
+
+    if offer_contract_relationship_ref:
+        get_session().query(models.OfferContractRelationship) \
+            .filter(models.OfferContractRelationship.contract_id
+                    == contract_id and
+                    models.OfferContractRelationship.marketplace_offer_id
+                    == marketplace_offer_id).delete()

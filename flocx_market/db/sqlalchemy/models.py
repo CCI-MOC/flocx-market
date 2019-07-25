@@ -69,10 +69,8 @@ class Offer(Base):
         nullable=False,
     )
     cost = orm.Column(orm.Float, nullable=False)
-    contract_id = orm.Column(orm.String(64),
-                             orm.ForeignKey('contracts.contract_id'),
-                             nullable=True)
-    contract = orm.relationship('Contract')
+    offer_contract_relationships = orm.relationship(
+        'OfferContractRelationship', lazy='dynamic')
     project_id = orm.Column(orm.String(64), nullable=False)
 
 
@@ -84,12 +82,29 @@ class Contract(Base):
         autoincrement=False,
     )
     time_created = orm.Column(orm.DateTime(timezone=True), nullable=False)
-    status = orm.Column(orm.String(15), nullable=False, default='available')
+    status = orm.Column(orm.String(15), nullable=False, default='unretrieved')
     start_time = orm.Column(orm.DateTime(timezone=True), nullable=False)
     end_time = orm.Column(orm.DateTime(timezone=True), nullable=False)
     cost = orm.Column(orm.Float, nullable=False)
     bid_id = orm.Column(orm.String(64),
                         orm.ForeignKey('bids.marketplace_bid_id'))
     bid = orm.relationship('Bid')
-    offers = orm.relationship('Offer', lazy='dynamic')
+    offer_contract_relationships = orm.relationship(
+        'OfferContractRelationship', lazy='dynamic')
     project_id = orm.Column(orm.String(64), nullable=False)
+
+
+class OfferContractRelationship(Base):
+    __tablename__ = 'offer_contract_relationship'
+    offer_contract_relationship_id = orm.Column(
+        orm.String(64),
+        primary_key=True,
+        autoincrement=False,
+    )
+    marketplace_offer_id = orm.Column(
+        orm.String(64), orm.ForeignKey('offers.marketplace_offer_id'))
+    marketplace_offer = orm.relationship('Offer')
+    contract_id = orm.Column(orm.String(64),
+                             orm.ForeignKey('contracts.contract_id'))
+    contract = orm.relationship('Contract')
+    status = orm.Column(orm.String(15), nullable=False, default='available')
