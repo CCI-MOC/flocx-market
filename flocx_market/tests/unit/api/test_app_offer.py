@@ -5,6 +5,8 @@ from unittest import mock
 import flocx_market.conf
 from flocx_market.objects import offer
 
+from oslo_context import context as ctx
+
 
 CONF = flocx_market.conf.CONF
 CONF.set_override(group='api', name='auth_enable', override=False)
@@ -44,8 +46,13 @@ test_offer_2 = offer.Offer(
 )
 
 
+scoped_context = ctx.RequestContext(is_admin=False,
+                                    project_id='5599')
+
+
 @mock.patch('flocx_market.objects.offer.Offer.get_all')
 def test_get_offers(mock_get_all, client):
+
     test_result = [test_offer_1, test_offer_2]
     mock_get_all.return_value = test_result
     response = client.get("/offer", follow_redirects=True)
@@ -63,7 +70,7 @@ def test_get_offer(mock_get, client):
     response = client.get('/offer/{}'.format(
         test_offer_1.marketplace_offer_id))
     assert response.status_code == 200
-    mock_get.assert_called_with('test_offer_1')
+    mock_get.assert_called_once()
     assert response.json['marketplace_offer_id'] == 'test_offer_1'
 
 

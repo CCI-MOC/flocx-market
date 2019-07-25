@@ -22,41 +22,41 @@ class Bid(base.FLOCXMarketObject):
     }
 
     @classmethod
-    def create(cls, data):
-        b = db.bid_create(data)
+    def create(cls, data, context):
+        b = db.bid_create(data, context)
         return cls._from_db_object(cls(), b)
 
     @classmethod
-    def get(cls, bid_id):
+    def get(cls, bid_id, context):
         if bid_id is None:
             return None
         else:
-            b = db.bid_get(bid_id)
+            b = db.bid_get(bid_id, context)
             if b is None:
                 return None
             else:
                 return cls._from_db_object(cls(), b)
 
-    def destroy(self):
-        db.bid_destroy(self.marketplace_bid_id)
+    def destroy(self, context):
+        db.bid_destroy(self.marketplace_bid_id, context)
         return True
 
     @classmethod
-    def get_all(cls):
-        all_bids = db.bid_get_all()
+    def get_all(cls, context):
+        all_bids = db.bid_get_all(context)
         return cls._from_db_object_list(all_bids)
 
-    def save(self):
+    def save(self, context):
         updates = self.obj_get_changes()
         db_bid = db.bid_update(
-            self.marketplace_bid_id, updates)
+            self.marketplace_bid_id, updates, context)
         return self._from_db_object(self, db_bid)
 
     @classmethod
-    def get_all_unexpired(cls):
-        unexpired = db.bid_get_all_unexpired()
+    def get_all_unexpired(cls, context):
+        unexpired = db.bid_get_all_unexpired(context)
         return cls._from_db_object_list(unexpired)
 
-    def expire(self):
+    def expire(self, context):
         self.status = 'expired'
-        self.save()
+        self.save(context)

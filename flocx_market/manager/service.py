@@ -33,7 +33,7 @@ class ManagerService(service.Service):
             self.tasks.run_periodic_tasks,
             initial_delay=None,
             periodic_interval_max=1,
-            context=ctx
+            context=self._context
         )
 
 
@@ -44,11 +44,11 @@ class Manager(periodic_task.PeriodicTasks):
     def update_expired_offers(self, context):
         LOG.info("Checking for expiring offers")
         now = datetime.datetime.utcnow()
-        unexpired_offers = Offer.get_all_unexpired()
+        unexpired_offers = Offer.get_all_unexpired(context)
         exp = 0
         for offer in unexpired_offers:
             if offer.end_time < now:
-                offer.expire()
+                offer.expire(context)
                 exp += 1
         if exp > 0:
             LOG.info("Updated " + str(exp) + " offers")
@@ -58,11 +58,11 @@ class Manager(periodic_task.PeriodicTasks):
     def update_expired_bids(self, context):
         LOG.info("Checking for expiring offers")
         now = datetime.datetime.utcnow()
-        unexpired_bids = Bid.get_all_unexpired()
+        unexpired_bids = Bid.get_all_unexpired(context)
         exp = 0
         for bid in unexpired_bids:
             if bid.end_time < now:
-                bid.expire()
+                bid.expire(context)
                 exp += 1
         if exp > 0:
             LOG.info("Updated " + str(exp) + " bids")
@@ -72,11 +72,11 @@ class Manager(periodic_task.PeriodicTasks):
     def update_expired_contracts(self, context):
         LOG.info("Checking for expiring contracts")
         now = datetime.datetime.utcnow()
-        unexpired_contracts = Contract.get_all_unexpired()
+        unexpired_contracts = Contract.get_all_unexpired(context)
         exp = 0
         for contract in unexpired_contracts:
             if contract.end_time < now:
-                contract.expire()
+                contract.expire(context)
                 exp += 1
         if exp > 0:
             LOG.info("Updated " + str(exp) + " contracts")
