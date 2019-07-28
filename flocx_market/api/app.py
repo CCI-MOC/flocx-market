@@ -43,8 +43,8 @@ def create_app(app_name):
         OfferContractRelationship,
         '/offer_contract_relationship',
         '/offer_contract_relationship/',
-        '/offer_contract_relationship/'
-        '<string:marketplace_offer_id>/<string:contract_id>')
+        '/offer_contract_relationship'
+        '/<string:offer_contract_relationship_id>')
     api.add_resource(Root, '/')
 
     orm.init_app(app)

@@ -21,17 +21,30 @@ scoped_context = ctx.RequestContext(is_admin=False,
 
 
 @mock.patch('flocx_market.db.sqlalchemy.api.offer_contract_relationship_get')
-def test_get(offer_contract_relationship_get):
+def test_get_by_id(offer_contract_relationship_get):
     offer_contract_relationship_get.return_value = test_ocr_dict
-    oc = ocr.OfferContractRelationship(**test_ocr_dict)
-    ocr.OfferContractRelationship.get(oc.contract_id,
-                                      oc.marketplace_offer_id,
-                                      scoped_context)
+    ocr.OfferContractRelationship(**test_ocr_dict)
+    ocr.OfferContractRelationship.get(scoped_context,
+                                      'test_offer_contract_relationship_id')
     offer_contract_relationship_get.assert_called_once()
 
 
-def test_get_none():
-    ret = ocr.OfferContractRelationship.get(scoped_context, None, None)
+@mock.patch(
+    'flocx_market.db.sqlalchemy.api.offer_contract_relationship_get_all')
+def test_get_all_with_vals(offer_contract_relationship_get_all):
+    offer_contract_relationship_get_all.return_value = [test_ocr_dict]
+    oc = ocr.OfferContractRelationship(**test_ocr_dict)
+    filters = {
+        'marketplace_offer_id': oc.marketplace_offer_id,
+        'contract_id': oc.contract_id,
+        'status': oc.status
+    }
+    ocr.OfferContractRelationship.get_all(scoped_context, filters)
+    offer_contract_relationship_get_all.assert_called_once()
+
+
+def test_get_invalid():
+    ret = ocr.OfferContractRelationship.get(scoped_context, 'does-not-exist')
     assert ret is None
 
 

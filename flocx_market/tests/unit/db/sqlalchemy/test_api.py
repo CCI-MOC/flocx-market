@@ -391,14 +391,30 @@ def test_offer_contract_relationship_get_all(app, db, session):
     assert len(api.offer_contract_relationship_get_all(admin_context)) == 1
 
 
+def test_offer_contract_relationship_get_by_id(app, db, session):
+    contract_data, _ = create_test_contract_data_for_ocr()
+    api.contract_create(contract_data, admin_context)
+    ocr = api.offer_contract_relationship_get_all(admin_context)
+    assert len(api.offer_contract_relationship_get_all(admin_context)) == 1
+    assert (api.offer_contract_relationship_get(
+        context=admin_context,
+        offer_contract_relationship_id=ocr[0].offer_contract_relationship_id)
+            .offer_contract_relationship_id
+            == ocr[0].offer_contract_relationship_id)
+
+
 def test_offer_contract_relationship_create_valid(app, db, session):
     contract_data, offer_test_id = create_test_contract_data_for_ocr()
     contract = api.contract_create(contract_data, admin_context)
-    ocr = api.offer_contract_relationship_get(
-        marketplace_offer_id=offer_test_id,
-        contract_id=contract.contract_id,
-        context=admin_context)
-    assert contract.contract_id == ocr.contract_id
+    filters = {
+        'marketplace_offer_id': offer_test_id,
+        'contract_id': contract.contract_id
+    }
+    ocr = api.offer_contract_relationship_get_all(
+        context=admin_context,
+        filters=filters,
+    )
+    assert contract.contract_id == ocr[0].contract_id
 
 
 def test_offer_contract_relationship_create_invalid_scoped(app, db, session):
@@ -411,47 +427,65 @@ def test_offer_contract_relationship_create_invalid_scoped(app, db, session):
 def test_offer_contract_relationship_delete_valid(app, db, session):
     contract_data, offer_test_id = create_test_contract_data_for_ocr()
     contract = api.contract_create(contract_data, admin_context)
+    filters = {
+        'marketplace_offer_id': offer_test_id,
+        'contract_id': contract.contract_id
+    }
+    ocrs = api.offer_contract_relationship_get_all(
+        context=admin_context,
+        filters=filters,
+    )
+    ocr_id = ocrs[0].offer_contract_relationship_id
     api.offer_contract_relationship_destroy(
-        contract_id=contract.contract_id,
-        marketplace_offer_id=offer_test_id,
-        context=admin_context)
+        context=admin_context,
+        offer_contract_relationship_id=ocr_id)
     check = api.offer_contract_relationship_get(
-        contract_id=contract.contract_id,
-        marketplace_offer_id=offer_test_id,
-        context=admin_context)
+        admin_context,
+        ocr_id)
     assert check is None
 
 
 def test_offer_contract_relationship_delete_invalid_scoped(app, db, session):
     contract_data, offer_test_id = create_test_contract_data_for_ocr()
     contract = api.contract_create(contract_data, admin_context)
+    filters = {
+        'marketplace_offer_id': offer_test_id,
+        'contract_id': contract.contract_id
+    }
+    ocrs = api.offer_contract_relationship_get_all(
+        context=admin_context,
+        filters=filters,
+    )
+    ocr_id = ocrs[0].offer_contract_relationship_id
     api.offer_contract_relationship_destroy(
-        contract_id=contract.contract_id,
-        marketplace_offer_id=offer_test_id,
-        context=scoped_context)
+        context=scoped_context,
+        offer_contract_relationship_id=ocr_id)
     check = api.offer_contract_relationship_get(
-        contract_id=contract.contract_id,
-        marketplace_offer_id=offer_test_id,
-        context=admin_context)
+        admin_context,
+        ocr_id)
     assert check is not None
 
 
 def test_offer_contract_relationship_update_valid(app, db, session):
     contract_data, offer_test_id = create_test_contract_data_for_ocr()
     contract = api.contract_create(contract_data, admin_context)
-    ocr = api.offer_contract_relationship_get(
-        marketplace_offer_id=offer_test_id,
-        contract_id=contract.contract_id,
-        context=admin_context)
+    filters = {
+        'marketplace_offer_id': offer_test_id,
+        'contract_id': contract.contract_id
+    }
+    ocrs = api.offer_contract_relationship_get_all(
+        context=admin_context,
+        filters=filters,
+    )
+    ocr_id = ocrs[0].offer_contract_relationship_id
+
     api.offer_contract_relationship_update(
-        marketplace_offer_id=ocr.marketplace_offer_id,
-        contract_id=ocr.contract_id,
-        values=dict(status='testing'),
-        context=admin_context)
+        context=admin_context,
+        offer_contract_relationship_id=ocr_id,
+        values=dict(status='testing'))
     check = api.offer_contract_relationship_get(
-        marketplace_offer_id=offer_test_id,
-        contract_id=contract.contract_id,
-        context=admin_context)
+        context=admin_context,
+        offer_contract_relationship_id=ocr_id)
 
     assert check.status == 'testing'
     assert check.marketplace_offer_id == offer_test_id
@@ -460,19 +494,23 @@ def test_offer_contract_relationship_update_valid(app, db, session):
 def test_offer_contract_relationship_update_invalid_scoped(app, db, session):
     contract_data, offer_test_id = create_test_contract_data_for_ocr()
     contract = api.contract_create(contract_data, admin_context)
-    ocr = api.offer_contract_relationship_get(
-        marketplace_offer_id=offer_test_id,
-        contract_id=contract.contract_id,
-        context=scoped_context)
+    filters = {
+        'marketplace_offer_id': offer_test_id,
+        'contract_id': contract.contract_id
+    }
+    ocrs = api.offer_contract_relationship_get_all(
+        context=admin_context,
+        filters=filters,
+    )
+    ocr_id = ocrs[0].offer_contract_relationship_id
+
     api.offer_contract_relationship_update(
-        marketplace_offer_id=ocr.marketplace_offer_id,
-        contract_id=ocr.contract_id,
-        values=dict(status='testing'),
-        context=scoped_context)
+        context=scoped_context,
+        offer_contract_relationship_id=ocr_id,
+        values=dict(status='testing'))
     check = api.offer_contract_relationship_get(
-        marketplace_offer_id=offer_test_id,
-        contract_id=contract.contract_id,
-        context=admin_context)
+        context=admin_context,
+        offer_contract_relationship_id=ocr_id)
 
     assert check.status != 'testing'
     assert check.marketplace_offer_id == offer_test_id
@@ -481,15 +519,22 @@ def test_offer_contract_relationship_update_invalid_scoped(app, db, session):
 def test_offer_contract_relationship_get_all_unexpired(app, db, session):
     contract_data, offer_test_id = create_test_contract_data_for_ocr()
     contract = api.contract_create(contract_data, admin_context)
-    api.offer_contract_relationship_get(offer_test_id, contract.contract_id)
+    filters = {
+        'marketplace_offer_id': offer_test_id,
+        'contract_id': contract.contract_id
+    }
+    ocrs = api.offer_contract_relationship_get_all(
+        context=admin_context,
+        filters=filters,
+    )
+    ocr_id = ocrs[0].offer_contract_relationship_id
 
     assert len(api.offer_contract_relationship_get_all_unexpired(
         admin_context)) == 1
 
     api.offer_contract_relationship_update(
-        marketplace_offer_id=offer_test_id,
-        contract_id=contract.contract_id,
-        values=dict(status='expired'),
-        context=admin_context)
+        context=admin_context,
+        offer_contract_relationship_id=ocr_id,
+        values=dict(status='expired'))
     assert len(api.offer_contract_relationship_get_all_unexpired(
         admin_context)) == 0
