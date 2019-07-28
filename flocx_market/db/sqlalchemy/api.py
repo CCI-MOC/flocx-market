@@ -249,26 +249,22 @@ def contract_destroy(contract_id, context):
 
 # offer_contract_relationship
 def offer_contract_relationship_get(context,
-                                    contract_id=None,
-                                    marketplace_offer_id=None):
+                                    offer_contract_relationship_id=None):
 
-    if (contract_id is not None) and (marketplace_offer_id is None):
-        return get_session().query(models.OfferContractRelationship).filter_by(
-            contract_id=contract_id).all()
-
-    elif (contract_id is None) and (marketplace_offer_id is not None):
-        return get_session().query(models.OfferContractRelationship).filter_by(
-            marketplace_offer_id=marketplace_offer_id).all()
-    elif (contract_id is not None) and (marketplace_offer_id is not None):
-        return get_session().query(models.OfferContractRelationship) \
-            .filter(models.OfferContractRelationship.contract_id
-                    == contract_id,
-                    models.OfferContractRelationship.marketplace_offer_id
-                    == marketplace_offer_id).one_or_none()
+    if offer_contract_relationship_id is None:
+        return None
+    return get_session().query(models.OfferContractRelationship).filter(
+        models.OfferContractRelationship.offer_contract_relationship_id
+        == offer_contract_relationship_id).one_or_none()
 
 
-def offer_contract_relationship_get_all(context):
-    return get_session().query(models.OfferContractRelationship).all()
+def offer_contract_relationship_get_all(context, filters=None):
+    query = get_session().query(models.OfferContractRelationship)
+    if filters is not None:
+        for field in ['marketplace_offer_id', 'contract_id', 'status']:
+            if field in filters:
+                query = query.filter_by(**{field: filters[field]})
+    return query.all()
 
 
 def offer_contract_relationship_get_all_unexpired(context):
@@ -290,17 +286,14 @@ def offer_contract_relationship_create(context, values):
 
 
 def offer_contract_relationship_update(context,
-                                       contract_id,
-                                       marketplace_offer_id,
+                                       offer_contract_relationship_id,
                                        values):
     if context.is_admin:
-        offer_contract_relationship_ref = offer_contract_relationship_get(
-            context,
-            contract_id=contract_id,
-            marketplace_offer_id=marketplace_offer_id)
+        offer_contract_relationship_ref \
+            = offer_contract_relationship_get(context,
+                                              offer_contract_relationship_id)
 
-        values.pop('contract_id', None)
-        values.pop('marketplace_offer_id', None)
+        values.pop('offer_contract_relationship_id', None)
         offer_contract_relationship_ref.update(values)
         offer_contract_relationship_ref.save(get_session())
         return offer_contract_relationship_ref
@@ -309,20 +302,17 @@ def offer_contract_relationship_update(context,
 
 
 def offer_contract_relationship_destroy(context,
-                                        contract_id,
-                                        marketplace_offer_id):
+                                        offer_contract_relationship_id):
     if context.is_admin:
-        offer_contract_relationship_ref = offer_contract_relationship_get(
-                                            context,
-                                            contract_id,
-                                            marketplace_offer_id)
+        offer_contract_relationship_ref \
+            = offer_contract_relationship_get(context,
+                                              offer_contract_relationship_id)
 
         if offer_contract_relationship_ref:
             get_session().query(models.OfferContractRelationship) \
-                .filter(models.OfferContractRelationship.contract_id
-                        == contract_id and
-                        models.OfferContractRelationship.marketplace_offer_id
-                        == marketplace_offer_id).delete()
+                .filter(
+                models.OfferContractRelationship.offer_contract_relationship_id
+                == offer_contract_relationship_id).delete()
         else:
             return None
     else:

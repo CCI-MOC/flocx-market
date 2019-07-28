@@ -16,39 +16,30 @@ class OfferContractRelationship(base.FLOCXMarketObject):
     }
 
     @classmethod
-    def get(cls, context, contract_id, marketplace_offer_id):
-        if (contract_id is None) and (marketplace_offer_id is None):
+    def get(cls, context, ocr_id):
+        o = db.offer_contract_relationship_get(context, ocr_id)
+        if o is None:
             return None
         else:
-            o = db.offer_contract_relationship_get(
-                contract_id=contract_id,
-                marketplace_offer_id=marketplace_offer_id,
-                context=context)
-            if o is None:
-                return None
-            else:
-                return cls._from_db_object(cls(), o)
+            return cls._from_db_object(cls(), o)
 
     def destroy(self, context):
         db.offer_contract_relationship_destroy(
-            contract_id=self.contract_id,
-            marketplace_offer_id=self.marketplace_offer_id,
-            context=context)
+            context,
+            self.offer_contract_relationship_id)
         return True
 
     @classmethod
-    def get_all(cls, context):
-        all_ocrs = db.offer_contract_relationship_get_all(context)
-        return cls._from_db_object_list(all_ocrs)
+    def get_all(cls, context, filters=None):
+
+        o = db.offer_contract_relationship_get_all(context, filters)
+
+        return cls._from_db_object_list(o)
 
     def save(self, context):
         updates = self.obj_get_changes()
         db_offer_contract_relationship = db.offer_contract_relationship_update(
-            context,
-            self.contract_id,
-            self.marketplace_offer_id,
-            updates,
-            )
+            context, self.offer_contract_relationship_id, updates)
         return self._from_db_object(self, db_offer_contract_relationship)
 
     @classmethod
