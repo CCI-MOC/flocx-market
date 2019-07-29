@@ -57,6 +57,11 @@ class Bid(base.FLOCXMarketObject):
         unexpired = db.bid_get_all_unexpired(context)
         return cls._from_db_object_list(unexpired)
 
+    @classmethod
+    def get_all_by_project_id(cls, context):
+        by_project_id = db.bid_get_all_by_project_id(context)
+        return cls._from_db_object_list(by_project_id)
+
     def expire(self, context):
         self.status = 'expired'
         self.save(context)

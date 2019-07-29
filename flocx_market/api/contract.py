@@ -29,7 +29,7 @@ class Contract(Resource):
 
         if c is None:
             return {'message': 'Contract not found.'}, 404
-        c.destroy()
+        c.destroy(g.context)
         return {'message': 'Contract deleted.'}
 
     @classmethod
@@ -43,5 +43,5 @@ class Contract(Resource):
         # we only allow status field to be modified
         if 'status' in data:
             c.status = data['status']
-            return c.save().to_dict()
+            return c.save(g.context).to_dict()
         return c.to_dict()

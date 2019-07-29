@@ -19,7 +19,7 @@ test_offer_1 = dict(
     server_config={'foo': 'bar'},
     cost=0.0,
     contract_id=None,
-    project_id='5599'
+    project_id=5599
 )
 
 test_offer_2 = dict(
@@ -34,7 +34,7 @@ test_offer_2 = dict(
     server_config={'foo': 'bar'},
     cost=0.0,
     contract_id=None,
-    project_id='5599'
+    project_id=5599
 )
 
 scoped_context = ctx.RequestContext(is_admin=False,
@@ -64,6 +64,12 @@ def test_get_none():
 @mock.patch('flocx_market.db.sqlalchemy.api.offer_get_all')
 def test_get_all(offer_get_all):
     offer.Offer.get_all(scoped_context)
+    offer_get_all.assert_called_once()
+
+
+@mock.patch('flocx_market.db.sqlalchemy.api.offer_get_all_by_project_id')
+def test_get_all_by_project_id(offer_get_all):
+    offer.Offer.get_all_by_project_id(scoped_context)
     offer_get_all.assert_called_once()
 
 
