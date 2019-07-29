@@ -56,7 +56,7 @@ test_bid_data_1 = dict(creator_bid_id="12a59a51-b4d6-497d-9f75-f56c409305c8",
                        duration=16400,
                        status="available",
                        server_config_query={'foo': 'bar'},
-                       project_id='5599',
+                       # project_id='5599',
                        cost=11.5)
 
 
@@ -67,7 +67,7 @@ test_bid_data_2 = dict(creator_bid_id="12a59a51-b4d6-497d-9f75-f56c409305c8",
                        duration=16400,
                        status="available",
                        server_config_query={'foo': 'bar'},
-                       project_id='5599',
+                       # project_id='5599',
                        cost=11.5)
 
 test_bid_data_3 = dict(creator_bid_id="12a59a51-b4d6-497d-9f75-f56c409305c8",
@@ -77,7 +77,7 @@ test_bid_data_3 = dict(creator_bid_id="12a59a51-b4d6-497d-9f75-f56c409305c8",
                        duration=16400,
                        status="available",
                        server_config_query={'foo': 'bar'},
-                       project_id='7788',
+                       # project_id='7788',
                        cost=11.5)
 
 admin_context = ctx.RequestContext(is_admin=True)
@@ -188,14 +188,28 @@ def test_offer_update_scoped_invalid(app, db, session):
     assert check.status != 'testing'
 
 
-def test_bid_get_all_admin(app, db, session):
+def test_bid_get(app, db, session):
     api.bid_create(test_bid_data_1, scoped_context)
     api.bid_create(test_bid_data_2, scoped_context)
 
     assert len(api.bid_get_all(admin_context)) == 2
 
 
-def test_bid_get_all_to_be_expired(app, db, session):
+def test_bid_get_all(app, db, session):
+    api.bid_create(test_bid_data_1, scoped_context)
+    api.bid_create(test_bid_data_2, scoped_context)
+
+    assert len(api.bid_get_all(admin_context)) == 2
+
+
+def test_bid_get_all_by_project_id(app, db, session):
+    api.bid_create(test_bid_data_1, scoped_context)
+    api.bid_create(test_bid_data_2, scoped_context)
+
+    assert len(api.bid_get_all(admin_context)) == 2
+
+
+def test_bid_get_all_unexpired(app, db, session):
     api.bid_create(test_bid_data_1, scoped_context)
     api.bid_create(test_bid_data_2, scoped_context)
 
@@ -225,20 +239,51 @@ def test_bid_create_invalid(app, db, session):
     test_bid_data_1['creator_bid_id'] = '12a59a51-b4d6-497d-9f75-f56c409305c8'
 
 
-def test_bid_delete(app, db, session):
+def test_bid_delete_admin(app, db, session):
+    bid = api.bid_create(test_bid_data_1, scoped_context)
+    api.bid_destroy(bid.marketplace_bid_id, admin_context)
+    check = api.bid_get(bid.marketplace_bid_id, scoped_context)
+    assert check is None
+
+
+def test_bid_delete_scoped_valid(app, db, session):
     bid = api.bid_create(test_bid_data_1, scoped_context)
     api.bid_destroy(bid.marketplace_bid_id, scoped_context)
     check = api.bid_get(bid.marketplace_bid_id, scoped_context)
     assert check is None
 
 
-def test_bid_update(app, db, session):
+def test_bid_delete_scoped_invalid(app, db, session):
+    bid = api.bid_create(test_bid_data_1, scoped_context)
+    api.bid_destroy(bid.marketplace_bid_id, scoped_context_2)
+    check = api.bid_get(bid.marketplace_bid_id, scoped_context)
+    assert check is not None
+
+
+def test_bid_update_admin(app, db, session):
+    bid = api.bid_create(test_bid_data_1, scoped_context)
+    bid = api.bid_update(
+        bid.marketplace_bid_id, dict(status='testing'), admin_context)
+    check = api.bid_get(bid.marketplace_bid_id, scoped_context)
+
+    assert check.status == 'testing'
+
+
+def test_bid_update_scoped_valid(app, db, session):
     bid = api.bid_create(test_bid_data_1, scoped_context)
     bid = api.bid_update(
         bid.marketplace_bid_id, dict(status='testing'), scoped_context)
     check = api.bid_get(bid.marketplace_bid_id, scoped_context)
 
     assert check.status == 'testing'
+
+
+def test_bid_update_scoped_invalid(app, db, session):
+    bid = api.bid_create(test_bid_data_1, scoped_context)
+    updated = api.bid_update(
+        bid.marketplace_bid_id, dict(status='testing'), scoped_context_2)
+
+    assert updated is None
 
 
 def create_test_contract_data():
@@ -261,33 +306,47 @@ def create_test_contract_data():
 
 def test_contract_get_all(app, db, session):
     contract_data = create_test_contract_data()
-    api.contract_create(contract_data, scoped_context)
+    api.contract_create(contract_data, admin_context)
 
     assert len(api.contract_get_all(scoped_context)) == 1
 
 
-def test_contract_create(app, db, session):
-    contract = api.contract_create(create_test_contract_data(), scoped_context)
+def test_contract_create_valid_admin(app, db, session):
+    contract = api.contract_create(create_test_contract_data(), admin_context)
     check = api.contract_get(contract.contract_id, admin_context)
 
     assert check.to_dict() == contract.to_dict()
 
 
-def test_contract_create_invalid(app, db, session):
+def test_contract_create_invalid_admin(app, db, session):
     data = create_test_contract_data()
     del data['cost']
     with pytest.raises(DBError):
         api.contract_create(data, admin_context)
 
 
-def test_contract_delete(app, db, session):
+def test_contract_create_invalid_scoped(app, db, session):
+    data = create_test_contract_data()
+    created = api.contract_create(data, scoped_context)
+    assert created is None
+
+
+def test_contract_delete_valid_admin(app, db, session):
     contract = api.contract_create(create_test_contract_data(), admin_context)
     api.contract_destroy(contract.contract_id, admin_context)
     check = api.contract_get(contract.contract_id, admin_context)
     assert check is None
 
 
-def test_contract_update(app, db, session):
+def test_contract_delete_invalid_scoped(app, db, session):
+    contract = api.contract_create(create_test_contract_data(), admin_context)
+    destroyed = api.contract_destroy(contract.contract_id, scoped_context)
+    check = api.contract_get(contract.contract_id, admin_context)
+    assert check is not None
+    assert destroyed is None
+
+
+def test_contract_update_valid_admin(app, db, session):
     contract = api.contract_create(create_test_contract_data(), admin_context)
     contract = api.contract_update(
         contract.contract_id, dict(status='testing'), admin_context)
@@ -297,14 +356,25 @@ def test_contract_update(app, db, session):
     assert check.cost == 0.0
 
 
-def test_contract_get_all_to_be_expired(app, db, session):
+def test_contract_update_invalid_scoped(app, db, session):
+    contract = api.contract_create(create_test_contract_data(), admin_context)
+    updated = api.contract_update(
+        contract.contract_id, dict(status='testing'), scoped_context)
+    check = api.contract_get(contract.contract_id, admin_context)
+
+    assert check.status != 'testing'
+    assert check.cost == 0.0
+    assert updated is None
+
+
+def test_contract_get_all_unexpired(app, db, session):
     contract = api.contract_create(create_test_contract_data(), admin_context)
 
     assert len(api.contract_get_all_unexpired(admin_context)) == 1
 
     api.contract_update(contract.contract_id, dict(status='expired'),
-                        scoped_context)
-    assert len(api.contract_get_all_unexpired(scoped_context)) == 0
+                        admin_context)
+    assert len(api.contract_get_all_unexpired(admin_context)) == 0
 
 
 def create_test_contract_data_for_ocr():
@@ -328,52 +398,110 @@ def create_test_contract_data_for_ocr():
 # contract_offer_relationship
 def test_offer_contract_relationship_get_all(app, db, session):
     contract_data, _ = create_test_contract_data_for_ocr()
-    api.contract_create(contract_data, scoped_context)
+    api.contract_create(contract_data, admin_context)
 
-    assert len(api.offer_contract_relationship_get_all()) == 1
+    assert len(api.offer_contract_relationship_get_all(admin_context)) == 1
 
 
-def test_offer_contract_relationship_create(app, db, session):
+def test_offer_contract_relationship_create_valid(app, db, session):
     contract_data, offer_test_id = create_test_contract_data_for_ocr()
-    contract = api.contract_create(contract_data, scoped_context)
-    ocr = api.offer_contract_relationship_get(offer_test_id,
-                                              contract.contract_id)
+    contract = api.contract_create(contract_data, admin_context)
+    ocr = api.offer_contract_relationship_get(
+        marketplace_offer_id=offer_test_id,
+        contract_id=contract.contract_id,
+        context=admin_context)
     assert contract.contract_id == ocr.contract_id
 
 
-def test_offer_contract_relationship_delete(app, db, session):
+def test_offer_contract_relationship_create_invalid_scoped(app, db, session):
     contract_data, offer_test_id = create_test_contract_data_for_ocr()
     contract = api.contract_create(contract_data, scoped_context)
-    api.offer_contract_relationship_destroy(contract.contract_id,
-                                            offer_test_id)
-    check = api.offer_contract_relationship_get(contract.contract_id,
-                                                offer_test_id)
+
+    assert contract is None
+
+
+def test_offer_contract_relationship_delete_valid(app, db, session):
+    contract_data, offer_test_id = create_test_contract_data_for_ocr()
+    contract = api.contract_create(contract_data, admin_context)
+    api.offer_contract_relationship_destroy(
+        contract_id=contract.contract_id,
+        marketplace_offer_id=offer_test_id,
+        context=admin_context)
+    check = api.offer_contract_relationship_get(
+        contract_id=contract.contract_id,
+        marketplace_offer_id=offer_test_id,
+        context=admin_context)
     assert check is None
 
 
-def test_offer_contract_relationship_update(app, db, session):
+def test_offer_contract_relationship_delete_invalid_scoped(app, db, session):
     contract_data, offer_test_id = create_test_contract_data_for_ocr()
-    contract = api.contract_create(contract_data, scoped_context)
-    ocr = api.offer_contract_relationship_get(offer_test_id,
-                                              contract.contract_id)
+    contract = api.contract_create(contract_data, admin_context)
+    api.offer_contract_relationship_destroy(
+        contract_id=contract.contract_id,
+        marketplace_offer_id=offer_test_id,
+        context=scoped_context)
+    check = api.offer_contract_relationship_get(
+        contract_id=contract.contract_id,
+        marketplace_offer_id=offer_test_id,
+        context=admin_context)
+    assert check is not None
+
+
+def test_offer_contract_relationship_update_valid(app, db, session):
+    contract_data, offer_test_id = create_test_contract_data_for_ocr()
+    contract = api.contract_create(contract_data, admin_context)
+    ocr = api.offer_contract_relationship_get(
+        marketplace_offer_id=offer_test_id,
+        contract_id=contract.contract_id,
+        context=admin_context)
     api.offer_contract_relationship_update(
-        ocr.marketplace_offer_id,
-        ocr.contract_id,
-        dict(status='testing'))
-    check = api.offer_contract_relationship_get(offer_test_id,
-                                                contract.contract_id)
+        marketplace_offer_id=ocr.marketplace_offer_id,
+        contract_id=ocr.contract_id,
+        values=dict(status='testing'),
+        context=admin_context)
+    check = api.offer_contract_relationship_get(
+        marketplace_offer_id=offer_test_id,
+        contract_id=contract.contract_id,
+        context=admin_context)
 
     assert check.status == 'testing'
     assert check.marketplace_offer_id == offer_test_id
 
 
-def test_offer_contract_relationship_get_all_to_be_expired(app, db, session):
+def test_offer_contract_relationship_update_invalid_scoped(app, db, session):
     contract_data, offer_test_id = create_test_contract_data_for_ocr()
-    contract = api.contract_create(contract_data, scoped_context)
+    contract = api.contract_create(contract_data, admin_context)
+    ocr = api.offer_contract_relationship_get(
+        marketplace_offer_id=offer_test_id,
+        contract_id=contract.contract_id,
+        context=scoped_context)
+    api.offer_contract_relationship_update(
+        marketplace_offer_id=ocr.marketplace_offer_id,
+        contract_id=ocr.contract_id,
+        values=dict(status='testing'),
+        context=scoped_context)
+    check = api.offer_contract_relationship_get(
+        marketplace_offer_id=offer_test_id,
+        contract_id=contract.contract_id,
+        context=admin_context)
+
+    assert check.status != 'testing'
+    assert check.marketplace_offer_id == offer_test_id
+
+
+def test_offer_contract_relationship_get_all_unexpired(app, db, session):
+    contract_data, offer_test_id = create_test_contract_data_for_ocr()
+    contract = api.contract_create(contract_data, admin_context)
     api.offer_contract_relationship_get(offer_test_id, contract.contract_id)
 
-    assert len(api.offer_contract_relationship_get_all_unexpired()) == 1
+    assert len(api.offer_contract_relationship_get_all_unexpired(
+        admin_context)) == 1
 
-    api.offer_contract_relationship_update(offer_test_id, contract.contract_id,
-                                           dict(status='expired'))
-    assert len(api.offer_contract_relationship_get_all_unexpired()) == 0
+    api.offer_contract_relationship_update(
+        marketplace_offer_id=offer_test_id,
+        contract_id=contract.contract_id,
+        values=dict(status='expired'),
+        context=admin_context)
+    assert len(api.offer_contract_relationship_get_all_unexpired(
+        admin_context)) == 0

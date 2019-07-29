@@ -58,6 +58,12 @@ def test_get_all(bid_get_all):
     bid_get_all.assert_called_once()
 
 
+@mock.patch('flocx_market.db.sqlalchemy.api.bid_get_all_by_project_id')
+def test_get_all_by_project_id(bid_get_all):
+    bid.Bid.get_all_by_project_id(scoped_context)
+    bid_get_all.assert_called_once()
+
+
 @mock.patch('flocx_market.db.sqlalchemy.api.bid_destroy')
 def test_destroy(bid_destroy):
     b = bid.Bid(**test_bid_1)

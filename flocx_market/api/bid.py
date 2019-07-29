@@ -28,7 +28,7 @@ class Bid(Resource):
         b = bid.Bid.get(marketplace_bid_id, g.context)
         if b is None:
             return {'message': 'Bid not found.'}, 404
-        b.destroy()
+        b.destroy(g.context)
         return {'message': 'Bid deleted.'}
 
     @classmethod
@@ -41,5 +41,5 @@ class Bid(Resource):
         # we only allow status field to be modified
         if 'status' in data:
             b.status = data['status']
-            return b.save().to_dict()
+            return b.save(g.context).to_dict()
         return b.to_dict()

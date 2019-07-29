@@ -128,7 +128,7 @@ def test_get_offer_contract_relationship(mock_get, client):
         test_ocr_1.marketplace_offer_id, test_ocr_1.contract_id))
     print(response.data)
     assert response.status_code == 200
-    mock_get.assert_called_with('test_offer_1', 'test_contract_1')
+    mock_get.assert_called_once()
     assert response.json['offer_contract_relationship_id'] == 'test_ocr_id_1'
 
 
