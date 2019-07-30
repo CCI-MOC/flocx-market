@@ -4,6 +4,7 @@ from unittest import mock
 
 import flocx_market.conf
 from flocx_market.objects import offer
+from flocx_market.common import exception as e
 
 from oslo_context import context as ctx
 
@@ -76,7 +77,7 @@ def test_get_offer(mock_get, client):
 
 @mock.patch('flocx_market.objects.offer.Offer.get')
 def test_get_offer_missing(mock_get, client):
-    mock_get.return_value = None
+    mock_get.side_effect = e.ResourceNotFound()
     response = client.get('/offer/does-not-exist')
     assert response.status_code == 404
 
@@ -93,7 +94,7 @@ def test_delete_offer(mock_get, mock_destroy, client):
 
 @mock.patch('flocx_market.objects.offer.Offer.get')
 def test_delete_offer_missing(mock_get, client):
-    mock_get.return_value = None
+    mock_get.side_effect = e.ResourceNotFound()
     response = client.delete('/offer/does-not-exist')
     assert response.status_code == 404
 
@@ -121,7 +122,7 @@ def test_update_offer(mock_get, mock_save, client):
 @mock.patch('flocx_market.objects.offer.Offer.save')
 @mock.patch('flocx_market.objects.offer.Offer.get')
 def test_update_offer_missing(mock_get, mock_save, client):
-    mock_get.return_value = None
+    mock_get.side_effect = e.ResourceNotFound()
     res = client.put('/offer/does-not-exist',
                      data=json.dumps(dict(status='testing')))
     assert res.status_code == 404

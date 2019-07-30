@@ -5,6 +5,8 @@ from unittest import mock
 import flocx_market.conf
 from flocx_market.objects import bid, offer, contract, \
     offer_contract_relationship as ocr
+from flocx_market.common import exception as e
+
 CONF = flocx_market.conf.CONF
 now = datetime.datetime.utcnow()
 
@@ -218,7 +220,7 @@ def test_get_offer_contract_relationship_3_same_statuses(mock_get_all, client):
 @mock.patch('flocx_market.objects.offer_contract_relationship'
             '.OfferContractRelationship.get')
 def test_get_offer_contract_relationship_with_id_missing(mock_get, client):
-    mock_get.return_value = None
+    mock_get.side_effect = e.ResourceNotFound()
     response = client.get('/offer_contract_relationship/does-not-exist')
     assert response.status_code == 404
 
@@ -247,7 +249,7 @@ def test_delete_offer_contract_relationship(mock_get, mock_destroy, client):
 @mock.patch('flocx_market.objects.offer_contract_relationship'
             '.OfferContractRelationship.get')
 def test_delete_offer_contract_relationship_missing(mock_get, client):
-    mock_get.return_value = None
+    mock_get.side_effect = e.ResourceNotFound()
     response = client.delete('/offer_contract_relationship/does-not-exist')
     assert response.status_code == 404
 

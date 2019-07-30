@@ -5,6 +5,7 @@ from oslo_context import context as ctx
 
 import flocx_market.conf
 from flocx_market.objects import bid
+from flocx_market.common import exception as e
 
 CONF = flocx_market.conf.CONF
 
@@ -64,11 +65,11 @@ def test_get_bid(mock_get, client):
     assert response.json['marketplace_bid_id'] == 'test_bid_1'
 
 
-@mock.patch('flocx_market.objects.bid.Bid.get')
+@mock.patch('flocx_market.api.bid.bid.Bid.get')
 def test_get_bid_missing(mock_get, client):
-    mock_get.return_value = None
+    mock_get.side_effect = e.ResourceNotFound()
     response = client.get('/bid/does-not-exist')
-    assert response.status_code == 404
+    assert(response.status_code == 404)
 
 
 @mock.patch('flocx_market.objects.bid.Bid.destroy')
@@ -83,7 +84,7 @@ def test_delete_bid(mock_get, mock_destroy, client):
 
 @mock.patch('flocx_market.objects.bid.Bid.get')
 def test_delete_bid_missing(mock_get, client):
-    mock_get.return_value = None
+    mock_get.side_effect = e.ResourceNotFound()
     response = client.delete('/bid/does-not-exist')
     assert response.status_code == 404
 
@@ -111,7 +112,7 @@ def test_update_bid(mock_get, mock_save, client):
 @mock.patch('flocx_market.objects.bid.Bid.save')
 @mock.patch('flocx_market.objects.bid.Bid.get')
 def test_update_bid_missing(mock_get, mock_save, client):
-    mock_get.return_value = None
+    mock_get.side_effect = e.ResourceNotFound()
     res = client.put('/bid/does-not-exist',
                      data=json.dumps(dict(status='testing')))
     assert res.status_code == 404

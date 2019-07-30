@@ -6,6 +6,8 @@ from oslo_context import context as ctx
 
 import flocx_market.conf
 from flocx_market.objects import bid, offer, contract
+from flocx_market.common import exception as e
+
 CONF = flocx_market.conf.CONF
 now = datetime.datetime.utcnow()
 
@@ -129,7 +131,7 @@ def test_get_contract(mock_get, client):
 
 @mock.patch('flocx_market.objects.contract.Contract.get')
 def test_get_contract_missing(mock_get, client):
-    mock_get.return_value = None
+    mock_get.side_effect = e.ResourceNotFound()
     response = client.get('/contract/does-not-exist')
     assert response.status_code == 404
 
@@ -146,7 +148,7 @@ def test_delete_contract(mock_get, mock_destroy, client):
 
 @mock.patch('flocx_market.objects.contract.Contract.get')
 def test_delete_contract_missing(mock_get, client):
-    mock_get.return_value = None
+    mock_get.side_effect = e.ResourceNotFound()
     response = client.delete('/contract/does-not-exist')
     assert response.status_code == 404
 
@@ -175,7 +177,7 @@ def test_update_contract(mock_get, mock_save, client):
 @mock.patch('flocx_market.objects.contract.Contract.save')
 @mock.patch('flocx_market.objects.contract.Contract.get')
 def test_update_contract_missing(mock_get, mock_save, client):
-    mock_get.return_value = None
+    mock_get.side_effect = e.ResourceNotFound()
     res = client.put('/contract/does-not-exist',
                      data=json.dumps(dict(status='testing')))
     assert res.status_code == 404
