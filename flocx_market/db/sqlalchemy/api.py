@@ -3,6 +3,7 @@ from oslo_utils import uuidutils
 
 import flocx_market.conf
 from flocx_market.db.sqlalchemy import models
+from flocx_market.common import exception
 
 CONF = flocx_market.conf.CONF
 _engine_facade = None
@@ -40,8 +41,14 @@ def drop_db():
 
 def offer_get(marketplace_offer_id, context):
 
-    return get_session().query(models.Offer).filter_by(
+    offer_ref = get_session().query(models.Offer).filter_by(
             marketplace_offer_id=marketplace_offer_id).one_or_none()
+
+    if offer_ref:
+        return offer_ref
+    else:
+        raise exception.ResourceNotFound(resource_type="Offer",
+                                         resource_uuid=marketplace_offer_id)
 
 
 def offer_get_all(context):
@@ -102,16 +109,20 @@ def offer_update(marketplace_offer_id, values, context):
                     marketplace_offer_id=marketplace_offer_id).one_or_none()
     else:
         offer_ref = get_session().query(models.Offer).filter_by(
-            marketplace_offer_id=marketplace_offer_id,
-            project_id=context.project_id).one_or_none()
+            marketplace_offer_id=marketplace_offer_id).one_or_none()
 
     if offer_ref:
+        if offer_ref.project_id != context.project_id and not context.is_admin:
+            raise exception.ResourceNoPermission(
+                                            resource_type="Offer",
+                                            resource_uuid=marketplace_offer_id)
         values.pop('marketplace_offer_id', None)
         offer_ref.update(values)
         offer_ref.save(get_session())
         return offer_ref
     else:
-        return None
+        raise exception.ResourceNotFound(resource_type="Offer",
+                                         resource_uuid=marketplace_offer_id)
 
 
 def offer_destroy(marketplace_offer_id, context):
@@ -120,10 +131,13 @@ def offer_destroy(marketplace_offer_id, context):
                     marketplace_offer_id=marketplace_offer_id).one_or_none()
     else:
         offer_ref = get_session().query(models.Offer).filter_by(
-            marketplace_offer_id=marketplace_offer_id,
-            project_id=context.project_id).one_or_none()
+            marketplace_offer_id=marketplace_offer_id).one_or_none()
 
     if offer_ref:
+        if offer_ref.project_id != context.project_id and not context.is_admin:
+            raise exception.ResourceNoPermission(
+                                            resource_type="Offer",
+                                            resource_uuid=marketplace_offer_id)
 
         if context.is_admin:
             get_session().query(models.Offer).filter_by(
@@ -133,12 +147,20 @@ def offer_destroy(marketplace_offer_id, context):
                 marketplace_offer_id=marketplace_offer_id,
                 project_id=context.project_id).delete()
     else:
-        return None
+        raise exception.ResourceNotFound(resource_type="Offer",
+                                         resource_uuid=marketplace_offer_id)
 
 
 def bid_get(marketplace_bid_id, context):
-    return get_session().query(models.Bid).filter_by(
+
+    bid_ref = get_session().query(models.Bid).filter_by(
         marketplace_bid_id=marketplace_bid_id).one_or_none()
+
+    if bid_ref:
+        return bid_ref
+    else:
+        raise exception.ResourceNotFound(resource_type="Bid",
+                                         resource_uuid=marketplace_bid_id)
 
 
 def bid_get_all(context):
@@ -179,16 +201,21 @@ def bid_update(marketplace_bid_id, values, context):
                     marketplace_bid_id=marketplace_bid_id).one_or_none()
     else:
         bid_ref = get_session().query(models.Bid).filter_by(
-            marketplace_bid_id=marketplace_bid_id,
-            project_id=context.project_id).one_or_none()
+            marketplace_bid_id=marketplace_bid_id).one_or_none()
 
     if bid_ref:
+        if bid_ref.project_id != context.project_id and not context.is_admin:
+            raise exception.ResourceNoPermission(
+                                            resource_type="Bid",
+                                            resource_uuid=marketplace_bid_id)
+
         values.pop('marketplace_bid_id', None)
         bid_ref.update(values)
         bid_ref.save(get_session())
         return bid_ref
     else:
-        return None
+        raise exception.ResourceNotFound(resource_type="Bid",
+                                         resource_uuid=marketplace_bid_id)
 
 
 def bid_destroy(marketplace_bid_id, context):
@@ -197,10 +224,13 @@ def bid_destroy(marketplace_bid_id, context):
                     marketplace_bid_id=marketplace_bid_id).one_or_none()
     else:
         bid_ref = get_session().query(models.Bid).filter_by(
-            marketplace_bid_id=marketplace_bid_id,
-            project_id=context.project_id).one_or_none()
+            marketplace_bid_id=marketplace_bid_id).one_or_none()
 
     if bid_ref:
+        if bid_ref.project_id != context.project_id and not context.is_admin:
+            raise exception.ResourceNoPermission(
+                                            resource_type="Bid",
+                                            resource_uuid=marketplace_bid_id)
 
         if context.is_admin:
             get_session().query(models.Bid).filter_by(
@@ -210,13 +240,21 @@ def bid_destroy(marketplace_bid_id, context):
                 marketplace_bid_id=marketplace_bid_id,
                 project_id=context.project_id).delete()
     else:
-        return None
+        raise exception.ResourceNotFound(resource_type="Bid",
+                                         resource_uuid=marketplace_bid_id)
 
 
 # contract
 def contract_get(contract_id, context):
-    return get_session().query(models.Contract).filter_by(
+
+    contract_ref = get_session().query(models.Contract).filter_by(
         contract_id=contract_id).one_or_none()
+
+    if contract_ref:
+        return contract_ref
+    else:
+        raise exception.ResourceNotFound(resource_type="Contract",
+                                         resource_uuid=contract_id)
 
 
 def contract_get_all(context):
@@ -247,7 +285,8 @@ def contract_create(values, context):
             offer_contract_relationship_create(context, ocr_data)
         return contract_ref
     else:
-        return None
+        raise exception.RequiresAdmin(
+            resource_type="Contract")
 
 
 def contract_update(contract_id, values, context):
@@ -261,9 +300,11 @@ def contract_update(contract_id, values, context):
             contract_ref.save(get_session())
             return contract_ref
         else:
-            return None
+            raise exception.ResourceNotFound(resource_type="Contract",
+                                             resource_uuid=contract_id)
     else:
-        return None
+        raise exception.ResourceNoPermission(resource_type="Contract",
+                                             resource_uuid=contract_id)
 
 
 def contract_destroy(contract_id, context):
@@ -273,9 +314,11 @@ def contract_destroy(contract_id, context):
             get_session().query(models.Contract).filter_by(
                 contract_id=contract_id).delete()
         else:
-            return None
+            raise exception.ResourceNotFound(resource_type="Contract",
+                                             resource_uuid=contract_id)
     else:
-        return None
+        raise exception.ResourceNoPermission(resource_type="Contract",
+                                             resource_uuid=contract_id)
 
 
 # offer_contract_relationship
@@ -284,10 +327,16 @@ def offer_contract_relationship_get(context,
 
     if offer_contract_relationship_id is None:
         return None
-    return get_session().query(models.OfferContractRelationship).filter(
-        models.OfferContractRelationship.
-        offer_contract_relationship_id ==
-        offer_contract_relationship_id).one_or_none()
+
+    ref = get_session().query(models.OfferContractRelationship).filter(
+        models.OfferContractRelationship.offer_contract_relationship_id
+        == offer_contract_relationship_id).one_or_none()
+    if ref:
+        return ref
+    else:
+        raise exception.ResourceNotFound(
+            resource_type="Offer_Contract_Relationship",
+            resource_uuid=offer_contract_relationship_id)
 
 
 def offer_contract_relationship_get_all(context, filters=None):
@@ -314,7 +363,8 @@ def offer_contract_relationship_create(context, values):
         offer_contract_relationship_ref.save(get_session())
         return offer_contract_relationship_ref
     else:
-        return None
+        raise exception.RequiresAdmin(
+            resource_type="Offer_Contract_Relationship")
 
 
 def offer_contract_relationship_update(context,
@@ -345,4 +395,5 @@ def offer_contract_relationship_destroy(context,
         else:
             return None
     else:
-        return None
+        raise exception.RequiresAdmin(
+            resource_type="Offer_Contract_Relationship")

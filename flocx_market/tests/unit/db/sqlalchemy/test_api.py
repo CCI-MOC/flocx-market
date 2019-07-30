@@ -5,6 +5,7 @@ from oslo_db.exception import DBError
 from oslo_context import context as ctx
 
 from flocx_market.db.sqlalchemy import api
+from flocx_market.common import exception as e
 
 now = datetime.utcnow()
 
@@ -76,12 +77,27 @@ scoped_context_2 = ctx.RequestContext(is_admin=False,
                                       project_id='7788')
 
 
-def test_offer_get_all(app, db, session):
+def test_offer_get_found(app, db, session):
+    m = api.offer_create(test_offer_data, scoped_context)
+    assert(api.offer_get(m.marketplace_offer_id, scoped_context))
+
+
+def test_offer_get_not_found(app, db, session):
+    with pytest.raises(e.ResourceNotFound) as excinfo:
+        api.offer_get("NotHere", scoped_context)
+    assert(excinfo.value.code == 404)
+
+
+def test_offer_get_all_found(app, db, session):
     api.offer_create(test_offer_data, scoped_context)
     api.offer_create(test_offer_data_2, scoped_context)
     api.offer_create(test_offer_data_3, scoped_context_2)
 
     assert len(api.offer_get_all(scoped_context)) == 3
+
+
+def test_offer_get_all_none_found(app, db, session):
+    assert (len(api.offer_get_all(scoped_context)) == 0)
 
 
 def test_offer_get_all_by_project_id(app, db, session):
@@ -168,25 +184,27 @@ def test_offer_create_invalid_negative_cost_admin(app, db, session):
 def test_offer_delete_admin(app, db, session):
     offer = api.offer_create(test_offer_data, scoped_context_2)
     api.offer_destroy(offer.marketplace_offer_id, admin_context)
-    check = api.offer_get(offer.marketplace_offer_id, scoped_context_2)
-    assert check is None
+    with pytest.raises(e.ResourceNotFound) as excinfo:
+        api.offer_get("NotHere", scoped_context)
+    assert(excinfo.value.code == 404)
 
 
 def test_offer_delete_scoped_valid(app, db, session):
     offer = api.offer_create(test_offer_data, scoped_context)
     api.offer_destroy(offer.marketplace_offer_id, scoped_context)
-    check = api.offer_get(offer.marketplace_offer_id, scoped_context)
-    assert check is None
+    with pytest.raises(e.ResourceNotFound) as excinfo:
+        api.offer_get("NotHere", scoped_context)
+    assert(excinfo.value.code == 404)
 
 
 def test_offer_delete_scoped_invalid(app, db, session):
     offer = api.offer_create(test_offer_data, scoped_context)
-    api.offer_destroy(offer.marketplace_offer_id, scoped_context_2)
-    check = api.offer_get(offer.marketplace_offer_id, scoped_context)
-    assert check is not None
+    with pytest.raises(e.ResourceNoPermission) as excinfo:
+        api.offer_destroy(offer.marketplace_offer_id, scoped_context_2)
+    assert(excinfo.value.code == 403)
 
 
-def test_offer_update_admin(app, db, session):
+def test_offer_update_admin_valid(app, db, session):
     offer = api.offer_create(test_offer_data, scoped_context)
     offer = api.offer_update(
         offer.marketplace_offer_id, dict(status='testing'), admin_context)
@@ -206,10 +224,13 @@ def test_offer_update_scoped_valid(app, db, session):
 
 def test_offer_update_scoped_invalid(app, db, session):
     offer = api.offer_create(test_offer_data, scoped_context)
-    update = api.offer_update(
-        offer.marketplace_offer_id, dict(status='testing'), scoped_context_2)
 
-    assert update is None
+    with pytest.raises(e.ResourceNoPermission) as excinfo:
+        api.offer_update(
+            offer.marketplace_offer_id,
+            dict(status='testing'),
+            scoped_context_2)
+    assert(excinfo.value.code == 403)
 
     check = api.offer_get(offer.marketplace_offer_id, scoped_context)
     assert check.status != 'testing'
@@ -269,22 +290,25 @@ def test_bid_create_invalid(app, db, session):
 def test_bid_delete_admin(app, db, session):
     bid = api.bid_create(test_bid_data_1, scoped_context)
     api.bid_destroy(bid.marketplace_bid_id, admin_context)
-    check = api.bid_get(bid.marketplace_bid_id, scoped_context)
-    assert check is None
+    with pytest.raises(e.ResourceNotFound) as excinfo:
+        api.bid_get(bid.marketplace_bid_id, scoped_context)
+    assert(excinfo.value.code == 404)
 
 
 def test_bid_delete_scoped_valid(app, db, session):
     bid = api.bid_create(test_bid_data_1, scoped_context)
     api.bid_destroy(bid.marketplace_bid_id, scoped_context)
-    check = api.bid_get(bid.marketplace_bid_id, scoped_context)
-    assert check is None
+    with pytest.raises(e.ResourceNotFound) as excinfo:
+        api.bid_get(bid.marketplace_bid_id, scoped_context)
+    assert(excinfo.value.code == 404)
 
 
 def test_bid_delete_scoped_invalid(app, db, session):
     bid = api.bid_create(test_bid_data_1, scoped_context)
-    api.bid_destroy(bid.marketplace_bid_id, scoped_context_2)
-    check = api.bid_get(bid.marketplace_bid_id, scoped_context)
-    assert check is not None
+    with pytest.raises(e.ResourceNoPermission) as excinfo:
+        api.bid_destroy(bid.marketplace_bid_id, scoped_context_2)
+    assert(excinfo.value.code == 403)
+    assert (api.bid_get(bid.marketplace_bid_id, scoped_context))
 
 
 def test_bid_update_admin(app, db, session):
@@ -307,11 +331,13 @@ def test_bid_update_scoped_valid(app, db, session):
 
 def test_bid_update_scoped_invalid(app, db, session):
     bid = api.bid_create(test_bid_data_1, scoped_context)
-    updated = api.bid_update(bid.marketplace_bid_id,
-                             dict(status='testing'),
-                             scoped_context_2)
 
-    assert updated is None
+    with pytest.raises(e.ResourceNoPermission) as excinfo:
+        api.bid_update(
+            bid.marketplace_bid_id, dict(status='testing'), scoped_context_2)
+    assert(excinfo.value.code == 403)
+    assert (api.bid_get(bid.marketplace_bid_id, scoped_context).status
+            != "testing")
 
 
 def create_test_contract_data():
@@ -355,23 +381,25 @@ def test_contract_create_invalid_admin(app, db, session):
 
 def test_contract_create_invalid_scoped(app, db, session):
     data = create_test_contract_data()
-    created = api.contract_create(data, scoped_context)
-    assert created is None
+    with pytest.raises(e.RequiresAdmin) as excinfo:
+        api.contract_create(data, scoped_context)
+    assert(excinfo.value.code == 403)
 
 
 def test_contract_delete_valid_admin(app, db, session):
     contract = api.contract_create(create_test_contract_data(), admin_context)
     api.contract_destroy(contract.contract_id, admin_context)
-    check = api.contract_get(contract.contract_id, admin_context)
-    assert check is None
+    with pytest.raises(e.ResourceNotFound) as excinfo:
+        api.contract_get(contract.contract_id, admin_context)
+    assert(excinfo.value.code == 404)
 
 
 def test_contract_delete_invalid_scoped(app, db, session):
     contract = api.contract_create(create_test_contract_data(), admin_context)
-    destroyed = api.contract_destroy(contract.contract_id, scoped_context)
-    check = api.contract_get(contract.contract_id, admin_context)
-    assert check is not None
-    assert destroyed is None
+    with pytest.raises(e.ResourceNoPermission) as excinfo:
+        api.contract_destroy(contract.contract_id, scoped_context)
+    assert (excinfo.value.code == 403)
+    assert api.contract_get(contract.contract_id, admin_context)
 
 
 def test_contract_update_valid_admin(app, db, session):
@@ -386,13 +414,12 @@ def test_contract_update_valid_admin(app, db, session):
 
 def test_contract_update_invalid_scoped(app, db, session):
     contract = api.contract_create(create_test_contract_data(), admin_context)
-    updated = api.contract_update(
-        contract.contract_id, dict(status='testing'), scoped_context)
-    check = api.contract_get(contract.contract_id, admin_context)
-
-    assert check.status != 'testing'
-    assert check.cost == 0.0
-    assert updated is None
+    with pytest.raises(e.ResourceNoPermission) as excinfo:
+        api.contract_update(
+            contract.contract_id, dict(status='testing'), scoped_context)
+    assert (excinfo.value.code == 403)
+    assert (api.contract_get(contract.contract_id, admin_context).status
+            != "testing")
 
 
 def test_contract_get_all_unexpired(app, db, session):
@@ -402,7 +429,7 @@ def test_contract_get_all_unexpired(app, db, session):
 
     api.contract_update(contract.contract_id, dict(status='expired'),
                         admin_context)
-    assert len(api.contract_get_all_unexpired(admin_context)) == 0
+    assert (len(api.contract_get_all_unexpired(admin_context)) == 0)
 
 
 def create_test_contract_data_for_ocr():
@@ -424,14 +451,7 @@ def create_test_contract_data_for_ocr():
 
 
 # contract_offer_relationship
-def test_offer_contract_relationship_get_all(app, db, session):
-    contract_data, _ = create_test_contract_data_for_ocr()
-    api.contract_create(contract_data, admin_context)
-
-    assert len(api.offer_contract_relationship_get_all(admin_context)) == 1
-
-
-def test_offer_contract_relationship_get_by_id(app, db, session):
+def test_offer_contract_relationship_get_valid(app, db, session):
     contract_data, _ = create_test_contract_data_for_ocr()
     api.contract_create(contract_data, admin_context)
     ocr = api.offer_contract_relationship_get_all(admin_context)
@@ -441,6 +461,14 @@ def test_offer_contract_relationship_get_by_id(app, db, session):
         offer_contract_relationship_id=ocr[0].offer_contract_relationship_id)
             .offer_contract_relationship_id ==
             ocr[0].offer_contract_relationship_id)
+
+
+def test_offer_contract_relationship_get_invalid(app, db, session):
+    with pytest.raises(e.ResourceNotFound) as excinfo:
+        api.offer_contract_relationship_get(
+            context=admin_context,
+            offer_contract_relationship_id="bad_id")
+    assert (excinfo.value.code == 404)
 
 
 def test_offer_contract_relationship_create_valid(app, db, session):
@@ -459,9 +487,9 @@ def test_offer_contract_relationship_create_valid(app, db, session):
 
 def test_offer_contract_relationship_create_invalid_scoped(app, db, session):
     contract_data, offer_test_id = create_test_contract_data_for_ocr()
-    contract = api.contract_create(contract_data, scoped_context)
-
-    assert contract is None
+    with pytest.raises(e.RequiresAdmin) as excinfo:
+        api.contract_create(contract_data, scoped_context)
+    assert (excinfo.value.code == 403)
 
 
 def test_offer_contract_relationship_delete_valid(app, db, session):
@@ -479,10 +507,12 @@ def test_offer_contract_relationship_delete_valid(app, db, session):
     api.offer_contract_relationship_destroy(
         context=admin_context,
         offer_contract_relationship_id=ocr_id)
-    check = api.offer_contract_relationship_get(
-        admin_context,
-        ocr_id)
-    assert check is None
+
+    with pytest.raises(e.ResourceNotFound) as excinfo:
+        api.offer_contract_relationship_get(
+            context=admin_context,
+            offer_contract_relationship_id=ocr_id)
+    assert (excinfo.value.code == 404)
 
 
 def test_offer_contract_relationship_delete_invalid_scoped(app, db, session):
@@ -497,13 +527,27 @@ def test_offer_contract_relationship_delete_invalid_scoped(app, db, session):
         filters=filters,
     )
     ocr_id = ocrs[0].offer_contract_relationship_id
-    api.offer_contract_relationship_destroy(
-        context=scoped_context,
-        offer_contract_relationship_id=ocr_id)
+
+    with pytest.raises(e.RequiresAdmin) as excinfo:
+        api.offer_contract_relationship_destroy(
+            context=scoped_context,
+            offer_contract_relationship_id=ocr_id)
+    assert (excinfo.value.code == 403)
+
     check = api.offer_contract_relationship_get(
         admin_context,
         ocr_id)
     assert check is not None
+
+
+def test_offer_contract_relationship_delete_invalid_nonexistent(
+        app, db, session):
+    with pytest.raises(e.ResourceNotFound) as excinfo:
+        api.offer_contract_relationship_destroy(
+            context=admin_context,
+            offer_contract_relationship_id="bad_id")
+
+    assert (excinfo.value.code == 404)
 
 
 def test_offer_contract_relationship_update_valid(app, db, session):
@@ -545,10 +589,13 @@ def test_offer_contract_relationship_update_invalid_scoped(app, db, session):
     )
     ocr_id = ocrs[0].offer_contract_relationship_id
 
-    api.offer_contract_relationship_update(
-        context=scoped_context,
-        offer_contract_relationship_id=ocr_id,
-        values=dict(status='testing'))
+    with pytest.raises(e.RequiresAdmin) as excinfo:
+        api.offer_contract_relationship_update(
+            context=scoped_context,
+            offer_contract_relationship_id=ocr_id,
+            values=dict(status='testing'))
+    assert (excinfo.value.code == 403)
+
     check = api.offer_contract_relationship_get(
         context=admin_context,
         offer_contract_relationship_id=ocr_id)
@@ -579,3 +626,13 @@ def test_offer_contract_relationship_get_all_unexpired(app, db, session):
         values=dict(status='expired'))
     assert len(api.offer_contract_relationship_get_all_unexpired(
         admin_context)) == 0
+
+
+def test_offer_contract_relationship_update_invalid_nonexistent(
+        app, db, session):
+    with pytest.raises(e.ResourceNotFound) as excinfo:
+        api.offer_contract_relationship_update(
+            offer_contract_relationship_id="bad_id",
+            values=dict(status='testing'),
+            context=admin_context)
+    assert (excinfo.value.code == 404)

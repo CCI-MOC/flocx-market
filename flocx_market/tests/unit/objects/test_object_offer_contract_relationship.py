@@ -1,6 +1,9 @@
 from datetime import datetime
+import pytest
 
 from flocx_market.objects import offer_contract_relationship as ocr
+from flocx_market.common import exception as e
+
 import unittest.mock as mock
 from oslo_context import context as ctx
 
@@ -44,8 +47,9 @@ def test_get_all_with_vals(offer_contract_relationship_get_all):
 
 
 def test_get_invalid():
-    ret = ocr.OfferContractRelationship.get(scoped_context, 'does-not-exist')
-    assert ret is None
+    with pytest.raises(e.ResourceNotFound) as excinfo:
+        ocr.OfferContractRelationship.get(scoped_context, 'does-not-exist')
+    assert (excinfo.value.code == 404)
 
 
 @mock.patch(

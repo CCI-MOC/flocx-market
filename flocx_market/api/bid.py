@@ -1,6 +1,8 @@
 from flask_restful import Resource
 from flask import request, g
 from flocx_market.objects import bid
+from flocx_market.common import exception
+import json
 
 
 class Bid(Resource):
@@ -10,36 +12,42 @@ class Bid(Resource):
 
         if marketplace_bid_id is None:
             return [x.to_dict() for x in bid.Bid.get_all(g.context)]
-        b = bid.Bid.get(marketplace_bid_id, g.context)
-        if b is None:
-            return {'message': 'Bid not found'}, 404
-        else:
-            return b.to_dict()
+
+        try:
+            return bid.Bid.get(marketplace_bid_id, g.context).to_dict()
+        except exception.MarketplaceException as e:
+            return json.dumps(e.message), e.code
 
     @classmethod
     def post(cls):
 
-        data = request.get_json(force=True)
-        return bid.Bid.create(data, g.context).to_dict(), 201
+        try:
+            data = request.get_json(force=True)
+            return bid.Bid.create(data, g.context).to_dict(), 201
+        except exception.MarketplaceException as e:
+            return json.dumps(e.message), e.code
 
     @classmethod
     def delete(cls, marketplace_bid_id):
 
-        b = bid.Bid.get(marketplace_bid_id, g.context)
-        if b is None:
-            return {'message': 'Bid not found.'}, 404
-        b.destroy(g.context)
-        return {'message': 'Bid deleted.'}
+        try:
+            b = bid.Bid.get(marketplace_bid_id, g.context)
+            b.destroy(g.context)
+            return {'message': 'Bid deleted.'}
+        except exception.MarketplaceException as e:
+            return json.dumps(e.message), e.code
 
     @classmethod
     def put(cls, marketplace_bid_id):
 
         data = request.get_json(force=True)
-        b = bid.Bid.get(marketplace_bid_id, g.context)
-        if b is None:
-            return {'message': 'Bid not found.'}, 404
-        # we only allow status field to be modified
-        if 'status' in data:
-            b.status = data['status']
-            return b.save(g.context).to_dict()
-        return b.to_dict()
+
+        try:
+            b = bid.Bid.get(marketplace_bid_id, g.context)
+            # we only allow status field to be modified
+            if 'status' in data:
+                b.status = data['status']
+                return b.save(g.context).to_dict()
+            return b.to_dict()
+        except exception.MarketplaceException as e:
+            return json.dumps(e.message), e.code
