@@ -2,6 +2,8 @@ from oslo_log import log
 from oslo_versionedobjects import base as object_base
 import datetime
 
+from flocx_market.objects import fields
+
 
 LOG = log.getLogger(__name__)
 
@@ -10,6 +12,11 @@ class FLOCXMarketObject(object_base.VersionedObject):
 
     OBJ_SERIAL_NAMESPACE = 'flocx_market_object'
     OBJ_PROJECT_NAMESPACE = 'flocx_market'
+
+    fields = {
+        'created_at': fields.DateTimeField(nullable=True),
+        'updated_at': fields.DateTimeField(nullable=True),
+    }
 
     @staticmethod
     def _from_db_object(obj, db_obj):

@@ -14,7 +14,9 @@ test_contract_dict_1 = dict(contract_id='test_contract_2',
                             cost=0.0,
                             bid_id='test_bid_2',
                             bid=None,
-                            offers=['test_offer_1']
+                            offers=['test_offer_1'],
+                            created_at=now,
+                            updated_at=now,
                             )
 
 test_contract_dict = dict(contract_id='test_contract_2',
@@ -26,7 +28,9 @@ test_contract_dict = dict(contract_id='test_contract_2',
                           bid_id='test_bid_2',
                           bid=None,
                           offers=['test_offer_1'],
-                          project_id='5599'
+                          project_id='5599',
+                          created_at=now,
+                          updated_at=now,
                           )
 
 scoped_context = ctx.RequestContext(is_admin=False,

@@ -66,7 +66,6 @@ def offer_get_all_unexpired(context):
 
 def offer_create(values, context):
     values['marketplace_offer_id'] = uuidutils.generate_uuid()
-    values['project_id'] = context.project_id
     offer_ref = models.Offer()
     offer_ref.update(values)
     offer_ref.save(get_session())

@@ -10,7 +10,6 @@ class Contract(base.FLOCXMarketObject):
 
     fields = {
         'contract_id': fields.StringField(),
-        'time_created': fields.DateTimeField(nullable=True),
         'status': fields.StringField(),
         'start_time': fields.DateTimeField(nullable=True),
         'end_time': fields.DateTimeField(nullable=True),
