@@ -10,80 +10,68 @@ now = datetime.utcnow()
 
 test_offer_data = dict(
     provider_offer_id='a41fadc1-6ae9-47e5-a74e-2dcf2b4dd55a',
-    provider_id='2345',
-    marketplace_date_created=now,
     status='available',
+    project_id='1234',
     server_id='4567',
     start_time=now - timedelta(days=1),
     end_time=now + timedelta(days=1),
     server_config={'foo': 'bar'},
     cost=0.0,
-    # project_id='5599'
     )
 
 test_offer_data_2 = dict(
     provider_offer_id='141fadc1-6ae9-47e5-a74e-2dcf2b4dd554',
-    provider_id='2345',
-    marketplace_date_created=now,
     status='expired',
+    project_id='1234',
     server_id='456789',
     start_time=now - timedelta(days=2),
     end_time=now - timedelta(days=1),
     server_config={'foo': 'bar'},
     cost=0.0,
-    # project_id='5599'
     )
 
 
 test_offer_data_3 = dict(
     provider_offer_id='141fadc1-6ae9-47e5-a74e-2dcf2b455555',
-    provider_id='2345',
-    marketplace_date_created=now,
     status='available',
+    project_id='7788',
     server_id='123',
     start_time=now - timedelta(days=2),
     end_time=now - timedelta(days=1),
     server_config={'foo': 'bar'},
     cost=0.0,
-    # project_id='7788'
     )
 
 
-test_bid_data_1 = dict(creator_bid_id="12a59a51-b4d6-497d-9f75-f56c409305c8",
-                       server_quantity=2,
+test_bid_data_1 = dict(server_quantity=2,
                        start_time=now - timedelta(days=2),
                        end_time=now - timedelta(days=1),
                        duration=16400,
                        status="available",
                        server_config_query={'foo': 'bar'},
-                       # project_id='5599',
                        cost=11.5)
 
 
-test_bid_data_2 = dict(creator_bid_id="12a59a51-b4d6-497d-9f75-f56c409305c8",
-                       server_quantity=2,
+test_bid_data_2 = dict(server_quantity=2,
                        start_time=now - timedelta(days=2),
                        end_time=now + timedelta(days=1),
                        duration=16400,
                        status="available",
                        server_config_query={'foo': 'bar'},
-                       # project_id='5599',
                        cost=11.5)
 
-test_bid_data_3 = dict(creator_bid_id="12a59a51-b4d6-497d-9f75-f56c409305c8",
-                       server_quantity=2,
+test_bid_data_3 = dict(server_quantity=2,
                        start_time=now - timedelta(days=2),
                        end_time=now + timedelta(days=1),
                        duration=16400,
                        status="available",
                        server_config_query={'foo': 'bar'},
-                       # project_id='7788',
                        cost=11.5)
 
 admin_context = ctx.RequestContext(is_admin=True)
 
 scoped_context = ctx.RequestContext(is_admin=False,
-                                    project_id='5599')
+                                    project_id='1234')
 
 scoped_context_2 = ctx.RequestContext(is_admin=False,
                                       project_id='7788')
@@ -132,7 +120,7 @@ def test_offer_create(app, db, session):
 
 def test_offer_create_invalid_admin(app, db, session):
     data = dict(test_offer_data)
-    del data['provider_id']
+    del data['cost']
 
     with pytest.raises(DBError):
         api.offer_create(data, scoped_context)
@@ -232,7 +220,7 @@ def test_bid_create(app, db, session):
 
 def test_bid_create_invalid(app, db, session):
     data = dict(test_bid_data_1)
-    del data['creator_bid_id']
+    del data['cost']
 
     with pytest.raises(DBError):
         api.bid_create(data, scoped_context)

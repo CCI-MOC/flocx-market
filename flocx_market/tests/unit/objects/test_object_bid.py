@@ -6,27 +6,35 @@ from oslo_context import context as ctx
 now = datetime.datetime.utcnow()
 
 
-test_bid_1 = dict(marketplace_bid_id="123",
-                  creator_bid_id="1259a51-b4d6-497d-9f75-f56c409305c8",
-                  server_quantity=2,
-                  start_time=now,
-                  end_time=now,
-                  duration=16400,
-                  status="available",
-                  server_config_query={'foo': 'bar'},
-                  cost=11.2,
-                  project_id='5599')
+test_bid_1 = dict(
+    marketplace_bid_id="123",
+    creator_bid_id="1259a51-b4d6-497d-9f75-f56c409305c8",
+    server_quantity=2,
+    start_time=now,
+    end_time=now,
+    duration=16400,
+    status="available",
+    server_config_query={'foo': 'bar'},
+    cost=11.2,
+    project_id='5599',
+    created_at=now,
+    updated_at=now,
+)
 
-test_bid_2 = dict(marketplace_bid_id="1232",
-                  creator_bid_id="12a59a51-b4d6-497d-9f75-f56c409305c8",
-                  server_quantity=2,
-                  start_time=now,
-                  end_time=now,
-                  duration=16400,
-                  status="available",
-                  server_config_query={'foo': 'bar'},
-                  cost=11.5,
-                  project_id='5599')
+test_bid_2 = dict(
+    marketplace_bid_id="1232",
+    creator_bid_id="12a59a51-b4d6-497d-9f75-f56c409305c8",
+    server_quantity=2,
+    start_time=now,
+    end_time=now,
+    duration=16400,
+    status="available",
+    server_config_query={'foo': 'bar'},
+    cost=11.5,
+    project_id='5599',
+    created_at=now,
+    updated_at=now,
+)
 
 scoped_context = ctx.RequestContext(is_admin=False,
                                     project_id='5599')

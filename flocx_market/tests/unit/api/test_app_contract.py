@@ -10,7 +10,6 @@ CONF = flocx_market.conf.CONF
 now = datetime.datetime.utcnow()
 
 contract_1_bid = bid.Bid(marketplace_bid_id='test_bid_1',
-                         creator_bid_id="1234",
                          server_quantity=2,
                          start_time=now,
                          end_time=now,
@@ -18,11 +17,12 @@ contract_1_bid = bid.Bid(marketplace_bid_id='test_bid_1',
                          status="available",
                          server_config_query={'foo': 'bar'},
                          cost=11.5,
-                         project_id='5599'
+                         project_id='5599',
+                         created_at=now,
+                         updated_at=now,
                          )
 
 contract_2_bid = bid.Bid(marketplace_bid_id='test_bid_2',
-                         creator_bid_id="2345",
                          server_quantity=2,
                          start_time=now,
                          end_time=now,
@@ -30,12 +30,12 @@ contract_2_bid = bid.Bid(marketplace_bid_id='test_bid_2',
                          status="available",
                          server_config_query={'foo': 'bar'},
                          cost=11.5,
-                         project_id='5599'
+                         project_id='5599',
+                         created_at=now,
+                         updated_at=now,
                          )
 
-contract_1_offer = offer.Offer(marketplace_date_created=now,
-                               marketplace_offer_id='test_offer_1',
-                               provider_id='1234',
+contract_1_offer = offer.Offer(marketplace_offer_id='test_offer_1',
                                server_id='3456',
                                start_time=now,
                                end_time=now,
@@ -43,12 +43,12 @@ contract_1_offer = offer.Offer(marketplace_date_created=now,
                                server_config={'bar': 'foo'},
                                cost=0.0,
                                contract_id='test_contract_1',
-                               project_id='5599'
+                               project_id='5599',
+                               created_at=now,
+                               updated_at=now,
                                )
 
 contract_2_offer = offer.Offer(marketplace_offer_id='test_offer_2',
-                               marketplace_date_created=now,
-                               provider_id='2345',
                                server_id='4567',
                                start_time=now,
                                end_time=now,
@@ -56,8 +56,9 @@ contract_2_offer = offer.Offer(marketplace_offer_id='test_offer_2',
                                server_config={'foo': 'bar'},
                                cost=0.0,
                                contract_id='test_contract_2',
-                               project_id='5599'
-
+                               project_id='5599',
+                               created_at=now,
+                               updated_at=now,
                                )
 
 test_contract_1 = contract.Contract(contract_id='test_contract_1',
@@ -68,7 +69,9 @@ test_contract_1 = contract.Contract(contract_id='test_contract_1',
                                     cost=0.0,
                                     bid_id=contract_1_bid.marketplace_bid_id,
                                     bid=None,
-                                    project_id='5599'
+                                    project_id='5599',
+                                    created_at=now,
+                                    updated_at=now,
                                     )
 
 test_contract_2 = contract.Contract(contract_id='test_contract_2',
@@ -79,7 +82,9 @@ test_contract_2 = contract.Contract(contract_id='test_contract_2',
                                     cost=0.0,
                                     bid_id=contract_2_bid.marketplace_bid_id,
                                     bid=None,
-                                    project_id='5599'
+                                    project_id='5599',
+                                    created_at=now,
+                                    updated_at=now,
                                     )
 
 test_contract_dict = dict(contract_id='test_contract_2',
@@ -90,7 +95,9 @@ test_contract_dict = dict(contract_id='test_contract_2',
                           cost=0.0,
                           bid_id='test_bid_2',
                           offers=[contract_1_offer.marketplace_offer_id],
-                          project_id='5599'
+                          project_id='5599',
+                          created_at="2016-07-16T19:20:30",
+                          updated_at="2016-07-16T19:20:30",
                           )
 
 scoped_context = ctx.RequestContext(is_admin=False,

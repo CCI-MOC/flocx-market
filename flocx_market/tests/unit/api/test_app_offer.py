@@ -16,10 +16,8 @@ now = datetime.datetime.utcnow()
 
 
 test_offer_1 = offer.Offer(
-    marketplace_date_created=now,
     provider_offer_id='a41fadc1-6ae9-47e5-a74e-2dcf2b4dd55a',
     marketplace_offer_id='test_offer_1',
-    provider_id='1234',
     server_id='3456',
     start_time=now,
     end_time=now,
@@ -27,14 +25,14 @@ test_offer_1 = offer.Offer(
     server_config={'bar': 'foo'},
     cost=0.0,
     contract_id=None,
-    project_id='5599'
+    project_id='5599',
+    created_at=now,
+    updated_at=now,
 )
 
 test_offer_2 = offer.Offer(
     marketplace_offer_id='test_offer_2',
     provider_offer_id='141fadc1-6ae9-47e5-a74e-2dcf2b4dd554',
-    marketplace_date_created=now,
-    provider_id='2345',
     server_id='4567',
     start_time=now,
     end_time=now,
@@ -42,7 +40,9 @@ test_offer_2 = offer.Offer(
     server_config={'foo': 'bar'},
     cost=0.0,
     contract_id=None,
-    project_id='5599'
+    project_id='5599',
+    created_at=now,
+    updated_at=now,
 )
 
 
@@ -58,9 +58,9 @@ def test_get_offers(mock_get_all, client):
     response = client.get("/offer", follow_redirects=True)
     assert response.status_code == 200
     assert len(response.json) == 2
-    assert any(x['provider_id'] == test_offer_1.provider_id
+    assert any(x['project_id'] == test_offer_1.project_id
                for x in response.json)
-    assert any(x['provider_id'] == test_offer_2.provider_id
+    assert any(x['project_id'] == test_offer_2.project_id
                for x in response.json)
 
 

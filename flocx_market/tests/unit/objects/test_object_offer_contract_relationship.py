@@ -1,12 +1,20 @@
+from datetime import datetime
+
 from flocx_market.objects import offer_contract_relationship as ocr
 import unittest.mock as mock
 from oslo_context import context as ctx
+
+now = datetime.utcnow()
+
 
 test_ocr_dict = dict(
     offer_contract_relationship_id='test_offer_contract_relationship_id',
     contract_id='test_contract_1',
     marketplace_offer_id='test_offer_1',
-    status='unretrieved')
+    status='unretrieved',
+    created_at=now,
+    updated_at=now,
+)
 
 scoped_context = ctx.RequestContext(is_admin=False,
                                     project_id='5599')
