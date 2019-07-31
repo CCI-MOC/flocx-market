@@ -41,7 +41,7 @@ def drop_db():
 def offer_get(marketplace_offer_id, context):
 
     return get_session().query(models.Offer).filter_by(
-            marketplace_offer_id=marketplace_offer_id).first()
+            marketplace_offer_id=marketplace_offer_id).one_or_none()
 
 
 def offer_get_all(context):
@@ -76,11 +76,11 @@ def offer_update(marketplace_offer_id, values, context):
 
     if context.is_admin:
         offer_ref = get_session().query(models.Offer).filter_by(
-                    marketplace_offer_id=marketplace_offer_id).first()
+                    marketplace_offer_id=marketplace_offer_id).one_or_none()
     else:
         offer_ref = get_session().query(models.Offer).filter_by(
             marketplace_offer_id=marketplace_offer_id,
-            project_id=context.project_id).first()
+            project_id=context.project_id).one_or_none()
 
     if offer_ref:
         values.pop('marketplace_offer_id', None)
@@ -94,11 +94,11 @@ def offer_update(marketplace_offer_id, values, context):
 def offer_destroy(marketplace_offer_id, context):
     if context.is_admin:
         offer_ref = get_session().query(models.Offer).filter_by(
-                    marketplace_offer_id=marketplace_offer_id).first()
+                    marketplace_offer_id=marketplace_offer_id).one_or_none()
     else:
         offer_ref = get_session().query(models.Offer).filter_by(
             marketplace_offer_id=marketplace_offer_id,
-            project_id=context.project_id).first()
+            project_id=context.project_id).one_or_none()
 
     if offer_ref:
 
@@ -115,7 +115,7 @@ def offer_destroy(marketplace_offer_id, context):
 
 def bid_get(marketplace_bid_id, context):
     return get_session().query(models.Bid).filter_by(
-        marketplace_bid_id=marketplace_bid_id).first()
+        marketplace_bid_id=marketplace_bid_id).one_or_none()
 
 
 def bid_get_all(context):
@@ -144,11 +144,11 @@ def bid_create(values, context):
 def bid_update(marketplace_bid_id, values, context):
     if context.is_admin:
         bid_ref = get_session().query(models.Bid).filter_by(
-                    marketplace_bid_id=marketplace_bid_id).first()
+                    marketplace_bid_id=marketplace_bid_id).one_or_none()
     else:
         bid_ref = get_session().query(models.Bid).filter_by(
             marketplace_bid_id=marketplace_bid_id,
-            project_id=context.project_id).first()
+            project_id=context.project_id).one_or_none()
 
     if bid_ref:
         values.pop('marketplace_bid_id', None)
@@ -162,11 +162,11 @@ def bid_update(marketplace_bid_id, values, context):
 def bid_destroy(marketplace_bid_id, context):
     if context.is_admin:
         bid_ref = get_session().query(models.Bid).filter_by(
-                    marketplace_bid_id=marketplace_bid_id).first()
+                    marketplace_bid_id=marketplace_bid_id).one_or_none()
     else:
         bid_ref = get_session().query(models.Bid).filter_by(
             marketplace_bid_id=marketplace_bid_id,
-            project_id=context.project_id).first()
+            project_id=context.project_id).one_or_none()
 
     if bid_ref:
 
@@ -184,7 +184,7 @@ def bid_destroy(marketplace_bid_id, context):
 # contract
 def contract_get(contract_id, context):
     return get_session().query(models.Contract).filter_by(
-        contract_id=contract_id).first()
+        contract_id=contract_id).one_or_none()
 
 
 def contract_get_all(context):
@@ -223,7 +223,7 @@ def contract_update(contract_id, values, context):
 
     if context.is_admin:
         contract_ref = get_session().query(models.Contract).filter_by(
-                        contract_id=contract_id).first()
+                        contract_id=contract_id).one_or_none()
         if contract_ref:
             values.pop('contract_id', None)
             contract_ref.update(values)
@@ -264,7 +264,7 @@ def offer_contract_relationship_get(context,
             .filter(models.OfferContractRelationship.contract_id
                     == contract_id,
                     models.OfferContractRelationship.marketplace_offer_id
-                    == marketplace_offer_id).first()
+                    == marketplace_offer_id).one_or_none()
 
 
 def offer_contract_relationship_get_all(context):
