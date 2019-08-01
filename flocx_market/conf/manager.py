@@ -4,8 +4,9 @@ from oslo_config import cfg
 opts = [
     cfg.IntOpt('update_expire_frequency',
                default=60,
-               help="The frequency in which the manager's periodic task will run.\
-                    Enter in seconds")
+               help="The frequency in which the manager's \
+                     periodic task will run.\
+                     Enter in seconds")
 ]
 
 manager_group = cfg.OptGroup(

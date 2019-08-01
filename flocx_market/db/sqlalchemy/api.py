@@ -64,7 +64,14 @@ def offer_get_all_unexpired(context):
             models.Offer.project_id == context.project_id).all()
 
 
+def offer_get_all_by_status(status, context):
+    return get_session().query(models.Offer)\
+        .filter(models.Offer.status == status, models.Offer.project_id ==
+                context.project_id).all()
+
+
 def offer_create(values, context):
+
     values['marketplace_offer_id'] = uuidutils.generate_uuid()
     offer_ref = models.Offer()
     offer_ref.update(values)
@@ -130,6 +137,12 @@ def bid_get_all_by_project_id(context):
 def bid_get_all_unexpired(context):
     return get_session().query(models.Bid)\
         .filter(models.Bid.status != 'expired').all()
+
+
+def bid_get_all_by_status(status, context):
+    return get_session().query(models.Bid)\
+        .filter(models.Bid.status == status, models.Bid.project_id ==
+                context.project_id).all()
 
 
 def bid_create(values, context):
@@ -207,7 +220,6 @@ def contract_create(values, context):
         contract_ref = models.Contract()
         contract_ref.update(values)
         contract_ref.save(get_session())
-
         # update foreign key for offers
         for offer_id in offers:
             ocr_data = dict(contract_id=values['contract_id'],
@@ -254,8 +266,9 @@ def offer_contract_relationship_get(context,
     if offer_contract_relationship_id is None:
         return None
     return get_session().query(models.OfferContractRelationship).filter(
-        models.OfferContractRelationship.offer_contract_relationship_id
-        == offer_contract_relationship_id).one_or_none()
+        models.OfferContractRelationship.
+        offer_contract_relationship_id ==
+        offer_contract_relationship_id).one_or_none()
 
 
 def offer_contract_relationship_get_all(context, filters=None):
@@ -310,9 +323,9 @@ def offer_contract_relationship_destroy(context,
 
         if offer_contract_relationship_ref:
             get_session().query(models.OfferContractRelationship) \
-                .filter(
-                models.OfferContractRelationship.offer_contract_relationship_id
-                == offer_contract_relationship_id).delete()
+                .filter(models.OfferContractRelationship.
+                        offer_contract_relationship_id ==
+                        offer_contract_relationship_id).delete()
         else:
             return None
     else:

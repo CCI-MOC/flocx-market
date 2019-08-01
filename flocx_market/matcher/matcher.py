@@ -1,14 +1,12 @@
+from flocx_market.objects import offer
 import jmespath
 import re
 
 
 def apply_operator(val1, val2, op):
 
-    if val1 is None or val2 is None or op is None:
-        return False
-
     # null operator
-    if op == 'null':
+    if op is None and val1 is not None:
         return val1
 
     neg = False
@@ -46,7 +44,7 @@ def apply_operator(val1, val2, op):
             ret_val = val1 <= val2
 
     # string operations
-    if op in all_str_ops:
+    elif op in all_str_ops:
         val1 = str(val1)
         val2 = str(val2)
 
@@ -69,7 +67,7 @@ def apply_operator(val1, val2, op):
                 ret_val = False
 
     # list operators
-    if op in all_list_ops:
+    elif op in all_list_ops:
 
         if op == 'in':
             val1 = val1
@@ -80,6 +78,8 @@ def apply_operator(val1, val2, op):
             val1 = list(val1)
             val2 = val2
             ret_val = val2 in val1
+    else:
+        raise ValueError
 
     if neg:
         return not ret_val
@@ -89,12 +89,37 @@ def apply_operator(val1, val2, op):
 
 def match_specs(match_expression, data):
     for exp in match_expression:
-        if None in exp:
-            return False
 
         j_val = jmespath.search(exp[0], data)
         op = exp[1]
         val = exp[2]
+
         if not apply_operator(j_val, val, op):
             return False
+
     return True
+
+
+def get_all_matching_offers(context,
+                            specs,
+                            start_time=None,
+                            end_time=None,
+                            first=False):
+
+    all_offers = offer.Offer.\
+                    get_available_status_contract(
+                                      context,
+                                      start_time=start_time,
+                                      end_time=end_time)
+
+    matching_offers = []
+
+    for o in all_offers:
+        if match_specs(specs, o.server_config):
+            if first:
+                return o
+            else:
+                matching_offers.append(o)
+    if first:
+        return None
+    return matching_offers

@@ -42,7 +42,6 @@ test_offer_data_3 = dict(
     cost=0.0,
     )
 
-
 test_bid_data_1 = dict(server_quantity=2,
                        start_time=now - timedelta(days=2),
                        end_time=now - timedelta(days=1),
@@ -268,8 +267,9 @@ def test_bid_update_scoped_valid(app, db, session):
 
 def test_bid_update_scoped_invalid(app, db, session):
     bid = api.bid_create(test_bid_data_1, scoped_context)
-    updated = api.bid_update(
-        bid.marketplace_bid_id, dict(status='testing'), scoped_context_2)
+    updated = api.bid_update(bid.marketplace_bid_id,
+                             dict(status='testing'),
+                             scoped_context_2)
 
     assert updated is None
 
@@ -399,8 +399,8 @@ def test_offer_contract_relationship_get_by_id(app, db, session):
     assert (api.offer_contract_relationship_get(
         context=admin_context,
         offer_contract_relationship_id=ocr[0].offer_contract_relationship_id)
-            .offer_contract_relationship_id
-            == ocr[0].offer_contract_relationship_id)
+            .offer_contract_relationship_id ==
+            ocr[0].offer_contract_relationship_id)
 
 
 def test_offer_contract_relationship_create_valid(app, db, session):
