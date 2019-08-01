@@ -1,6 +1,16 @@
 import json
-from flocx_market.matcher import match_specs
+from flocx_market.matcher.matcher import match_specs
+from flocx_market.matcher.matcher import get_all_matching_offers
+from oslo_context import context as ctx
+from flocx_market.objects import offer
 from pytest import raises
+
+import datetime
+now = datetime.datetime.utcnow()
+
+scoped_context = ctx.RequestContext(is_admin=False,
+                                    project_id='5599')
+
 data = json.loads(""" {
     "name": "abc_def",
     "cpu_arch": "x86_64",
@@ -98,23 +108,21 @@ def test_str_not_eq_op():
 
 
 def test_str_start_op():
-    exp = [
-        ["inventory.system_vendor.product_name", "startswith", "M620"]
-    ]
+    exp = [["inventory.system_vendor.product_name", "startswith", "M620"]]
     assert (not match_specs(exp, data))
-    exp = [
-        ["inventory.system_vendor.product_name", "startswith", "PowerEdge"]
-    ]
+    exp = [["inventory.system_vendor.product_name", "startswith", "PowerEdge"]]
     assert (match_specs(exp, data))
-    exp = [
-        ["inventory.system_vendor.product_name", "!startswith", "PowerEdge"]
-    ]
+    exp = [["inventory.system_vendor.product_name",
+            "!startswith",
+            "PowerEdge"]]
     assert (not match_specs(exp, data))
 
 
 def test_str_end_op():
     exp = [["inventory.system_vendor.product_name", "endswith", "M620"]]
     assert (match_specs(exp, data))
+    exp = [["inventory.system_vendor.product_name", "endswith", ["M620"]]]
+    assert (not match_specs(exp, data))
     exp = [["inventory.system_vendor.product_name", "endswith", "PowerEdge"]]
     assert (not match_specs(exp, data))
     exp = [["inventory.system_vendor.product_name", "!endswith", "PowerEdge"]]
@@ -149,29 +157,84 @@ def test_list_in_op():
 
 
 def test_none_op():
-    exp = [["root_disk.rotational", "null", "null"]]
+    exp = [["root_disk.rotational", None, "null"]]
     assert (match_specs(exp, data))
-    exp = [["root_disk.test_", "null", "null"]]
-    assert (not match_specs(exp, data))
-
-
-def test_none_var_and_op():
-    exp = [[None, "null", "null"]]
-    assert (not match_specs(exp, data))
-    exp = [[None, None, "null"]]
-    assert (not match_specs(exp, data))
-    exp = [[None, "null", None]]
+    exp = [["root_disk.test_", None, "null"]]
     assert (not match_specs(exp, data))
 
 
 def test_unknown_op():
-    exp = [["cpus", "xyz", ["32", "64", "99"]]]
-    assert (not match_specs(exp, data))
-    exp = [["cpus", "bleh", ["64", "99"]]]
-    assert (not match_specs(exp, data))
+    with raises(ValueError):
+        exp = [["cpus", "xyz", ["32", "64", "99"]]]
+        match_specs(exp, data)
+    with raises(ValueError):
+        exp = [["cpus", "bleh", ["64", "99"]]]
+        match_specs(exp, data)
 
 
 def test_invalid_data_type():
     with raises(ValueError):
         exp = [["inventory.memory.physical_mb", "<=", "755-*37"]]
         match_specs(exp, data)
+
+
+test_offer_1 = dict(
+        provider_id='2345',
+        provider_offer_id='a41fadc1-6ae9-47e',
+        marketplace_offer_id='test_offer_1',
+        creator_id='3456',
+        marketplace_date_created=now,
+        status='available',
+        server_id='4567',
+        start_time=now,
+        end_time=now,
+        server_config={'memory': 204},
+        cost=0.0,
+        contract_id=None,
+        project_id='5599'
+        )
+
+test_offer_2 = dict(
+        provider_id='2345',
+        provider_offer_id='a41fc1-6ae9-47e',
+        marketplace_offer_id='test_offer_2',
+        creator_id='3456',
+        marketplace_date_created=now,
+        status='available',
+        server_id='457',
+        start_time=now,
+        end_time=now,
+        server_config={'memory': 203},
+        cost=0.0,
+        contract_id=None,
+        project_id='5599'
+        )
+
+
+def test_0_match(app, db, session):
+    assert len(get_all_matching_offers(
+        scoped_context,
+        [["memory", "==", 204]])) == 0
+
+
+def test_1_match(app, db, session):
+    offer.Offer.create(test_offer_1, scoped_context)
+    assert len(get_all_matching_offers(
+        scoped_context,
+        [["memory", "==", 204]])) == 1
+
+
+def test_only_1_match(app, db, session):
+    offer.Offer.create(test_offer_1, scoped_context)
+    offer.Offer.create(test_offer_2, scoped_context)
+    assert len(get_all_matching_offers(
+        scoped_context,
+        [["memory", "==", 203]])) == 1
+
+
+def test_2_match(app, db, session):
+    offer.Offer.create(test_offer_1, scoped_context)
+    offer.Offer.create(test_offer_2, scoped_context)
+    assert len(get_all_matching_offers(
+        scoped_context,
+        [["memory", ">", 202]])) == 2
