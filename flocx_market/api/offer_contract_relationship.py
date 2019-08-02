@@ -30,7 +30,7 @@ class OfferContractRelationship(Resource):
             if value is not None:
                 filters[key] = value
 
-        ocrs = ocr.OfferContractRelationship.get_all(g.context, **filters)
+        ocrs = ocr.OfferContractRelationship.get_all(g.context, filters)
         if ocrs is None:
             return {'message': 'OfferContractRelationship not found'}, 404
 
