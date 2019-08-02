@@ -117,11 +117,19 @@ def test_offer_create(app, db, session):
     assert check.to_dict() == offer.to_dict()
 
 
-def test_offer_create_invalid_admin(app, db, session):
+def test_offer_create_invalid_no_cost_admin(app, db, session):
     data = dict(test_offer_data)
     del data['cost']
 
     with pytest.raises(DBError):
+        api.offer_create(data, scoped_context)
+
+
+def test_offer_create_invalid_negative_cost_admin(app, db, session):
+    data = dict(test_offer_data)
+    data['cost'] = -1
+
+    with pytest.raises(ValueError):
         api.offer_create(data, scoped_context)
 
 

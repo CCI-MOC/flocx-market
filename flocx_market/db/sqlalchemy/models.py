@@ -42,6 +42,12 @@ class Bid(Base):
     cost = orm.Column(orm.Float, nullable=False)
     contracts = orm.relationship('Contract', lazy='dynamic')
 
+    @orm.validates('cost')
+    def validate_cost(self, key, value):
+        if value < 0:
+            raise ValueError('Cost must be >= 0')
+        return value
+
 
 class Offer(Base):
     __tablename__ = "offers"
@@ -68,6 +74,12 @@ class Offer(Base):
     cost = orm.Column(orm.Float, nullable=False)
     offer_contract_relationships = orm.relationship(
         'OfferContractRelationship', lazy='dynamic')
+
+    @orm.validates('cost')
+    def validate_cost(self, key, value):
+        if value < 0:
+            raise ValueError('Cost must be >= 0')
+        return value
 
 
 class Contract(Base):
