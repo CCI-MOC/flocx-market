@@ -151,15 +151,6 @@ def test_delete_contract_missing(mock_get, client):
     assert response.status_code == 404
 
 
-@mock.patch('flocx_market.objects.contract.Contract.create')
-def test_create_contract(mock_create, client):
-    mock_create.return_value = test_contract_1
-    res = client.post('/contract', data=json.dumps(test_contract_dict))
-    assert res.status_code == 201
-    assert mock_create.call_count == 1
-    assert res.json == test_contract_1.to_dict()
-
-
 @mock.patch('flocx_market.objects.contract.Contract.save')
 @mock.patch('flocx_market.objects.contract.Contract.get')
 def test_update_contract(mock_get, mock_save, client):

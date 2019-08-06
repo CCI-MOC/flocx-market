@@ -17,12 +17,6 @@ class Contract(Resource):
             return c.to_dict()
 
     @classmethod
-    def post(cls):
-
-        data = request.get_json(force=True)
-        return contract.Contract.create(data, g.context).to_dict(), 201
-
-    @classmethod
     def delete(cls, contract_id):
 
         c = contract.Contract.get(contract_id, g.context)
