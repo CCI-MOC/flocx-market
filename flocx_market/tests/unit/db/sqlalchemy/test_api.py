@@ -499,29 +499,30 @@ def test_offer_contract_relationship_update_valid(app, db, session):
     assert check.marketplace_offer_id == offer_test_id
 
 
-def test_offer_contract_relationship_update_invalid_scoped(app, db, session):
-    contract_data, offer_test_id = create_test_contract_data_for_ocr()
-    contract = api.contract_create(contract_data, admin_context)
-    filters = {
-        'marketplace_offer_id': offer_test_id,
-        'contract_id': contract.contract_id
-    }
-    ocrs = api.offer_contract_relationship_get_all(
-        context=admin_context,
-        filters=filters,
-    )
-    ocr_id = ocrs[0].offer_contract_relationship_id
+# TODO(tzumainn): refactor once we re-enable ocr scoping for the update operation
+# def test_offer_contract_relationship_update_invalid_scoped(app, db, session):
+#     contract_data, offer_test_id = create_test_contract_data_for_ocr()
+#     contract = api.contract_create(contract_data, admin_context)
+#     filters = {
+#         'marketplace_offer_id': offer_test_id,
+#         'contract_id': contract.contract_id
+#     }
+#     ocrs = api.offer_contract_relationship_get_all(
+#         context=admin_context,
+#         filters=filters,
+#     )
+#     ocr_id = ocrs[0].offer_contract_relationship_id
 
-    api.offer_contract_relationship_update(
-        context=scoped_context,
-        offer_contract_relationship_id=ocr_id,
-        values=dict(status='testing'))
-    check = api.offer_contract_relationship_get(
-        context=admin_context,
-        offer_contract_relationship_id=ocr_id)
+#     api.offer_contract_relationship_update(
+#         context=scoped_context,
+#         offer_contract_relationship_id=ocr_id,
+#         values=dict(status='testing'))
+#     check = api.offer_contract_relationship_get(
+#         context=admin_context,
+#         offer_contract_relationship_id=ocr_id)
 
-    assert check.status != 'testing'
-    assert check.marketplace_offer_id == offer_test_id
+#     assert check.status != 'testing'
+#     assert check.marketplace_offer_id == offer_test_id
 
 
 def test_offer_contract_relationship_get_all_unexpired(app, db, session):

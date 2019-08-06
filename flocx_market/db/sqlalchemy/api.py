@@ -301,17 +301,14 @@ def offer_contract_relationship_create(context, values):
 def offer_contract_relationship_update(context,
                                        offer_contract_relationship_id,
                                        values):
-    if context.is_admin:
-        offer_contract_relationship_ref \
-            = offer_contract_relationship_get(context,
-                                              offer_contract_relationship_id)
-
-        values.pop('offer_contract_relationship_id', None)
-        offer_contract_relationship_ref.update(values)
-        offer_contract_relationship_ref.save(get_session())
-        return offer_contract_relationship_ref
-    else:
-        return None
+    offer_contract_relationship_ref \
+        = offer_contract_relationship_get(context,
+                                          offer_contract_relationship_id)
+    
+    values.pop('offer_contract_relationship_id', None)
+    offer_contract_relationship_ref.update(values)
+    offer_contract_relationship_ref.save(get_session())
+    return offer_contract_relationship_ref
 
 
 def offer_contract_relationship_destroy(context,
