@@ -25,11 +25,9 @@ Base = declarative_base(cls=FLOCXMarketBase)
 
 class Bid(Base):
     __tablename__ = 'bids'
-    marketplace_bid_id = orm.Column(
-        orm.String(64),
-        primary_key=True,
-        autoincrement=False,
-    )
+
+    id = orm.Column(orm.Integer, primary_key=True, autoincrement=True)
+    marketplace_bid_id = orm.Column(orm.String(64))
     project_id = orm.Column(orm.String(64), nullable=False)
     server_quantity = orm.Column(orm.Integer, nullable=False)
     start_time = orm.Column(orm.DateTime(timezone=True), nullable=False)
@@ -51,11 +49,9 @@ class Bid(Base):
 
 class Offer(Base):
     __tablename__ = "offers"
-    marketplace_offer_id = orm.Column(
-        orm.String(64),
-        primary_key=True,
-        autoincrement=False,
-    )
+
+    id = orm.Column(orm.Integer, primary_key=True, autoincrement=True)
+    marketplace_offer_id = orm.Column(orm.String(64))
     provider_offer_id = orm.Column(
         orm.String(64),
         nullable=False,
@@ -84,17 +80,15 @@ class Offer(Base):
 
 class Contract(Base):
     __tablename__ = 'contracts'
-    contract_id = orm.Column(
-        orm.String(64),
-        primary_key=True,
-        autoincrement=False,
-    )
+
+    id = orm.Column(orm.Integer, primary_key=True, autoincrement=True)
+    contract_id = orm.Column(orm.String(64))
     status = orm.Column(orm.String(15), nullable=False, default='unretrieved')
     start_time = orm.Column(orm.DateTime(timezone=True), nullable=False)
     end_time = orm.Column(orm.DateTime(timezone=True), nullable=False)
     cost = orm.Column(orm.Float, nullable=False)
-    bid_id = orm.Column(orm.String(64),
-                        orm.ForeignKey('bids.marketplace_bid_id'))
+    bid_id = orm.Column(orm.Integer,
+                        orm.ForeignKey('bids.id'))
     bid = orm.relationship('Bid')
     offer_contract_relationships = orm.relationship(
         'OfferContractRelationship', lazy='dynamic')
@@ -103,15 +97,13 @@ class Contract(Base):
 
 class OfferContractRelationship(Base):
     __tablename__ = 'offer_contract_relationship'
-    offer_contract_relationship_id = orm.Column(
-        orm.String(64),
-        primary_key=True,
-        autoincrement=False,
-    )
-    marketplace_offer_id = orm.Column(
-        orm.String(64), orm.ForeignKey('offers.marketplace_offer_id'))
+
+    id = orm.Column(orm.Integer, primary_key=True, autoincrement=True)
+    offer_contract_relationship_id = orm.Column(orm.String(64))
+    marketplace_offer_id = orm.Column(orm.Integer,
+                                      orm.ForeignKey('offers.id'))
     marketplace_offer = orm.relationship('Offer')
-    contract_id = orm.Column(orm.String(64),
-                             orm.ForeignKey('contracts.contract_id'))
+    contract_id = orm.Column(orm.Integer,
+                             orm.ForeignKey('contracts.id'))
     contract = orm.relationship('Contract')
     status = orm.Column(orm.String(15), nullable=False, default='available')

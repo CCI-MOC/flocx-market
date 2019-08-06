@@ -221,9 +221,9 @@ def contract_create(values, context):
         contract_ref.update(values)
         contract_ref.save(get_session())
         # update foreign key for offers
-        for offer_id in offers:
-            ocr_data = dict(contract_id=values['contract_id'],
-                            marketplace_offer_id=offer_id,
+        for offer in offers:
+            ocr_data = dict(contract=contract_ref,
+                            marketplace_offer=offer,
                             status='unretrieved')
             offer_contract_relationship_create(context, ocr_data)
         return contract_ref
