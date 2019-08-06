@@ -1,12 +1,10 @@
 from flocx_market.matcher import matcher
 from flocx_market.objects import bid
 from flocx_market.objects import contract
-import datetime
 
 
 def prepare_contract(offers_used, bid_, context):
     contract_data = dict(start_time=bid_.start_time,
-                         time_created=datetime.datetime.utcnow(),
                          end_time=bid_.end_time,
                          cost=bid_.cost,
                          project_id=bid_.project_id,
