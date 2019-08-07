@@ -5,7 +5,12 @@ opts = [
     cfg.IntOpt('update_expire_frequency',
                default=60,
                help="The frequency in which the manager's \
-                     periodic task will run.\
+                     expiration periodic tasks will run.\
+                     Enter in seconds"),
+    cfg.IntOpt('matcher_frequency',
+               default=60,
+               help="The frequency in which the manager's \
+                     matcher periodic task will run.\
                      Enter in seconds")
 ]
 
