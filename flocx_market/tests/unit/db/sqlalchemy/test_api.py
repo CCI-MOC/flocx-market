@@ -92,6 +92,22 @@ def test_offer_get_all_by_project_id(app, db, session):
     assert len(api.offer_get_all_by_project_id(scoped_context)) == 2
 
 
+def test_offer_get_all_by_server_id(app, db, session):
+    api.offer_create(test_offer_data, scoped_context)
+    api.offer_create(test_offer_data_2, scoped_context)
+
+    assert len(api.offer_get_all_by_server_id(
+        scoped_context, test_offer_data["server_id"])) == 1
+
+
+def test_offer_get_all_by_server_id_and_status(app, db, session):
+    api.offer_create(test_offer_data, scoped_context)
+    api.offer_create(test_offer_data_2, scoped_context)
+
+    assert len(api.offer_get_all_by_server_id(
+        scoped_context, test_offer_data["server_id"], "expired")) == 0
+
+
 def test_offer_get_all_unexpired_admin(app, db, session):
     api.offer_create(test_offer_data, scoped_context)
     api.offer_create(test_offer_data_2, scoped_context)
@@ -115,6 +131,22 @@ def test_offer_create(app, db, session):
     check = api.offer_get(offer.marketplace_offer_id, scoped_context)
 
     assert check.to_dict() == offer.to_dict()
+
+
+def test_offer_create_duplicate_server_id_pass(app, db, session):
+    test_offer_data_expired = test_offer_data.copy()
+    expired_provider_offer_id = 'a41fadc1-6ae9-47e5-a74e-2dcf2b4dd55b'
+    test_offer_data_expired["status"] = "expired"
+    test_offer_data_expired["provider_offer_id"] = expired_provider_offer_id
+
+    api.offer_create(test_offer_data_expired, scoped_context)
+    api.offer_create(test_offer_data, scoped_context)
+
+
+def test_offer_create_duplicate_server_id_fail(app, db, session):
+    api.offer_create(test_offer_data, scoped_context)
+    with pytest.raises(ValueError):
+        api.offer_create(test_offer_data, scoped_context)
 
 
 def test_offer_create_invalid_no_cost_admin(app, db, session):
