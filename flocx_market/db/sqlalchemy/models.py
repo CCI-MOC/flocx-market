@@ -63,7 +63,7 @@ class Offer(Base):
     )
     project_id = orm.Column(orm.String(64), nullable=False)
     status = orm.Column(orm.String(15), nullable=False, default="available")
-    server_id = orm.Column(orm.String(64), nullable=False, unique=True)
+    server_id = orm.Column(orm.String(64), nullable=False)
     start_time = orm.Column(orm.DateTime(timezone=True), nullable=False)
     end_time = orm.Column(orm.DateTime(timezone=True), nullable=True)
     server_config = orm.Column(

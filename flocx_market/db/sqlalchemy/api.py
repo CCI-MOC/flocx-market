@@ -53,8 +53,15 @@ def offer_get_all_by_project_id(context):
         project_id=context.project_id).all()
 
 
-def offer_get_all_unexpired(context):
+def offer_get_all_by_server_id(context, server_id, status=None):
+    query = get_session().query(models.Offer).filter_by(
+        server_id=server_id)
+    if status is not None:
+        query = query.filter_by(status=status)
+    return query.all()
 
+
+def offer_get_all_unexpired(context):
     if context.is_admin:
         return get_session().query(models.Offer).filter(
             models.Offer.status != 'expired').all()
@@ -71,6 +78,12 @@ def offer_get_all_by_status(status, context):
 
 
 def offer_create(values, context):
+    server_id = values['server_id']
+    if len(offer_get_all_by_server_id(context, server_id, 'available')) > 0:
+        raise ValueError(
+            "Node %server_id already has an available offer",
+            server_id
+        )
 
     values['marketplace_offer_id'] = uuidutils.generate_uuid()
     offer_ref = models.Offer()
