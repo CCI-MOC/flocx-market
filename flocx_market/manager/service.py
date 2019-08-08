@@ -9,7 +9,8 @@ from flocx_market.matcher import match_engine
 from flocx_market.objects.offer import Offer
 from flocx_market.objects.bid import Bid
 from flocx_market.objects.contract import Contract
-
+from flocx_market.objects.offer_contract_relationship import \
+    OfferContractRelationship
 import flocx_market.conf
 
 CONF = flocx_market.conf.CONF
@@ -50,6 +51,12 @@ class Manager(periodic_task.PeriodicTasks):
         for offer in unexpired_offers:
             if offer.end_time < now:
                 offer.expire(context)
+                offer_id = offer.marketplace_offer_id
+                filters = {'marketplace_offer_id': offer_id}
+                unexpired_ocrs = OfferContractRelationship.get_all(context,
+                                                                   filters)
+                for ocr in unexpired_ocrs:
+                    ocr.expire(context)
                 exp += 1
         if exp > 0:
             LOG.info("Updated " + str(exp) + " offers")
@@ -78,6 +85,12 @@ class Manager(periodic_task.PeriodicTasks):
         for contract in unexpired_contracts:
             if contract.end_time < now:
                 contract.expire(context)
+                contract_id = contract.contract_id
+                filters = {'contract_id': contract_id}
+                unexpired_ocrs = OfferContractRelationship.get_all(context,
+                                                                   filters)
+                for ocr in unexpired_ocrs:
+                    ocr.expire(context)
                 exp += 1
         if exp > 0:
             LOG.info("Updated " + str(exp) + " contracts")
