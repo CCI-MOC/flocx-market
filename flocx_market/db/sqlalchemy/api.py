@@ -72,6 +72,9 @@ def offer_get_all_unexpired(context):
 
 
 def offer_get_all_by_status(status, context):
+    if context.is_admin:
+        return get_session().query(models.Offer)\
+                            .filter_by(status=status).all()
     return get_session().query(models.Offer)\
         .filter(models.Offer.status == status, models.Offer.project_id ==
                 context.project_id).all()
@@ -153,6 +156,9 @@ def bid_get_all_unexpired(context):
 
 
 def bid_get_all_by_status(status, context):
+    if context.is_admin:
+        return get_session().query(models.Bid)\
+                            .filter_by(status=status).all()
     return get_session().query(models.Bid)\
         .filter(models.Bid.status == status, models.Bid.project_id ==
                 context.project_id).all()

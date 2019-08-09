@@ -5,6 +5,7 @@ from oslo_service import periodic_task
 from oslo_service import threadgroup
 import datetime
 
+from flocx_market.matcher import match_engine
 from flocx_market.objects.offer import Offer
 from flocx_market.objects.bid import Bid
 from flocx_market.objects.contract import Contract
@@ -80,3 +81,9 @@ class Manager(periodic_task.PeriodicTasks):
                 exp += 1
         if exp > 0:
             LOG.info("Updated " + str(exp) + " contracts")
+
+    @periodic_task.periodic_task(spacing=CONF.manager.matcher_frequency,
+                                 run_immediately=True)
+    def matcher(self, context):
+        LOG.info("Matching bids and offers")
+        match_engine.match(context)
