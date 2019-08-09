@@ -24,7 +24,7 @@ class Bid(Resource):
         try:
             data = request.get_json(force=True)
             return bid.Bid.create(data, g.context).to_dict(), 201
-        except exception.MarketplaceException as e:
+        except (exception.MarketplaceException, exception.InvalidInput) as e:
             return json.dumps(e.message), e.code
 
     @classmethod

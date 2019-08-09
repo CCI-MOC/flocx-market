@@ -88,6 +88,7 @@ def offer_get_all_by_status(status, context):
 
 
 def offer_create(values, context):
+
     server_id = values['server_id']
     if len(offer_get_all_by_server_id(context, server_id, 'available')) > 0:
         raise ValueError(

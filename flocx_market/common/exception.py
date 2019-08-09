@@ -27,3 +27,11 @@ class RequiresAdmin(MarketplaceException):
     code = 403
     msg_fmt = ("You must be an admin to perform this"
                "action on type {resource_type}.")
+
+
+class InvalidInput(ValueError):
+    code = 403
+
+    def __init__(self, message=None):
+        self.message = message
+        super(ValueError, self).__init__(message)

@@ -4,6 +4,7 @@ import sqlalchemy_jsonfield
 import datetime
 
 from flocx_market.db.orm import orm
+import flocx_market.common.exception as e
 
 
 class FLOCXMarketBase(models.TimestampMixin, models.ModelBase):
@@ -45,7 +46,16 @@ class Bid(Base):
     @orm.validates('cost')
     def validate_cost(self, key, value):
         if value < 0:
-            raise ValueError('Cost must be >= 0')
+            raise e.InvalidInput('Cost must be >= 0')
+        return value
+
+    @orm.validates('server_config_query')
+    def validate_server_config_query(self, key, value):
+        if type(value) is not dict:
+            raise e.InvalidInput('server_config_query must be a dictionary')
+        if 'specs' not in value:
+            raise e.InvalidInput("server_config_query must contain key \
+                                    'specs'")
         return value
 
 
@@ -78,7 +88,13 @@ class Offer(Base):
     @orm.validates('cost')
     def validate_cost(self, key, value):
         if value < 0:
-            raise ValueError('Cost must be >= 0')
+            raise e.InvalidInput('Cost must be >= 0')
+        return value
+
+    @orm.validates('server_config')
+    def validate_server_config(self, key, value):
+        if type(value) is not dict:
+            raise e.InvalidInput('server_config must be a dictionary')
         return value
 
 
