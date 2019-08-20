@@ -1,6 +1,7 @@
 from oslo_db.sqlalchemy import session as db_session
 from oslo_utils import uuidutils
 
+
 import flocx_market.conf
 from flocx_market.db.sqlalchemy import models
 from flocx_market.common import exception
@@ -88,11 +89,21 @@ def offer_get_all_by_status(status, context):
 
 
 def offer_create(values, context):
-    server_id = values['server_id']
-    if len(offer_get_all_by_server_id(context, server_id, 'available')) > 0:
+
+    query = get_session().query(models.Offer).filter(
+        models.Offer.server_id == values['server_id'],
+        models.Offer.status == 'available'
+        )
+
+    query = query.filter(
+        ~((models.Offer.end_time < values['start_time'])
+          | (values['end_time'] < models.Offer.start_time))
+        ).all()
+
+    if len(query) > 0:
         raise ValueError(
             "Node %server_id already has an available offer",
-            server_id
+            values['server_id']
         )
 
     values['marketplace_offer_id'] = uuidutils.generate_uuid()
