@@ -24,12 +24,11 @@ class Offer(Resource):
         try:
             data = request.get_json(force=True)
             return offer.Offer.create(data, g.context).to_dict(), 201
-        except exception.MarketplaceException as e:
+        except (exception.MarketplaceException, exception.InvalidInput) as e:
             return json.dumps(e.message), e.code
 
     @classmethod
     def delete(cls, marketplace_offer_id):
-
         try:
             o = offer.Offer.get(marketplace_offer_id, g.context)
             o.destroy(g.context)

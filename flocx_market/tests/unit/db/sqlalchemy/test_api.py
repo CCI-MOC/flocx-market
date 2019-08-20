@@ -16,7 +16,7 @@ test_offer_data = dict(
     server_id='4567',
     start_time=now - timedelta(days=1),
     end_time=now + timedelta(days=1),
-    server_config={'foo': 'bar'},
+    server_config={'properties': 'bar'},
     cost=0.0,
     )
 
@@ -27,7 +27,7 @@ test_offer_data_2 = dict(
     server_id='456789',
     start_time=now - timedelta(days=2),
     end_time=now - timedelta(days=1),
-    server_config={'foo': 'bar'},
+    server_config={'properties': 'bar'},
     cost=0.0,
     )
 
@@ -39,7 +39,7 @@ test_offer_data_3 = dict(
     server_id='123',
     start_time=now - timedelta(days=2),
     end_time=now - timedelta(days=1),
-    server_config={'foo': 'bar'},
+    server_config={'properties': 'bar'},
     cost=0.0,
     )
 
@@ -48,7 +48,7 @@ test_bid_data_1 = dict(server_quantity=2,
                        end_time=now - timedelta(days=1),
                        duration=16400,
                        status="available",
-                       server_config_query={'foo': 'bar'},
+                       server_config_query={'specs': 'bar'},
                        cost=11.5)
 
 
@@ -57,7 +57,7 @@ test_bid_data_2 = dict(server_quantity=2,
                        end_time=now + timedelta(days=1),
                        duration=16400,
                        status="available",
-                       server_config_query={'foo': 'bar'},
+                       server_config_query={'specs': 'bar'},
                        cost=11.5)
 
 test_bid_data_3 = dict(server_quantity=2,
@@ -65,7 +65,7 @@ test_bid_data_3 = dict(server_quantity=2,
                        end_time=now + timedelta(days=1),
                        duration=16400,
                        status="available",
-                       server_config_query={'foo': 'bar'},
+                       server_config_query={'specs': 'bar'},
                        cost=11.5)
 
 admin_context = ctx.RequestContext(is_admin=True)
@@ -285,6 +285,18 @@ def test_bid_create_invalid(app, db, session):
     with pytest.raises(DBError):
         api.bid_create(data, scoped_context)
     test_bid_data_1['creator_bid_id'] = '12a59a51-b4d6-497d-9f75-f56c409305c8'
+
+
+def test_bid_create_invalid_server_config_query(app, db, session):
+    data = dict(test_bid_data_1)
+    data['server_config_query'] = 'string'
+
+    with pytest.raises(ValueError):
+        api.bid_create(data, scoped_context)
+
+    data['server_config_query'] = {'no': 'spec'}
+    with pytest.raises(ValueError):
+        api.bid_create(data, scoped_context)
 
 
 def test_bid_delete_admin(app, db, session):
