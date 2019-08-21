@@ -100,28 +100,31 @@ def test_offer_get_all_none_found(app, db, session):
     assert (len(api.offer_get_all(scoped_context)) == 0)
 
 
-def test_offer_get_all_by_project_id(app, db, session):
+def test_offer_get_all_filters(app, db, session):
+
+    assert len(api.offer_get_all_filters(admin_context)) == 0
+
     api.offer_create(test_offer_data, scoped_context)
     api.offer_create(test_offer_data_2, scoped_context)
     api.offer_create(test_offer_data_3, scoped_context_2)
 
-    assert len(api.offer_get_all_by_project_id(scoped_context)) == 2
+    assert len(api.offer_get_all_filters(admin_context)) == 3
 
+    assert len(api.offer_get_all_filters(admin_context,
+                                         filters={'project_id':
+                                                  scoped_context.project_id}
+                                         )) == 2
 
-def test_offer_get_all_by_server_id(app, db, session):
-    api.offer_create(test_offer_data, scoped_context)
-    api.offer_create(test_offer_data_2, scoped_context)
+    assert len(api.offer_get_all_filters(admin_context,
+                                         filters={'server_id':
+                                                  test_offer_data['server_id']}
+                                         )) == 1
 
-    assert len(api.offer_get_all_by_server_id(
-        scoped_context, test_offer_data["server_id"])) == 1
-
-
-def test_offer_get_all_by_server_id_and_status(app, db, session):
-    api.offer_create(test_offer_data, scoped_context)
-    api.offer_create(test_offer_data_2, scoped_context)
-
-    assert len(api.offer_get_all_by_server_id(
-        scoped_context, test_offer_data["server_id"], "expired")) == 0
+    assert len(api.offer_get_all_filters(admin_context,
+                                         filters={'server_id':
+                                                  test_offer_data['server_id'],
+                                                  'status': 'expired'}
+                                         )) == 0
 
 
 def test_offer_get_all_unexpired_admin(app, db, session):
@@ -250,11 +253,25 @@ def test_bid_get_all(app, db, session):
     assert len(api.bid_get_all(admin_context)) == 2
 
 
-def test_bid_get_all_by_project_id(app, db, session):
+def test_bid_get_all_filters(app, db, session):
+
+    assert len(api.bid_get_all_filters(admin_context)) == 0
+
     api.bid_create(test_bid_data_1, scoped_context)
     api.bid_create(test_bid_data_2, scoped_context)
+    api.bid_create(test_bid_data_3, scoped_context_2)
 
-    assert len(api.bid_get_all(admin_context)) == 2
+    assert len(api.bid_get_all_filters(admin_context)) == 3
+
+    assert len(api.bid_get_all_filters(admin_context,
+                                       filters={'project_id':
+                                                scoped_context.project_id}
+                                       )) == 2
+
+    assert len(api.bid_get_all_filters(admin_context,
+                                       filters={'project_id':
+                                                scoped_context.project_id,
+                                                'status': 'expired'})) == 0
 
 
 def test_bid_get_all_unexpired(app, db, session):
