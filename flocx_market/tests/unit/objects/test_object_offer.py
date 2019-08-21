@@ -67,7 +67,7 @@ def test_get_all(offer_get_all):
     offer_get_all.assert_called_once()
 
 
-@mock.patch('flocx_market.db.sqlalchemy.api.offer_get_all_by_project_id')
+@mock.patch('flocx_market.db.sqlalchemy.api.offer_get_all_filters')
 def test_get_all_by_project_id(offer_get_all):
     offer.Offer.get_all_by_project_id(scoped_context)
     offer_get_all.assert_called_once()

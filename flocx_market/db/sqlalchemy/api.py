@@ -55,16 +55,12 @@ def offer_get_all(context):
     return get_session().query(models.Offer).all()
 
 
-def offer_get_all_by_project_id(context):
-    return get_session().query(models.Offer).filter_by(
-        project_id=context.project_id).all()
-
-
-def offer_get_all_by_server_id(context, server_id, status=None):
-    query = get_session().query(models.Offer).filter_by(
-        server_id=server_id)
-    if status is not None:
-        query = query.filter_by(status=status)
+def offer_get_all_filters(context, filters=None):
+    query = get_session().query(models.Offer)
+    if filters is not None:
+        for field in ['project_id', 'server_id', 'status']:
+            if field in filters:
+                query = query.filter_by(**{field: filters[field]})
     return query.all()
 
 
@@ -78,18 +74,11 @@ def offer_get_all_unexpired(context):
             models.Offer.project_id == context.project_id).all()
 
 
-def offer_get_all_by_status(status, context):
-    if context.is_admin:
-        return get_session().query(models.Offer)\
-                            .filter_by(status=status).all()
-    return get_session().query(models.Offer)\
-        .filter(models.Offer.status == status, models.Offer.project_id ==
-                context.project_id).all()
-
-
 def offer_create(values, context):
     server_id = values['server_id']
-    if len(offer_get_all_by_server_id(context, server_id, 'available')) > 0:
+    if len(offer_get_all_filters(context,
+                                 {'server_id': server_id,
+                                  'status': 'available'})) > 0:
         raise ValueError(
             "Node %server_id already has an available offer",
             server_id
@@ -164,26 +153,25 @@ def bid_get(marketplace_bid_id, context):
 
 
 def bid_get_all(context):
-    return get_session().query(models.Bid).all()
+    if context.is_admin:
+        return get_session().query(models.Bid).all()
+    else:
+        return bid_get_all_filters(context,
+                                   filters={'project_id': context.project_id})
 
 
-def bid_get_all_by_project_id(context):
-    return get_session().query(models.Bid)\
-        .filter_by(project_id=context.project_id).all()
+def bid_get_all_filters(context, filters=None):
+    query = get_session().query(models.Bid)
+    if filters is not None:
+        for field in ['project_id', 'status']:
+            if field in filters:
+                query = query.filter_by(**{field: filters[field]})
+    return query.all()
 
 
 def bid_get_all_unexpired(context):
     return get_session().query(models.Bid)\
         .filter(models.Bid.status != 'expired').all()
-
-
-def bid_get_all_by_status(status, context):
-    if context.is_admin:
-        return get_session().query(models.Bid)\
-                            .filter_by(status=status).all()
-    return get_session().query(models.Bid)\
-        .filter(models.Bid.status == status, models.Bid.project_id ==
-                context.project_id).all()
 
 
 def bid_create(values, context):

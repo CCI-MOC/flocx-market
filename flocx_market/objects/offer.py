@@ -59,7 +59,9 @@ class Offer(base.FLOCXMarketObject):
 
     @classmethod
     def get_all_by_project_id(cls, context):
-        by_project_id = db.offer_get_all_by_project_id(context)
+        by_project_id = db.offer_get_all_filters(context,
+                                                 filters={'project_id':
+                                                          context.project_id})
         return cls._from_db_object_list(by_project_id)
 
     def expire(self, context):
@@ -81,7 +83,9 @@ class Offer(base.FLOCXMarketObject):
                     return False
             return True
 
-        offers_by_status = db.offer_get_all_by_status('available', context)
+        offers_by_status = db.offer_get_all_filters(context,
+                                                    filters={'status':
+                                                             'available'})
 
         if start_time is None and end_time is None:
             return cls._from_db_object_list(offers_by_status)
@@ -105,5 +109,6 @@ class Offer(base.FLOCXMarketObject):
 
     @classmethod
     def get_all_by_status(cls, status, context):
-        available = db.offer_get_all_by_status(status, context)
+        available = db.offer_get_all_filters(context,
+                                             filters={'status': status})
         return cls._from_db_object_list(available)
