@@ -14,10 +14,11 @@ test_offer_0 = dict(
     provider_id='2345',
     marketplace_date_created=now,
     status='available',
-    server_id='4567',
+    resource_id='4567',
+    resource_type='ironic_node',
     start_time=now - timedelta(days=2),
     end_time=now + timedelta(days=2),
-    server_config={'cpu': 4},
+    config={'cpu': 4},
     project_id='5599',
     cost=0.0,
     )
@@ -25,23 +26,23 @@ test_offer_0 = dict(
 
 test_bid_0 = dict(
     creator_bid_id="12a59a51-b4d6-497d-9f75-f56c409305c8",
-    server_quantity=1,
+    quantity=1,
     start_time=now - timedelta(days=1),
     end_time=now - timedelta(days=1),
     duration=16400,
     status="available",
-    server_config_query={'foo': 'bar', 'specs': [['cpu', '==', 5]]},
+    config_query={'foo': 'bar', 'specs': [['cpu', '==', 5]]},
     project_id='5599',
     cost=11.5)
 
 test_bid_1 = dict(
     creator_bid_id="12a59a51-b4d6-497d-9f75",
-    server_quantity=1,
+    quantity=1,
     start_time=now - timedelta(days=1),
     end_time=now - timedelta(days=1),
     duration=16400,
     status="available",
-    server_config_query={'foo': 'bar', 'specs': [['cpu', '==', 4]]},
+    config_query={'foo': 'bar', 'specs': [['cpu', '==', 4]]},
     project_id='5599',
     cost=11.5)
 

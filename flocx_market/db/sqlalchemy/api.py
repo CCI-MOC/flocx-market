@@ -60,9 +60,11 @@ def offer_get_all_by_project_id(context):
         project_id=context.project_id).all()
 
 
-def offer_get_all_by_server_id(context, server_id, status=None):
+def offer_get_all_by_resource_id(context,
+                                 resource_id,
+                                 status=None):
     query = get_session().query(models.Offer).filter_by(
-        server_id=server_id)
+        resource_id=resource_id)
     if status is not None:
         query = query.filter_by(status=status)
     return query.all()
@@ -88,11 +90,14 @@ def offer_get_all_by_status(status, context):
 
 
 def offer_create(values, context):
-    server_id = values['server_id']
-    if len(offer_get_all_by_server_id(context, server_id, 'available')) > 0:
+    resource_id = values['resource_id']
+    resource_type = values.get('resource_type', 'ironic_node')
+    if len(offer_get_all_by_resource_id(
+            context, resource_id, 'available')) > 0:
         raise ValueError(
-            "Node %server_id already has an available offer",
-            server_id
+            "%resource_type %resource_id already has an available offer",
+            resource_type,
+            resource_id
         )
 
     values['marketplace_offer_id'] = uuidutils.generate_uuid()

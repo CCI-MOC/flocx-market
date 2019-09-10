@@ -31,12 +31,12 @@ class Bid(Base):
         autoincrement=False,
     )
     project_id = orm.Column(orm.String(64), nullable=False)
-    server_quantity = orm.Column(orm.Integer, nullable=False)
+    quantity = orm.Column(orm.Integer, nullable=False)
     start_time = orm.Column(orm.DateTime(timezone=True), nullable=False)
     end_time = orm.Column(orm.DateTime(timezone=True), nullable=False)
     duration = orm.Column(orm.Integer, nullable=False)
     status = orm.Column(orm.String(15), nullable=False, default='available')
-    server_config_query = orm.Column(sqlalchemy_jsonfield.JSONField(
+    config_query = orm.Column(sqlalchemy_jsonfield.JSONField(
         enforce_string=True,
         enforce_unicode=False), nullable=False)
     cost = orm.Column(orm.Float, nullable=False)
@@ -63,10 +63,12 @@ class Offer(Base):
     )
     project_id = orm.Column(orm.String(64), nullable=False)
     status = orm.Column(orm.String(15), nullable=False, default="available")
-    server_id = orm.Column(orm.String(64), nullable=False)
+    resource_id = orm.Column(orm.String(64), nullable=False)
+    resource_type = orm.Column(
+        orm.String(64), nullable=False, default="ironic_node")
     start_time = orm.Column(orm.DateTime(timezone=True), nullable=False)
     end_time = orm.Column(orm.DateTime(timezone=True), nullable=True)
-    server_config = orm.Column(
+    config = orm.Column(
         sqlalchemy_jsonfield.JSONField(enforce_string=True,
                                        enforce_unicode=False),
         nullable=False,

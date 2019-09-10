@@ -11,12 +11,12 @@ class Bid(base.FLOCXMarketObject):
     fields = {
         'marketplace_bid_id': fields.StringField(),
         'project_id': fields.StringField(),
-        'server_quantity': fields.IntegerField(),
+        'quantity': fields.IntegerField(),
         'start_time': fields.DateTimeField(nullable=True),
         'end_time': fields.DateTimeField(nullable=True),
         'duration': fields.IntegerField(),
         'status': fields.StringField(),
-        'server_config_query': fields.FlexibleDictField(nullable=True),
+        'config_query': fields.FlexibleDictField(nullable=True),
         'cost': fields.FloatField(),
     }
 

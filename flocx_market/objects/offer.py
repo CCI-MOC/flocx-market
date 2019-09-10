@@ -14,10 +14,11 @@ class Offer(base.FLOCXMarketObject):
         'provider_offer_id': fields.StringField(),
         'project_id': fields.StringField(),
         'status': fields.StringField(),
-        'server_id': fields.StringField(),
+        'resource_id': fields.StringField(),
+        'resource_type': fields.StringField(),
         'start_time': fields.DateTimeField(nullable=True),
         'end_time': fields.DateTimeField(nullable=True),
-        'server_config': fields.FlexibleDictField(nullable=True),
+        'config': fields.FlexibleDictField(nullable=True),
         'cost': fields.FloatField(),
     }
 
