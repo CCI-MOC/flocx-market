@@ -13,10 +13,11 @@ test_offer_data = dict(
     provider_offer_id='a41fadc1-6ae9-47e5-a74e-2dcf2b4dd55a',
     status='available',
     project_id='1234',
-    server_id='4567',
+    resource_id='4567',
+    resource_type='ironic_node',
     start_time=now - timedelta(days=1),
     end_time=now + timedelta(days=1),
-    server_config={'foo': 'bar'},
+    config={'foo': 'bar'},
     cost=0.0,
     )
 
@@ -24,10 +25,11 @@ test_offer_data_2 = dict(
     provider_offer_id='141fadc1-6ae9-47e5-a74e-2dcf2b4dd554',
     status='expired',
     project_id='1234',
-    server_id='456789',
+    resource_id='456789',
+    resource_type='ironic_node',
     start_time=now - timedelta(days=2),
     end_time=now - timedelta(days=1),
-    server_config={'foo': 'bar'},
+    config={'foo': 'bar'},
     cost=0.0,
     )
 
@@ -36,36 +38,37 @@ test_offer_data_3 = dict(
     provider_offer_id='141fadc1-6ae9-47e5-a74e-2dcf2b455555',
     status='available',
     project_id='7788',
-    server_id='123',
+    resource_id='123',
+    resource_type='ironic_node',
     start_time=now - timedelta(days=2),
     end_time=now - timedelta(days=1),
-    server_config={'foo': 'bar'},
+    config={'foo': 'bar'},
     cost=0.0,
     )
 
-test_bid_data_1 = dict(server_quantity=2,
+test_bid_data_1 = dict(quantity=2,
                        start_time=now - timedelta(days=2),
                        end_time=now - timedelta(days=1),
                        duration=16400,
                        status="available",
-                       server_config_query={'foo': 'bar'},
+                       config_query={'foo': 'bar'},
                        cost=11.5)
 
 
-test_bid_data_2 = dict(server_quantity=2,
+test_bid_data_2 = dict(quantity=2,
                        start_time=now - timedelta(days=2),
                        end_time=now + timedelta(days=1),
                        duration=16400,
                        status="available",
-                       server_config_query={'foo': 'bar'},
+                       config_query={'foo': 'bar'},
                        cost=11.5)
 
-test_bid_data_3 = dict(server_quantity=2,
+test_bid_data_3 = dict(quantity=2,
                        start_time=now - timedelta(days=2),
                        end_time=now + timedelta(days=1),
                        duration=16400,
                        status="available",
-                       server_config_query={'foo': 'bar'},
+                       config_query={'foo': 'bar'},
                        cost=11.5)
 
 admin_context = ctx.RequestContext(is_admin=True)
@@ -108,20 +111,23 @@ def test_offer_get_all_by_project_id(app, db, session):
     assert len(api.offer_get_all_by_project_id(scoped_context)) == 2
 
 
-def test_offer_get_all_by_server_id(app, db, session):
+def test_offer_get_all_by_resource_id(app, db, session):
     api.offer_create(test_offer_data, scoped_context)
     api.offer_create(test_offer_data_2, scoped_context)
 
-    assert len(api.offer_get_all_by_server_id(
-        scoped_context, test_offer_data["server_id"])) == 1
+    assert len(api.offer_get_all_by_resource_id(
+        scoped_context,
+        test_offer_data["resource_id"])) == 1
 
 
-def test_offer_get_all_by_server_id_and_status(app, db, session):
+def test_offer_get_all_by_resource_id_and_status(app, db, session):
     api.offer_create(test_offer_data, scoped_context)
     api.offer_create(test_offer_data_2, scoped_context)
 
-    assert len(api.offer_get_all_by_server_id(
-        scoped_context, test_offer_data["server_id"], "expired")) == 0
+    assert len(api.offer_get_all_by_resource_id(
+        scoped_context,
+        test_offer_data["resource_id"],
+        "expired")) == 0
 
 
 def test_offer_get_all_unexpired_admin(app, db, session):
@@ -149,7 +155,7 @@ def test_offer_create(app, db, session):
     assert check.to_dict() == offer.to_dict()
 
 
-def test_offer_create_duplicate_server_id_pass(app, db, session):
+def test_offer_create_duplicate_resource_pass(app, db, session):
     test_offer_data_expired = test_offer_data.copy()
     expired_provider_offer_id = 'a41fadc1-6ae9-47e5-a74e-2dcf2b4dd55b'
     test_offer_data_expired["status"] = "expired"
@@ -159,7 +165,7 @@ def test_offer_create_duplicate_server_id_pass(app, db, session):
     api.offer_create(test_offer_data, scoped_context)
 
 
-def test_offer_create_duplicate_server_id_fail(app, db, session):
+def test_offer_create_duplicate_resource_fail(app, db, session):
     api.offer_create(test_offer_data, scoped_context)
     with pytest.raises(ValueError):
         api.offer_create(test_offer_data, scoped_context)

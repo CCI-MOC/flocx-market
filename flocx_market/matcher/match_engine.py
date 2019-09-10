@@ -22,10 +22,10 @@ def match(context):
     for b in all_bids:
         offers = matcher.\
                     get_all_matching_offers(context,
-                                            b.server_config_query['specs'],
+                                            b.config_query['specs'],
                                             start_time=b.start_time,
                                             end_time=b.end_time)
 
-        if len(offers) >= b.server_quantity:
-            offers_used = offers[:b.server_quantity+1]
+        if len(offers) >= b.quantity:
+            offers_used = offers[:b.quantity+1]
             prepare_contract(offers_used, b, context)

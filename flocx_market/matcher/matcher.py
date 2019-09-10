@@ -115,7 +115,7 @@ def get_all_matching_offers(context,
     matching_offers = []
 
     for o in all_offers:
-        if match_specs(specs, o.server_config):
+        if match_specs(specs, o.config):
             if first:
                 return o
             else:
