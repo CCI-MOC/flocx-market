@@ -17,12 +17,12 @@ class OfferContractRelationship(Resource):
                     .get(g.context, offer_contract_relationship_id)
                 return ocr_with_id.to_dict()
 
-            marketplace_offer_id = request.args.get('marketplace_offer_id')
+            offer_id = request.args.get('offer_id')
             contract_id = request.args.get('contract_id')
             status = request.args.get('status')
 
             possible_filters = {
-                'marketplace_offer_id': marketplace_offer_id,
+                'offer_id': offer_id,
                 'contract_id': contract_id,
                 'status': status
             }

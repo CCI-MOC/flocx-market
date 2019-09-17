@@ -8,13 +8,13 @@ import json
 class Bid(Resource):
 
     @classmethod
-    def get(cls, marketplace_bid_id=None):
+    def get(cls, bid_id=None):
 
-        if marketplace_bid_id is None:
+        if bid_id is None:
             return [x.to_dict() for x in bid.Bid.get_all(g.context)]
 
         try:
-            return bid.Bid.get(marketplace_bid_id, g.context).to_dict()
+            return bid.Bid.get(bid_id, g.context).to_dict()
         except exception.MarketplaceException as e:
             return json.dumps(e.message), e.code
 
@@ -28,22 +28,22 @@ class Bid(Resource):
             return json.dumps(e.message), e.code
 
     @classmethod
-    def delete(cls, marketplace_bid_id):
+    def delete(cls, bid_id):
 
         try:
-            b = bid.Bid.get(marketplace_bid_id, g.context)
+            b = bid.Bid.get(bid_id, g.context)
             b.destroy(g.context)
             return {'message': 'Bid deleted.'}
         except exception.MarketplaceException as e:
             return json.dumps(e.message), e.code
 
     @classmethod
-    def put(cls, marketplace_bid_id):
+    def put(cls, bid_id):
 
         data = request.get_json(force=True)
 
         try:
-            b = bid.Bid.get(marketplace_bid_id, g.context)
+            b = bid.Bid.get(bid_id, g.context)
             # we only allow status field to be modified
             if 'status' in data:
                 b.status = data['status']

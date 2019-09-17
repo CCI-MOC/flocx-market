@@ -1,5 +1,6 @@
 from oslo_versionedobjects import base as versioned_objects_base
 
+from flocx_market.common import statuses
 import flocx_market.db.sqlalchemy.api as db
 from flocx_market.objects import base
 from flocx_market.objects import fields
@@ -9,7 +10,7 @@ from flocx_market.objects import fields
 class Bid(base.FLOCXMarketObject):
 
     fields = {
-        'marketplace_bid_id': fields.StringField(),
+        'bid_id': fields.StringField(),
         'project_id': fields.StringField(),
         'quantity': fields.IntegerField(),
         'start_time': fields.DateTimeField(nullable=True),
@@ -37,7 +38,7 @@ class Bid(base.FLOCXMarketObject):
                 return cls._from_db_object(cls(), b)
 
     def destroy(self, context):
-        db.bid_destroy(self.marketplace_bid_id, context)
+        db.bid_destroy(self.bid_id, context)
         return True
 
     @classmethod
@@ -48,7 +49,7 @@ class Bid(base.FLOCXMarketObject):
     def save(self, context):
         updates = self.obj_get_changes()
         db_bid = db.bid_update(
-            self.marketplace_bid_id, updates, context)
+            self.bid_id, updates, context)
         return self._from_db_object(self, db_bid)
 
     @classmethod
@@ -67,5 +68,5 @@ class Bid(base.FLOCXMarketObject):
         return cls._from_db_object_list(available)
 
     def expire(self, context):
-        self.status = 'expired'
+        self.status = statuses.EXPIRED
         self.save(context)

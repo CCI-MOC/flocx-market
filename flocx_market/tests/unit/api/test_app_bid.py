@@ -6,6 +6,7 @@ from oslo_context import context as ctx
 import flocx_market.conf
 from flocx_market.objects import bid
 from flocx_market.common import exception as e
+from flocx_market.common import statuses
 
 CONF = flocx_market.conf.CONF
 
@@ -13,13 +14,13 @@ now = datetime.datetime.utcnow()
 
 
 test_bid_1 = bid.Bid(
-    marketplace_bid_id='test_bid_1',
+    bid_id='test_bid_1',
     creator_bid_id="1234",
     quantity=2,
     start_time=now,
     end_time=now,
     duration=16400,
-    status="available",
+    status=statuses.AVAILABLE,
     config_query={'foo': 'bar'},
     cost=11.5,
     project_id='5599',
@@ -28,13 +29,13 @@ test_bid_1 = bid.Bid(
 )
 
 test_bid_2 = bid.Bid(
-    marketplace_bid_id='test_bid_2',
+    bid_id='test_bid_2',
     creator_bid_id="2345",
     quantity=2,
     start_time=now,
     end_time=now,
     duration=16400,
-    status="available",
+    status=statuses.AVAILABLE,
     config_query={'foo': 'bar'},
     cost=11.5,
     project_id='5599',
@@ -59,10 +60,10 @@ def test_get_bids(mock_get_all, client):
 def test_get_bid(mock_get, client):
     mock_get.return_value = test_bid_1
     response = client.get('/bid/{}'.format(
-        test_bid_1.marketplace_bid_id))
+        test_bid_1.bid_id))
     assert response.status_code == 200
     mock_get.assert_called_once()
-    assert response.json['marketplace_bid_id'] == 'test_bid_1'
+    assert response.json['bid_id'] == 'test_bid_1'
 
 
 @mock.patch('flocx_market.api.bid.bid.Bid.get')
@@ -77,7 +78,7 @@ def test_get_bid_missing(mock_get, client):
 def test_delete_bid(mock_get, mock_destroy, client):
     mock_get.return_value = test_bid_1
     response = client.delete('/bid/{}'.format(
-        test_bid_1.marketplace_bid_id))
+        test_bid_1.bid_id))
     assert response.status_code == 200
     assert mock_destroy.call_count == 1
 
@@ -103,8 +104,8 @@ def test_create_bid(mock_create, client):
 def test_update_bid(mock_get, mock_save, client):
     mock_get.return_value = test_bid_1
     mock_save.return_value = test_bid_1
-    res = client.put('/bid/{}'.format(test_bid_1.marketplace_bid_id),
-                     data=json.dumps(dict(status='testing')))
+    res = client.put('/bid/{}'.format(test_bid_1.bid_id),
+                     data=json.dumps(dict(status=statuses.EXPIRED)))
     assert res.status_code == 200
     assert mock_save.call_count == 1
 
@@ -114,6 +115,6 @@ def test_update_bid(mock_get, mock_save, client):
 def test_update_bid_missing(mock_get, mock_save, client):
     mock_get.side_effect = e.ResourceNotFound()
     res = client.put('/bid/does-not-exist',
-                     data=json.dumps(dict(status='testing')))
+                     data=json.dumps(dict(status=statuses.EXPIRED)))
     assert res.status_code == 404
     assert mock_save.call_count == 0

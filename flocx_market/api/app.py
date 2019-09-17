@@ -30,11 +30,11 @@ def create_app(app_name):
     api.add_resource(Offer,
                      '/offer',
                      '/offer/',
-                     '/offer/<string:marketplace_offer_id>')
+                     '/offer/<string:offer_id>')
     api.add_resource(Bid,
                      '/bid',
                      '/bid/',
-                     '/bid/<string:marketplace_bid_id>')
+                     '/bid/<string:bid_id>')
     api.add_resource(Contract,
                      '/contract',
                      '/contract/',

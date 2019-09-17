@@ -1,9 +1,12 @@
 from oslo_db.sqlalchemy import session as db_session
 from oslo_utils import uuidutils
 
+from flocx_market.common import exception
+from flocx_market.common import statuses
 import flocx_market.conf
 from flocx_market.db.sqlalchemy import models
-from flocx_market.common import exception
+from flocx_market.resource_objects import resource_object_factory as ro_factory
+from flocx_market.resource_objects import resource_types
 
 CONF = flocx_market.conf.CONF
 _engine_facade = None
@@ -39,16 +42,16 @@ def drop_db():
     return True
 
 
-def offer_get(marketplace_offer_id, context):
+def offer_get(offer_id, context):
 
     offer_ref = get_session().query(models.Offer).filter_by(
-            marketplace_offer_id=marketplace_offer_id).one_or_none()
+            offer_id=offer_id).one_or_none()
 
     if offer_ref:
         return offer_ref
     else:
         raise exception.ResourceNotFound(resource_type="Offer",
-                                         resource_uuid=marketplace_offer_id)
+                                         resource_uuid=offer_id)
 
 
 def offer_get_all(context):
@@ -73,10 +76,10 @@ def offer_get_all_by_resource_id(context,
 def offer_get_all_unexpired(context):
     if context.is_admin:
         return get_session().query(models.Offer).filter(
-            models.Offer.status != 'expired').all()
+            models.Offer.status != statuses.EXPIRED).all()
     else:
         return get_session().query(models.Offer).filter(
-            models.Offer.status != 'expired',
+            models.Offer.status != statuses.EXPIRED,
             models.Offer.project_id == context.project_id).all()
 
 
@@ -91,81 +94,80 @@ def offer_get_all_by_status(status, context):
 
 def offer_create(values, context):
     resource_id = values['resource_id']
-    resource_type = values.get('resource_type', 'ironic_node')
+    resource_type = values.get('resource_type', resource_types.IRONIC_NODE)
+    resource = ro_factory.ResourceObjectFactory.get_resource_object(
+        resource_type, resource_id)
+
+    if not resource.is_resource_admin(context.project_id):
+        raise exception.ResourceNoPermission(
+            resource_type=resource_type, resource_id=resource_id)
+
     if len(offer_get_all_by_resource_id(
-            context, resource_id, 'available')) > 0:
+            context, resource_id, statuses.AVAILABLE)) > 0:
         raise ValueError(
             "%resource_type %resource_id already has an available offer",
             resource_type,
             resource_id
         )
 
-    values['marketplace_offer_id'] = uuidutils.generate_uuid()
+    values['offer_id'] = uuidutils.generate_uuid()
+    values['project_id'] = context.project_id
     offer_ref = models.Offer()
     offer_ref.update(values)
     offer_ref.save(get_session())
     return offer_ref
 
 
-def offer_update(marketplace_offer_id, values, context):
-
-    if context.is_admin:
-        offer_ref = get_session().query(models.Offer).filter_by(
-                    marketplace_offer_id=marketplace_offer_id).one_or_none()
-    else:
-        offer_ref = get_session().query(models.Offer).filter_by(
-            marketplace_offer_id=marketplace_offer_id).one_or_none()
+def offer_update(offer_id, values, context):
+    offer_ref = get_session().query(models.Offer).filter_by(
+        offer_id=offer_id).one_or_none()
 
     if offer_ref:
         if offer_ref.project_id != context.project_id and not context.is_admin:
             raise exception.ResourceNoPermission(
                                             resource_type="Offer",
-                                            resource_uuid=marketplace_offer_id)
-        values.pop('marketplace_offer_id', None)
+                                            resource_uuid=offer_id)
+        values.pop('offer_id', None)
         offer_ref.update(values)
         offer_ref.save(get_session())
         return offer_ref
     else:
         raise exception.ResourceNotFound(resource_type="Offer",
-                                         resource_uuid=marketplace_offer_id)
+                                         resource_uuid=offer_id)
 
 
-def offer_destroy(marketplace_offer_id, context):
-    if context.is_admin:
-        offer_ref = get_session().query(models.Offer).filter_by(
-                    marketplace_offer_id=marketplace_offer_id).one_or_none()
-    else:
-        offer_ref = get_session().query(models.Offer).filter_by(
-            marketplace_offer_id=marketplace_offer_id).one_or_none()
+def offer_destroy(offer_id, context):
+    offer_ref = get_session().query(models.Offer).filter_by(
+        offer_id=offer_id).one_or_none()
 
     if offer_ref:
         if offer_ref.project_id != context.project_id and not context.is_admin:
             raise exception.ResourceNoPermission(
                                             resource_type="Offer",
-                                            resource_uuid=marketplace_offer_id)
+                                            resource_uuid=offer_id)
 
         if context.is_admin:
             get_session().query(models.Offer).filter_by(
-                marketplace_offer_id=marketplace_offer_id).delete()
+                offer_id=offer_id).delete()
         else:
             get_session().query(models.Offer).filter_by(
-                marketplace_offer_id=marketplace_offer_id,
+                offer_id=offer_id,
                 project_id=context.project_id).delete()
     else:
         raise exception.ResourceNotFound(resource_type="Offer",
-                                         resource_uuid=marketplace_offer_id)
+                                         resource_uuid=offer_id)
 
 
-def bid_get(marketplace_bid_id, context):
+def bid_get(bid_id, context):
 
     bid_ref = get_session().query(models.Bid).filter_by(
-        marketplace_bid_id=marketplace_bid_id).one_or_none()
+        bid_id=bid_id).one_or_none()
 
     if bid_ref:
         return bid_ref
     else:
         raise exception.ResourceNotFound(resource_type="Bid",
-                                         resource_uuid=marketplace_bid_id)
+                                         resource_uuid=bid_id)
 
 
 def bid_get_all(context):
@@ -179,7 +181,7 @@ def bid_get_all_by_project_id(context):
 
 def bid_get_all_unexpired(context):
     return get_session().query(models.Bid)\
-        .filter(models.Bid.status != 'expired').all()
+        .filter(models.Bid.status != statuses.EXPIRED).all()
 
 
 def bid_get_all_by_status(status, context):
@@ -192,7 +194,7 @@ def bid_get_all_by_status(status, context):
 
 
 def bid_create(values, context):
-    values['marketplace_bid_id'] = uuidutils.generate_uuid()
+    values['bid_id'] = uuidutils.generate_uuid()
     values['project_id'] = context.project_id
     bid_ref = models.Bid()
     bid_ref.update(values)
@@ -200,53 +202,53 @@ def bid_create(values, context):
     return bid_ref
 
 
-def bid_update(marketplace_bid_id, values, context):
+def bid_update(bid_id, values, context):
     if context.is_admin:
         bid_ref = get_session().query(models.Bid).filter_by(
-                    marketplace_bid_id=marketplace_bid_id).one_or_none()
+                    bid_id=bid_id).one_or_none()
     else:
         bid_ref = get_session().query(models.Bid).filter_by(
-            marketplace_bid_id=marketplace_bid_id).one_or_none()
+            bid_id=bid_id).one_or_none()
 
     if bid_ref:
         if bid_ref.project_id != context.project_id and not context.is_admin:
             raise exception.ResourceNoPermission(
                                             resource_type="Bid",
-                                            resource_uuid=marketplace_bid_id)
+                                            resource_uuid=bid_id)
 
-        values.pop('marketplace_bid_id', None)
+        values.pop('bid_id', None)
         bid_ref.update(values)
         bid_ref.save(get_session())
         return bid_ref
     else:
         raise exception.ResourceNotFound(resource_type="Bid",
-                                         resource_uuid=marketplace_bid_id)
+                                         resource_uuid=bid_id)
 
 
-def bid_destroy(marketplace_bid_id, context):
+def bid_destroy(bid_id, context):
     if context.is_admin:
         bid_ref = get_session().query(models.Bid).filter_by(
-                    marketplace_bid_id=marketplace_bid_id).one_or_none()
+                    bid_id=bid_id).one_or_none()
     else:
         bid_ref = get_session().query(models.Bid).filter_by(
-            marketplace_bid_id=marketplace_bid_id).one_or_none()
+            bid_id=bid_id).one_or_none()
 
     if bid_ref:
         if bid_ref.project_id != context.project_id and not context.is_admin:
             raise exception.ResourceNoPermission(
                                             resource_type="Bid",
-                                            resource_uuid=marketplace_bid_id)
+                                            resource_uuid=bid_id)
 
         if context.is_admin:
             get_session().query(models.Bid).filter_by(
-                marketplace_bid_id=marketplace_bid_id).delete()
+                bid_id=bid_id).delete()
         else:
             get_session().query(models.Bid).filter_by(
-                marketplace_bid_id=marketplace_bid_id,
+                bid_id=bid_id,
                 project_id=context.project_id).delete()
     else:
         raise exception.ResourceNotFound(resource_type="Bid",
-                                         resource_uuid=marketplace_bid_id)
+                                         resource_uuid=bid_id)
 
 
 # contract
@@ -266,9 +268,19 @@ def contract_get_all(context):
     return get_session().query(models.Contract).all()
 
 
+def contract_get_all_by_status(context, status):
+    if context.is_admin:
+        return get_session().query(models.Contract)\
+                            .filter_by(status=status).all()
+    return get_session().query(models.Contract)\
+        .filter(
+            models.Contract.status == status,
+            models.Contract.project_id == context.project_id).all()
+
+
 def contract_get_all_unexpired(context):
     return get_session().query(models.Contract)\
-        .filter(models.Contract.status != 'expired').all()
+        .filter(models.Contract.status != statuses.EXPIRED).all()
 
 
 def contract_create(values, context):
@@ -285,8 +297,8 @@ def contract_create(values, context):
         # update foreign key for offers
         for offer_id in offers:
             ocr_data = dict(contract_id=values['contract_id'],
-                            marketplace_offer_id=offer_id,
-                            status='unretrieved')
+                            offer_id=offer_id,
+                            status=statuses.AVAILABLE)
             offer_contract_relationship_create(context, ocr_data)
         return contract_ref
     else:
@@ -347,7 +359,7 @@ def offer_contract_relationship_get(context,
 def offer_contract_relationship_get_all(context, filters=None):
     query = get_session().query(models.OfferContractRelationship)
     if filters is not None:
-        for field in ['marketplace_offer_id', 'contract_id', 'status']:
+        for field in ['offer_id', 'contract_id', 'status']:
             if field in filters:
                 query = query.filter_by(**{field: filters[field]})
     return query.all()
@@ -355,7 +367,8 @@ def offer_contract_relationship_get_all(context, filters=None):
 
 def offer_contract_relationship_get_all_unexpired(context):
     return get_session().query(models.OfferContractRelationship)\
-        .filter(models.OfferContractRelationship.status != 'expired').all()
+        .filter(
+            models.OfferContractRelationship.status != statuses.EXPIRED).all()
 
 
 def offer_contract_relationship_create(context, values):

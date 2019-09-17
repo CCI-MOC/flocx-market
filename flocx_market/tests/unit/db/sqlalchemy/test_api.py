@@ -1,20 +1,22 @@
 from datetime import datetime, timedelta
 import pytest
+import unittest.mock as mock
 
 from oslo_db.exception import DBError
 from oslo_context import context as ctx
 
 from flocx_market.db.sqlalchemy import api
 from flocx_market.common import exception as e
+from flocx_market.common import statuses
+from flocx_market.resource_objects import resource_types
 
 now = datetime.utcnow()
 
 test_offer_data = dict(
-    provider_offer_id='a41fadc1-6ae9-47e5-a74e-2dcf2b4dd55a',
-    status='available',
+    status=statuses.AVAILABLE,
     project_id='1234',
     resource_id='4567',
-    resource_type='ironic_node',
+    resource_type=resource_types.IRONIC_NODE,
     start_time=now - timedelta(days=1),
     end_time=now + timedelta(days=1),
     config={'foo': 'bar'},
@@ -22,11 +24,10 @@ test_offer_data = dict(
     )
 
 test_offer_data_2 = dict(
-    provider_offer_id='141fadc1-6ae9-47e5-a74e-2dcf2b4dd554',
-    status='expired',
+    status=statuses.EXPIRED,
     project_id='1234',
     resource_id='456789',
-    resource_type='ironic_node',
+    resource_type=resource_types.IRONIC_NODE,
     start_time=now - timedelta(days=2),
     end_time=now - timedelta(days=1),
     config={'foo': 'bar'},
@@ -35,11 +36,10 @@ test_offer_data_2 = dict(
 
 
 test_offer_data_3 = dict(
-    provider_offer_id='141fadc1-6ae9-47e5-a74e-2dcf2b455555',
-    status='available',
+    status=statuses.AVAILABLE,
     project_id='7788',
     resource_id='123',
-    resource_type='ironic_node',
+    resource_type=resource_types.IRONIC_NODE,
     start_time=now - timedelta(days=2),
     end_time=now - timedelta(days=1),
     config={'foo': 'bar'},
@@ -50,7 +50,7 @@ test_bid_data_1 = dict(quantity=2,
                        start_time=now - timedelta(days=2),
                        end_time=now - timedelta(days=1),
                        duration=16400,
-                       status="available",
+                       status=statuses.AVAILABLE,
                        config_query={'foo': 'bar'},
                        cost=11.5)
 
@@ -59,7 +59,7 @@ test_bid_data_2 = dict(quantity=2,
                        start_time=now - timedelta(days=2),
                        end_time=now + timedelta(days=1),
                        duration=16400,
-                       status="available",
+                       status=statuses.AVAILABLE,
                        config_query={'foo': 'bar'},
                        cost=11.5)
 
@@ -67,7 +67,7 @@ test_bid_data_3 = dict(quantity=2,
                        start_time=now - timedelta(days=2),
                        end_time=now + timedelta(days=1),
                        duration=16400,
-                       status="available",
+                       status=statuses.AVAILABLE,
                        config_query={'foo': 'bar'},
                        cost=11.5)
 
@@ -80,9 +80,12 @@ scoped_context_2 = ctx.RequestContext(is_admin=False,
                                       project_id='7788')
 
 
-def test_offer_get_found(app, db, session):
+@mock.patch('flocx_market.resource_objects.ironic_node'
+            '.IronicNode.is_resource_admin')
+def test_offer_get_found(is_resource_admin, app, db, session):
+    is_resource_admin.return_value = True
     m = api.offer_create(test_offer_data, scoped_context)
-    assert(api.offer_get(m.marketplace_offer_id, scoped_context))
+    assert(api.offer_get(m.offer_id, scoped_context))
 
 
 def test_offer_get_not_found(app, db, session):
@@ -91,7 +94,10 @@ def test_offer_get_not_found(app, db, session):
     assert(excinfo.value.code == 404)
 
 
-def test_offer_get_all_found(app, db, session):
+@mock.patch('flocx_market.resource_objects.ironic_node'
+            '.IronicNode.is_resource_admin')
+def test_offer_get_all_found(is_resource_admin, app, db, session):
+    is_resource_admin.return_value = True
     api.offer_create(test_offer_data, scoped_context)
     api.offer_create(test_offer_data_2, scoped_context)
     api.offer_create(test_offer_data_3, scoped_context_2)
@@ -103,7 +109,10 @@ def test_offer_get_all_none_found(app, db, session):
     assert (len(api.offer_get_all(scoped_context)) == 0)
 
 
-def test_offer_get_all_by_project_id(app, db, session):
+@mock.patch('flocx_market.resource_objects.ironic_node'
+            '.IronicNode.is_resource_admin')
+def test_offer_get_all_by_project_id(is_resource_admin, app, db, session):
+    is_resource_admin.return_value = True
     api.offer_create(test_offer_data, scoped_context)
     api.offer_create(test_offer_data_2, scoped_context)
     api.offer_create(test_offer_data_3, scoped_context_2)
@@ -111,7 +120,10 @@ def test_offer_get_all_by_project_id(app, db, session):
     assert len(api.offer_get_all_by_project_id(scoped_context)) == 2
 
 
-def test_offer_get_all_by_resource_id(app, db, session):
+@mock.patch('flocx_market.resource_objects.ironic_node'
+            '.IronicNode.is_resource_admin')
+def test_offer_get_all_by_resource_id(is_resource_admin, app, db, session):
+    is_resource_admin.return_value = True
     api.offer_create(test_offer_data, scoped_context)
     api.offer_create(test_offer_data_2, scoped_context)
 
@@ -120,17 +132,24 @@ def test_offer_get_all_by_resource_id(app, db, session):
         test_offer_data["resource_id"])) == 1
 
 
-def test_offer_get_all_by_resource_id_and_status(app, db, session):
+@mock.patch('flocx_market.resource_objects.ironic_node'
+            '.IronicNode.is_resource_admin')
+def test_offer_get_all_by_resource_id_and_status(
+        is_resource_admin, app, db, session):
+    is_resource_admin.return_value = True
     api.offer_create(test_offer_data, scoped_context)
     api.offer_create(test_offer_data_2, scoped_context)
 
     assert len(api.offer_get_all_by_resource_id(
         scoped_context,
         test_offer_data["resource_id"],
-        "expired")) == 0
+        statuses.EXPIRED)) == 0
 
 
-def test_offer_get_all_unexpired_admin(app, db, session):
+@mock.patch('flocx_market.resource_objects.ironic_node'
+            '.IronicNode.is_resource_admin')
+def test_offer_get_all_unexpired_admin(is_resource_admin, app, db, session):
+    is_resource_admin.return_value = True
     api.offer_create(test_offer_data, scoped_context)
     api.offer_create(test_offer_data_2, scoped_context)
     api.offer_create(test_offer_data_3, scoped_context_2)
@@ -139,7 +158,10 @@ def test_offer_get_all_unexpired_admin(app, db, session):
     assert len(offers) == 2
 
 
-def test_offer_get_all_unexpired_scoped(app, db, session):
+@mock.patch('flocx_market.resource_objects.ironic_node'
+            '.IronicNode.is_resource_admin')
+def test_offer_get_all_unexpired_scoped(is_resource_admin, app, db, session):
+    is_resource_admin.return_value = True
     api.offer_create(test_offer_data, scoped_context)
     api.offer_create(test_offer_data_2, scoped_context)
     api.offer_create(test_offer_data_3, scoped_context_2)
@@ -148,30 +170,43 @@ def test_offer_get_all_unexpired_scoped(app, db, session):
     assert len(offers) == 1
 
 
-def test_offer_create(app, db, session):
+@mock.patch('flocx_market.resource_objects.ironic_node'
+            '.IronicNode.is_resource_admin')
+def test_offer_create(is_resource_admin, app, db, session):
+    is_resource_admin.return_value = True
     offer = api.offer_create(test_offer_data, scoped_context)
-    check = api.offer_get(offer.marketplace_offer_id, scoped_context)
+    check = api.offer_get(offer.offer_id, scoped_context)
 
     assert check.to_dict() == offer.to_dict()
 
 
-def test_offer_create_duplicate_resource_pass(app, db, session):
+@mock.patch('flocx_market.resource_objects.ironic_node'
+            '.IronicNode.is_resource_admin')
+def test_offer_create_duplicate_resource_pass(
+        is_resource_admin, app, db, session):
+    is_resource_admin.return_value = True
     test_offer_data_expired = test_offer_data.copy()
-    expired_provider_offer_id = 'a41fadc1-6ae9-47e5-a74e-2dcf2b4dd55b'
-    test_offer_data_expired["status"] = "expired"
-    test_offer_data_expired["provider_offer_id"] = expired_provider_offer_id
+    test_offer_data_expired["status"] = statuses.EXPIRED
 
     api.offer_create(test_offer_data_expired, scoped_context)
     api.offer_create(test_offer_data, scoped_context)
 
 
-def test_offer_create_duplicate_resource_fail(app, db, session):
+@mock.patch('flocx_market.resource_objects.ironic_node'
+            '.IronicNode.is_resource_admin')
+def test_offer_create_duplicate_resource_fail(
+        is_resource_admin, app, db, session):
+    is_resource_admin.return_value = True
     api.offer_create(test_offer_data, scoped_context)
     with pytest.raises(ValueError):
         api.offer_create(test_offer_data, scoped_context)
 
 
-def test_offer_create_invalid_no_cost_admin(app, db, session):
+@mock.patch('flocx_market.resource_objects.ironic_node'
+            '.IronicNode.is_resource_admin')
+def test_offer_create_invalid_no_cost_admin(
+        is_resource_admin, app, db, session):
+    is_resource_admin.return_value = True
     data = dict(test_offer_data)
     del data['cost']
 
@@ -179,7 +214,11 @@ def test_offer_create_invalid_no_cost_admin(app, db, session):
         api.offer_create(data, scoped_context)
 
 
-def test_offer_create_invalid_negative_cost_admin(app, db, session):
+@mock.patch('flocx_market.resource_objects.ironic_node'
+            '.IronicNode.is_resource_admin')
+def test_offer_create_invalid_negative_cost_admin(
+        is_resource_admin, app, db, session):
+    is_resource_admin.return_value = True
     data = dict(test_offer_data)
     data['cost'] = -1
 
@@ -187,59 +226,81 @@ def test_offer_create_invalid_negative_cost_admin(app, db, session):
         api.offer_create(data, scoped_context)
 
 
-def test_offer_delete_admin(app, db, session):
+@mock.patch('flocx_market.resource_objects.ironic_node'
+            '.IronicNode.is_resource_admin')
+def test_offer_delete_admin(is_resource_admin, app, db, session):
+    is_resource_admin.return_value = True
     offer = api.offer_create(test_offer_data, scoped_context_2)
-    api.offer_destroy(offer.marketplace_offer_id, admin_context)
+    api.offer_destroy(offer.offer_id, admin_context)
     with pytest.raises(e.ResourceNotFound) as excinfo:
         api.offer_get("NotHere", scoped_context)
     assert(excinfo.value.code == 404)
 
 
-def test_offer_delete_scoped_valid(app, db, session):
+@mock.patch('flocx_market.resource_objects.ironic_node'
+            '.IronicNode.is_resource_admin')
+def test_offer_delete_scoped_valid(is_resource_admin, app, db, session):
+    is_resource_admin.return_value = True
     offer = api.offer_create(test_offer_data, scoped_context)
-    api.offer_destroy(offer.marketplace_offer_id, scoped_context)
+    api.offer_destroy(offer.offer_id, scoped_context)
     with pytest.raises(e.ResourceNotFound) as excinfo:
         api.offer_get("NotHere", scoped_context)
     assert(excinfo.value.code == 404)
 
 
-def test_offer_delete_scoped_invalid(app, db, session):
+@mock.patch('flocx_market.resource_objects.ironic_node'
+            '.IronicNode.is_resource_admin')
+def test_offer_delete_scoped_invalid(is_resource_admin, app, db, session):
+    is_resource_admin.return_value = True
     offer = api.offer_create(test_offer_data, scoped_context)
     with pytest.raises(e.ResourceNoPermission) as excinfo:
-        api.offer_destroy(offer.marketplace_offer_id, scoped_context_2)
+        api.offer_destroy(offer.offer_id, scoped_context_2)
     assert(excinfo.value.code == 403)
 
 
-def test_offer_update_admin_valid(app, db, session):
+@mock.patch('flocx_market.resource_objects.ironic_node'
+            '.IronicNode.is_resource_admin')
+def test_offer_update_admin_valid(is_resource_admin, app, db, session):
+    is_resource_admin.return_value = True
     offer = api.offer_create(test_offer_data, scoped_context)
     offer = api.offer_update(
-        offer.marketplace_offer_id, dict(status='testing'), admin_context)
-    check = api.offer_get(offer.marketplace_offer_id, admin_context)
+        offer.offer_id,
+        dict(status=statuses.EXPIRED),
+        admin_context)
+    check = api.offer_get(offer.offer_id, admin_context)
 
-    assert check.status == 'testing'
+    assert check.status == statuses.EXPIRED
 
 
-def test_offer_update_scoped_valid(app, db, session):
+@mock.patch('flocx_market.resource_objects.ironic_node'
+            '.IronicNode.is_resource_admin')
+def test_offer_update_scoped_valid(is_resource_admin, app, db, session):
+    is_resource_admin.return_value = True
     offer = api.offer_create(test_offer_data, scoped_context)
     offer = api.offer_update(
-        offer.marketplace_offer_id, dict(status='testing'), scoped_context)
-    check = api.offer_get(offer.marketplace_offer_id, scoped_context)
+        offer.offer_id,
+        dict(status=statuses.EXPIRED),
+        scoped_context)
+    check = api.offer_get(offer.offer_id, scoped_context)
 
-    assert check.status == 'testing'
+    assert check.status == statuses.EXPIRED
 
 
-def test_offer_update_scoped_invalid(app, db, session):
+@mock.patch('flocx_market.resource_objects.ironic_node'
+            '.IronicNode.is_resource_admin')
+def test_offer_update_scoped_invalid(is_resource_admin, app, db, session):
+    is_resource_admin.return_value = True
     offer = api.offer_create(test_offer_data, scoped_context)
 
     with pytest.raises(e.ResourceNoPermission) as excinfo:
         api.offer_update(
-            offer.marketplace_offer_id,
-            dict(status='testing'),
+            offer.offer_id,
+            dict(status=statuses.EXPIRED),
             scoped_context_2)
     assert(excinfo.value.code == 403)
 
-    check = api.offer_get(offer.marketplace_offer_id, scoped_context)
-    assert check.status != 'testing'
+    check = api.offer_get(offer.offer_id, scoped_context)
+    assert check.status != statuses.EXPIRED
 
 
 def test_bid_get(app, db, session):
@@ -273,13 +334,15 @@ def test_bid_get_all_unexpired(app, db, session):
     assert len(api.bid_get_all_unexpired(scoped_context)) == 2
 
     api.bid_update(
-        bids[1].marketplace_bid_id, dict(status='expired'), scoped_context)
+        bids[1].bid_id,
+        dict(status=statuses.EXPIRED),
+        scoped_context)
     assert len(api.bid_get_all_unexpired(scoped_context)) == 1
 
 
 def test_bid_create(app, db, session):
     bid = api.bid_create(test_bid_data_1, scoped_context)
-    check = api.bid_get(bid.marketplace_bid_id, scoped_context)
+    check = api.bid_get(bid.bid_id, scoped_context)
 
     assert check.to_dict() == bid.to_dict()
 
@@ -295,44 +358,44 @@ def test_bid_create_invalid(app, db, session):
 
 def test_bid_delete_admin(app, db, session):
     bid = api.bid_create(test_bid_data_1, scoped_context)
-    api.bid_destroy(bid.marketplace_bid_id, admin_context)
+    api.bid_destroy(bid.bid_id, admin_context)
     with pytest.raises(e.ResourceNotFound) as excinfo:
-        api.bid_get(bid.marketplace_bid_id, scoped_context)
+        api.bid_get(bid.bid_id, scoped_context)
     assert(excinfo.value.code == 404)
 
 
 def test_bid_delete_scoped_valid(app, db, session):
     bid = api.bid_create(test_bid_data_1, scoped_context)
-    api.bid_destroy(bid.marketplace_bid_id, scoped_context)
+    api.bid_destroy(bid.bid_id, scoped_context)
     with pytest.raises(e.ResourceNotFound) as excinfo:
-        api.bid_get(bid.marketplace_bid_id, scoped_context)
+        api.bid_get(bid.bid_id, scoped_context)
     assert(excinfo.value.code == 404)
 
 
 def test_bid_delete_scoped_invalid(app, db, session):
     bid = api.bid_create(test_bid_data_1, scoped_context)
     with pytest.raises(e.ResourceNoPermission) as excinfo:
-        api.bid_destroy(bid.marketplace_bid_id, scoped_context_2)
+        api.bid_destroy(bid.bid_id, scoped_context_2)
     assert(excinfo.value.code == 403)
-    assert (api.bid_get(bid.marketplace_bid_id, scoped_context))
+    assert (api.bid_get(bid.bid_id, scoped_context))
 
 
 def test_bid_update_admin(app, db, session):
     bid = api.bid_create(test_bid_data_1, scoped_context)
     bid = api.bid_update(
-        bid.marketplace_bid_id, dict(status='testing'), admin_context)
-    check = api.bid_get(bid.marketplace_bid_id, scoped_context)
+        bid.bid_id, dict(status=statuses.EXPIRED), admin_context)
+    check = api.bid_get(bid.bid_id, scoped_context)
 
-    assert check.status == 'testing'
+    assert check.status == statuses.EXPIRED
 
 
 def test_bid_update_scoped_valid(app, db, session):
     bid = api.bid_create(test_bid_data_1, scoped_context)
     bid = api.bid_update(
-        bid.marketplace_bid_id, dict(status='testing'), scoped_context)
-    check = api.bid_get(bid.marketplace_bid_id, scoped_context)
+        bid.bid_id, dict(status=statuses.EXPIRED), scoped_context)
+    check = api.bid_get(bid.bid_id, scoped_context)
 
-    assert check.status == 'testing'
+    assert check.status == statuses.EXPIRED
 
 
 def test_bid_update_scoped_invalid(app, db, session):
@@ -340,24 +403,29 @@ def test_bid_update_scoped_invalid(app, db, session):
 
     with pytest.raises(e.ResourceNoPermission) as excinfo:
         api.bid_update(
-            bid.marketplace_bid_id, dict(status='testing'), scoped_context_2)
+            bid.bid_id,
+            dict(status=statuses.EXPIRED),
+            scoped_context_2)
     assert(excinfo.value.code == 403)
-    assert (api.bid_get(bid.marketplace_bid_id, scoped_context).status
-            != "testing")
+    assert (api.bid_get(bid.bid_id, scoped_context).status
+            != statuses.EXPIRED)
 
 
-def create_test_contract_data():
+@mock.patch('flocx_market.resource_objects.ironic_node'
+            '.IronicNode.is_resource_admin')
+def create_test_contract_data(is_resource_admin):
+    is_resource_admin.return_value = True
     bid = api.bid_create(test_bid_data_1, scoped_context)
     offer = api.offer_create(test_offer_data, scoped_context)
 
     contract_data = dict(
         time_created=now,
-        status='available',
+        status=statuses.AVAILABLE,
         start_time=now - timedelta(days=2),
         end_time=now - timedelta(days=1),
         cost=0.0,
-        bid_id=bid.marketplace_bid_id,
-        offers=[offer.marketplace_offer_id],
+        bid_id=bid.bid_id,
+        offers=[offer.offer_id],
         project_id='5599'
     )
 
@@ -411,10 +479,10 @@ def test_contract_delete_invalid_scoped(app, db, session):
 def test_contract_update_valid_admin(app, db, session):
     contract = api.contract_create(create_test_contract_data(), admin_context)
     contract = api.contract_update(
-        contract.contract_id, dict(status='testing'), admin_context)
+        contract.contract_id, dict(status=statuses.EXPIRED), admin_context)
     check = api.contract_get(contract.contract_id, admin_context)
 
-    assert check.status == 'testing'
+    assert check.status == statuses.EXPIRED
     assert check.cost == 0.0
 
 
@@ -422,10 +490,12 @@ def test_contract_update_invalid_scoped(app, db, session):
     contract = api.contract_create(create_test_contract_data(), admin_context)
     with pytest.raises(e.ResourceNoPermission) as excinfo:
         api.contract_update(
-            contract.contract_id, dict(status='testing'), scoped_context)
+            contract.contract_id,
+            dict(status=statuses.EXPIRED),
+            scoped_context)
     assert (excinfo.value.code == 403)
     assert (api.contract_get(contract.contract_id, admin_context).status
-            != "testing")
+            != statuses.EXPIRED)
 
 
 def test_contract_get_all_unexpired(app, db, session):
@@ -433,27 +503,30 @@ def test_contract_get_all_unexpired(app, db, session):
 
     assert len(api.contract_get_all_unexpired(admin_context)) == 1
 
-    api.contract_update(contract.contract_id, dict(status='expired'),
+    api.contract_update(contract.contract_id, dict(status=statuses.EXPIRED),
                         admin_context)
     assert (len(api.contract_get_all_unexpired(admin_context)) == 0)
 
 
-def create_test_contract_data_for_ocr():
+@mock.patch('flocx_market.resource_objects.ironic_node'
+            '.IronicNode.is_resource_admin')
+def create_test_contract_data_for_ocr(is_resource_admin):
+    is_resource_admin.return_value = True
     bid = api.bid_create(test_bid_data_1, scoped_context)
     offer = api.offer_create(test_offer_data, scoped_context)
 
     contract_data = dict(
         time_created=now,
-        status='available',
+        status=statuses.AVAILABLE,
         start_time=now - timedelta(days=2),
         end_time=now - timedelta(days=1),
         cost=0.0,
-        bid_id=bid.marketplace_bid_id,
-        offers=[offer.marketplace_offer_id],
+        bid_id=bid.bid_id,
+        offers=[offer.offer_id],
         project_id='5599'
     )
 
-    return contract_data, offer.marketplace_offer_id
+    return contract_data, offer.offer_id
 
 
 # contract_offer_relationship
@@ -481,7 +554,7 @@ def test_offer_contract_relationship_create_valid(app, db, session):
     contract_data, offer_test_id = create_test_contract_data_for_ocr()
     contract = api.contract_create(contract_data, admin_context)
     filters = {
-        'marketplace_offer_id': offer_test_id,
+        'offer_id': offer_test_id,
         'contract_id': contract.contract_id
     }
     ocr = api.offer_contract_relationship_get_all(
@@ -502,7 +575,7 @@ def test_offer_contract_relationship_delete_valid(app, db, session):
     contract_data, offer_test_id = create_test_contract_data_for_ocr()
     contract = api.contract_create(contract_data, admin_context)
     filters = {
-        'marketplace_offer_id': offer_test_id,
+        'offer_id': offer_test_id,
         'contract_id': contract.contract_id
     }
     ocrs = api.offer_contract_relationship_get_all(
@@ -525,7 +598,7 @@ def test_offer_contract_relationship_delete_invalid_scoped(app, db, session):
     contract_data, offer_test_id = create_test_contract_data_for_ocr()
     contract = api.contract_create(contract_data, admin_context)
     filters = {
-        'marketplace_offer_id': offer_test_id,
+        'offer_id': offer_test_id,
         'contract_id': contract.contract_id
     }
     ocrs = api.offer_contract_relationship_get_all(
@@ -560,7 +633,7 @@ def test_offer_contract_relationship_update_valid(app, db, session):
     contract_data, offer_test_id = create_test_contract_data_for_ocr()
     contract = api.contract_create(contract_data, admin_context)
     filters = {
-        'marketplace_offer_id': offer_test_id,
+        'offer_id': offer_test_id,
         'contract_id': contract.contract_id
     }
     ocrs = api.offer_contract_relationship_get_all(
@@ -572,13 +645,13 @@ def test_offer_contract_relationship_update_valid(app, db, session):
     api.offer_contract_relationship_update(
         context=admin_context,
         offer_contract_relationship_id=ocr_id,
-        values=dict(status='testing'))
+        values=dict(status=statuses.EXPIRED))
     check = api.offer_contract_relationship_get(
         context=admin_context,
         offer_contract_relationship_id=ocr_id)
 
-    assert check.status == 'testing'
-    assert check.marketplace_offer_id == offer_test_id
+    assert check.status == statuses.EXPIRED
+    assert check.offer_id == offer_test_id
 
 
 @pytest.mark.skip(reason="we are currently not handling scoping correctly")
@@ -586,7 +659,7 @@ def test_offer_contract_relationship_update_invalid_scoped(app, db, session):
     contract_data, offer_test_id = create_test_contract_data_for_ocr()
     contract = api.contract_create(contract_data, admin_context)
     filters = {
-        'marketplace_offer_id': offer_test_id,
+        'offer_id': offer_test_id,
         'contract_id': contract.contract_id
     }
     ocrs = api.offer_contract_relationship_get_all(
@@ -599,22 +672,22 @@ def test_offer_contract_relationship_update_invalid_scoped(app, db, session):
         api.offer_contract_relationship_update(
             context=scoped_context,
             offer_contract_relationship_id=ocr_id,
-            values=dict(status='testing'))
+            values=dict(status=statuses.EXPIRED))
     assert (excinfo.value.code == 403)
 
     check = api.offer_contract_relationship_get(
         context=admin_context,
         offer_contract_relationship_id=ocr_id)
 
-    assert check.status != 'testing'
-    assert check.marketplace_offer_id == offer_test_id
+    assert check.status != statuses.EXPIRED
+    assert check.offer_id == offer_test_id
 
 
 def test_offer_contract_relationship_get_all_unexpired(app, db, session):
     contract_data, offer_test_id = create_test_contract_data_for_ocr()
     contract = api.contract_create(contract_data, admin_context)
     filters = {
-        'marketplace_offer_id': offer_test_id,
+        'offer_id': offer_test_id,
         'contract_id': contract.contract_id
     }
     ocrs = api.offer_contract_relationship_get_all(
@@ -629,7 +702,7 @@ def test_offer_contract_relationship_get_all_unexpired(app, db, session):
     api.offer_contract_relationship_update(
         context=admin_context,
         offer_contract_relationship_id=ocr_id,
-        values=dict(status='expired'))
+        values=dict(status=statuses.EXPIRED))
     assert len(api.offer_contract_relationship_get_all_unexpired(
         admin_context)) == 0
 
@@ -639,6 +712,6 @@ def test_offer_contract_relationship_update_invalid_nonexistent(
     with pytest.raises(e.ResourceNotFound) as excinfo:
         api.offer_contract_relationship_update(
             offer_contract_relationship_id="bad_id",
-            values=dict(status='testing'),
+            values=dict(status=statuses.EXPIRED),
             context=admin_context)
     assert (excinfo.value.code == 404)
