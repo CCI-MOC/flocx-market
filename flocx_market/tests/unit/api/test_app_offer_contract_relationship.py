@@ -2,20 +2,22 @@ import datetime
 import json
 from unittest import mock
 
+from flocx_market.common import exception as e
+from flocx_market.common import statuses
 import flocx_market.conf
 from flocx_market.objects import bid, offer, contract, \
     offer_contract_relationship as ocr
-from flocx_market.common import exception as e
+from flocx_market.resource_objects import resource_types
 
 CONF = flocx_market.conf.CONF
 now = datetime.datetime.utcnow()
 
-contract_1_bid = bid.Bid(marketplace_bid_id='test_bid_1',
+contract_1_bid = bid.Bid(bid_id='test_bid_1',
                          quantity=2,
                          start_time=now,
                          end_time=now,
                          duration=16400,
-                         status="available",
+                         status=statuses.AVAILABLE,
                          config_query={'foo': 'bar'},
                          cost=11.5,
                          project_id='5599',
@@ -23,12 +25,12 @@ contract_1_bid = bid.Bid(marketplace_bid_id='test_bid_1',
                          updated_at=now,
                          )
 
-contract_2_bid = bid.Bid(marketplace_bid_id='test_bid_2',
+contract_2_bid = bid.Bid(bid_id='test_bid_2',
                          quantity=2,
                          start_time=now,
                          end_time=now,
                          duration=16400,
-                         status="available",
+                         status=statuses.AVAILABLE,
                          config_query={'foo': 'bar'},
                          cost=11.5,
                          project_id='5599',
@@ -36,12 +38,12 @@ contract_2_bid = bid.Bid(marketplace_bid_id='test_bid_2',
                          updated_at=now,
                          )
 
-contract_1_offer = offer.Offer(marketplace_offer_id='test_offer_1',
+contract_1_offer = offer.Offer(offer_id='test_offer_1',
                                resource_id='3456',
-                               resource_type='ironic_node',
+                               resource_type=resource_types.IRONIC_NODE,
                                start_time=now,
                                end_time=now,
-                               status='available',
+                               status=statuses.AVAILABLE,
                                config={'bar': 'foo'},
                                cost=0.0,
                                contract_id='test_contract_1',
@@ -50,12 +52,12 @@ contract_1_offer = offer.Offer(marketplace_offer_id='test_offer_1',
                                updated_at=now,
                                )
 
-contract_2_offer = offer.Offer(marketplace_offer_id='test_offer_2',
+contract_2_offer = offer.Offer(offer_id='test_offer_2',
                                resource_id='4567',
-                               resource_type='ironic_node',
+                               resource_type=resource_types.IRONIC_NODE,
                                start_time=now,
                                end_time=now,
-                               status='available',
+                               status=statuses.AVAILABLE,
                                config={'foo': 'bar'},
                                cost=0.0,
                                contract_id='test_contract_2',
@@ -66,7 +68,7 @@ contract_2_offer = offer.Offer(marketplace_offer_id='test_offer_2',
 
 test_contract_1 = contract.Contract(contract_id='test_contract_1',
                                     time_created=now,
-                                    status='available',
+                                    status=statuses.AVAILABLE,
                                     start_time=now,
                                     end_time=now,
                                     cost=0.0,
@@ -79,7 +81,7 @@ test_contract_1 = contract.Contract(contract_id='test_contract_1',
 
 test_contract_2 = contract.Contract(contract_id='test_contract_2',
                                     time_created=now,
-                                    status='available',
+                                    status=statuses.AVAILABLE,
                                     start_time=now,
                                     end_time=now,
                                     cost=0.0,
@@ -92,12 +94,12 @@ test_contract_2 = contract.Contract(contract_id='test_contract_2',
 
 test_contract_dict = dict(contract_id='test_contract_2',
                           time_created="2016-07-16T19:20:30",
-                          status='available',
+                          status=statuses.AVAILABLE,
                           start_time="2016-07-16T19:20:30",
                           end_time="2016-07-16T19:20:30",
                           cost=0.0,
                           bid_id='test_bid_2',
-                          offers=[contract_1_offer.marketplace_offer_id],
+                          offers=[contract_1_offer.offer_id],
                           project_id='5599',
                           created_at="2016-07-16T19:20:30",
                           updated_at="2016-07-16T19:20:30",
@@ -105,7 +107,7 @@ test_contract_dict = dict(contract_id='test_contract_2',
 
 test_ocr_1 = ocr.OfferContractRelationship(
     offer_contract_relationship_id='test_ocr_id_1',
-    marketplace_offer_id='test_offer_1',
+    offer_id='test_offer_1',
     contract_id='test_contract_1',
     status='unretrieved',
     created_at=now,
@@ -114,18 +116,18 @@ test_ocr_1 = ocr.OfferContractRelationship(
 
 test_ocr_2 = ocr.OfferContractRelationship(
     offer_contract_relationship_id='test_ocr_id_2',
-    marketplace_offer_id='test_offer_2',
+    offer_id='test_offer_2',
     contract_id='test_contract_2',
-    status='unretrieved',
+    status=statuses.AVAILABLE,
     created_at=now,
     updated_at=now,
 )
 
 test_ocr_3 = ocr.OfferContractRelationship(
             offer_contract_relationship_id='test_ocr_id_3',
-            marketplace_offer_id='test_offer_2',
+            offer_id='test_offer_2',
             contract_id='test_contract_1',
-            status='unretrieved',
+            status=statuses.AVAILABLE,
             created_at=now,
             updated_at=now,
 )
@@ -162,8 +164,8 @@ def test_get_offer_contract_relationship_by_id(mock_get, client):
 def test_get_offer_contract_relationship(mock_get_all, client):
     mock_get_all.return_value = test_ocr_1
     response = client.get('/offer_contract_relationship'
-                          '?marketplace_offer_id={}&contract_id={}'.format(
-                           test_ocr_1.marketplace_offer_id,
+                          '?offer_id={}&contract_id={}'.format(
+                           test_ocr_1.offer_id,
                            test_ocr_1.contract_id))
     assert response.status_code == 200
     mock_get_all.assert_called_once()
@@ -176,8 +178,8 @@ def test_get_offer_contract_relationship_2_same_offerids(mock_get_all, client):
     test_result = [test_ocr_2, test_ocr_3]
     mock_get_all.return_value = test_result
     response = client.get('/offer_contract_relationship'
-                          '?marketplace_offer_id={}'
-                          .format(test_ocr_2.marketplace_offer_id))
+                          '?offer_id={}'
+                          .format(test_ocr_2.offer_id))
     assert response.status_code == 200
     assert len(response.json) == 2
     assert any(x['contract_id'] == 'test_contract_2'
@@ -196,9 +198,9 @@ def test_get_offer_contract_relationship_2_same_contractids(mock_get_all,
         test_ocr_1.contract_id))
     assert response.status_code == 200
     assert len(response.json) == 2
-    assert any(x['marketplace_offer_id'] == 'test_offer_1'
+    assert any(x['offer_id'] == 'test_offer_1'
                for x in response.json)
-    assert any(x['marketplace_offer_id'] == 'test_offer_2'
+    assert any(x['offer_id'] == 'test_offer_2'
                for x in response.json)
 
 
@@ -265,10 +267,10 @@ def test_update_offer_contract_relationship(mock_get, mock_save, client):
     mock_save.return_value = test_ocr_1
     res = client.put('/offer_contract_relationship/{}'
                      .format(test_ocr_1.offer_contract_relationship_id),
-                     data=json.dumps(dict(status='testing')))
+                     data=json.dumps(dict(status=statuses.FULFILLED)))
     assert res.status_code == 200
     assert mock_save.call_count == 1
-    assert res.json['status'] == 'testing'
+    assert res.json['status'] == statuses.FULFILLED
 
 
 @mock.patch('flocx_market.objects.offer_contract_relationship'
@@ -279,6 +281,6 @@ def test_update_offer_contract_relationship_missing(mock_get,
                                                     mock_save, client):
     mock_get.return_value = None
     res = client.put('/offer_contract_relationship/does-not-exist',
-                     data=json.dumps(dict(status='testing')))
+                     data=json.dumps(dict(status=statuses.FULFILLED)))
     assert res.status_code == 404
     assert mock_save.call_count == 0

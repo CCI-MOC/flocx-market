@@ -1,11 +1,16 @@
+import datetime
 import json
+from pytest import raises
+import unittest.mock as mock
+
+from oslo_context import context as ctx
+
+from flocx_market.common import statuses
 from flocx_market.matcher.matcher import match_specs
 from flocx_market.matcher.matcher import get_all_matching_offers
-from oslo_context import context as ctx
 from flocx_market.objects import offer
-from pytest import raises
+from flocx_market.resource_objects import resource_types
 
-import datetime
 now = datetime.datetime.utcnow()
 
 scoped_context = ctx.RequestContext(is_admin=False,
@@ -179,14 +184,12 @@ def test_invalid_data_type():
 
 
 test_offer_1 = dict(
-        provider_id='2345',
-        provider_offer_id='a41fadc1-6ae9-47e',
-        marketplace_offer_id='test_offer_1',
+        offer_id='test_offer_1',
         creator_id='3456',
-        marketplace_date_created=now,
-        status='available',
+        date_created=now,
+        status=statuses.AVAILABLE,
         resource_id='4567',
-        resource_type='ironic_node',
+        resource_type=resource_types.IRONIC_NODE,
         start_time=now,
         end_time=now,
         config={'memory': 204},
@@ -196,14 +199,12 @@ test_offer_1 = dict(
         )
 
 test_offer_2 = dict(
-        provider_id='2345',
-        provider_offer_id='a41fc1-6ae9-47e',
-        marketplace_offer_id='test_offer_2',
+        offer_id='test_offer_2',
         creator_id='3456',
-        marketplace_date_created=now,
-        status='available',
+        date_created=now,
+        status=statuses.AVAILABLE,
         resource_id='457',
-        resource_type='ironic_node',
+        resource_type=resource_types.IRONIC_NODE,
         start_time=now,
         end_time=now,
         config={'memory': 203},
@@ -219,14 +220,20 @@ def test_0_match(app, db, session):
         [["memory", "==", 204]])) == 0
 
 
-def test_1_match(app, db, session):
+@mock.patch('flocx_market.resource_objects.ironic_node'
+            '.IronicNode.is_resource_admin')
+def test_1_match(is_resource_admin, app, db, session):
+    is_resource_admin.return_vale = True
     offer.Offer.create(test_offer_1, scoped_context)
     assert len(get_all_matching_offers(
         scoped_context,
         [["memory", "==", 204]])) == 1
 
 
-def test_only_1_match(app, db, session):
+@mock.patch('flocx_market.resource_objects.ironic_node'
+            '.IronicNode.is_resource_admin')
+def test_only_1_match(is_resource_admin, app, db, session):
+    is_resource_admin.return_vale = True
     offer.Offer.create(test_offer_1, scoped_context)
     offer.Offer.create(test_offer_2, scoped_context)
     assert len(get_all_matching_offers(
@@ -234,7 +241,10 @@ def test_only_1_match(app, db, session):
         [["memory", "==", 203]])) == 1
 
 
-def test_2_match(app, db, session):
+@mock.patch('flocx_market.resource_objects.ironic_node'
+            '.IronicNode.is_resource_admin')
+def test_2_match(is_resource_admin, app, db, session):
+    is_resource_admin.return_vale = True
     offer.Offer.create(test_offer_1, scoped_context)
     offer.Offer.create(test_offer_2, scoped_context)
     assert len(get_all_matching_offers(

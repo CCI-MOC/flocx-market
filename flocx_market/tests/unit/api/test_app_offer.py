@@ -2,12 +2,13 @@ import datetime
 import json
 from unittest import mock
 
-import flocx_market.conf
-from flocx_market.objects import offer
-from flocx_market.common import exception as e
-
 from oslo_context import context as ctx
 
+from flocx_market.common import exception as e
+from flocx_market.common import statuses
+import flocx_market.conf
+from flocx_market.objects import offer
+from flocx_market.resource_objects import resource_types
 
 CONF = flocx_market.conf.CONF
 CONF.set_override(group='api', name='auth_enable', override=False)
@@ -17,13 +18,12 @@ now = datetime.datetime.utcnow()
 
 
 test_offer_1 = offer.Offer(
-    provider_offer_id='a41fadc1-6ae9-47e5-a74e-2dcf2b4dd55a',
-    marketplace_offer_id='test_offer_1',
+    offer_id='test_offer_1',
     resource_id='3456',
-    resource_type='ironic_node',
+    resource_type=resource_types.IRONIC_NODE,
     start_time=now,
     end_time=now,
-    status='available',
+    status=statuses.AVAILABLE,
     config={'bar': 'foo'},
     cost=0.0,
     contract_id=None,
@@ -33,13 +33,12 @@ test_offer_1 = offer.Offer(
 )
 
 test_offer_2 = offer.Offer(
-    marketplace_offer_id='test_offer_2',
-    provider_offer_id='141fadc1-6ae9-47e5-a74e-2dcf2b4dd554',
+    offer_id='test_offer_2',
     resource_id='4567',
-    resource_type='ironic_node',
+    resource_type=resource_types.IRONIC_NODE,
     start_time=now,
     end_time=now,
-    status='available',
+    status=statuses.AVAILABLE,
     config={'foo': 'bar'},
     cost=0.0,
     contract_id=None,
@@ -71,10 +70,10 @@ def test_get_offers(mock_get_all, client):
 def test_get_offer(mock_get, client):
     mock_get.return_value = test_offer_1
     response = client.get('/offer/{}'.format(
-        test_offer_1.marketplace_offer_id))
+        test_offer_1.offer_id))
     assert response.status_code == 200
     mock_get.assert_called_once()
-    assert response.json['marketplace_offer_id'] == 'test_offer_1'
+    assert response.json['offer_id'] == 'test_offer_1'
 
 
 @mock.patch('flocx_market.objects.offer.Offer.get')
@@ -89,7 +88,7 @@ def test_get_offer_missing(mock_get, client):
 def test_delete_offer(mock_get, mock_destroy, client):
     mock_get.return_value = test_offer_1
     response = client.delete('/offer/{}'.format(
-        test_offer_1.marketplace_offer_id))
+        test_offer_1.offer_id))
     assert response.status_code == 200
     assert mock_destroy.call_count == 1
 
@@ -115,8 +114,8 @@ def test_create_offer(mock_create, client):
 def test_update_offer(mock_get, mock_save, client):
     mock_get.return_value = test_offer_1
     mock_save.return_value = test_offer_1
-    res = client.put('/offer/{}'.format(test_offer_1.marketplace_offer_id),
-                     data=json.dumps(dict(status='testing')))
+    res = client.put('/offer/{}'.format(test_offer_1.offer_id),
+                     data=json.dumps(dict(status=statuses.CLAIMED)))
     assert res.status_code == 200
     assert mock_save.call_count == 1
 
@@ -126,6 +125,6 @@ def test_update_offer(mock_get, mock_save, client):
 def test_update_offer_missing(mock_get, mock_save, client):
     mock_get.side_effect = e.ResourceNotFound()
     res = client.put('/offer/does-not-exist',
-                     data=json.dumps(dict(status='testing')))
+                     data=json.dumps(dict(status=statuses.CLAIMED)))
     assert res.status_code == 404
     assert mock_save.call_count == 0

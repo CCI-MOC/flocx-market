@@ -1,8 +1,11 @@
+import datetime
 from oslo_versionedobjects import base as versioned_objects_base
+
+from flocx_market.common import statuses
 import flocx_market.db.sqlalchemy.api as db
 from flocx_market.objects import base
 from flocx_market.objects import fields
-import datetime
+from flocx_market.objects import offer_contract_relationship
 
 
 @versioned_objects_base.VersionedObjectRegistry.register
@@ -47,6 +50,11 @@ class Contract(base.FLOCXMarketObject):
         return cls._from_db_object_list(all_contracts)
 
     @classmethod
+    def get_all_by_status(cls, context, status):
+        contracts = db.contract_get_all_by_status(context, status)
+        return cls._from_db_object_list(contracts)
+
+    @classmethod
     def create(cls, data, context):
         c = db.contract_create(data, context)
         return cls._from_db_object(cls(), c)
@@ -65,6 +73,20 @@ class Contract(base.FLOCXMarketObject):
         unexpired = db.contract_get_all_unexpired(context)
         return cls._from_db_object_list(unexpired)
 
+    def fulfill(self, context):
+        ocrs = offer_contract_relationship.OfferContractRelationship.get_all(
+            context, {'contract_id': self.contract_id})
+        for ocr in ocrs:
+            ocr.fulfill(context)
+
+        self.status = statuses.FULFILLED
+        self.save(context)
+
     def expire(self, context):
-        self.status = 'expired'
+        ocrs = offer_contract_relationship.OfferContractRelationship.get_all(
+            context, {'contract_id': self.contract_id})
+        for ocr in ocrs:
+            ocr.expire(context)
+
+        self.status = statuses.EXPIRED
         self.save(context)

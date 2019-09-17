@@ -1,21 +1,24 @@
+from datetime import datetime, timedelta
+import unittest.mock as mock
+
+from oslo_context import context as ctx
+
+from flocx_market.common import statuses
 from flocx_market.matcher import match_engine
 from flocx_market.objects import offer
 from flocx_market.objects import bid
 from flocx_market.objects import contract
-from datetime import datetime, timedelta
-from oslo_context import context as ctx
+from flocx_market.resource_objects import resource_types
 
 scoped_context = ctx.RequestContext(is_admin=True,
                                     project_id='5599')
 
 now = datetime.utcnow()
 test_offer_0 = dict(
-    provider_offer_id='a41fadc1-6ae9-47e5-a74e-2dcf2b4dd55a',
-    provider_id='2345',
-    marketplace_date_created=now,
-    status='available',
+    date_created=now,
+    status=statuses.AVAILABLE,
     resource_id='4567',
-    resource_type='ironic_node',
+    resource_type=resource_types.IRONIC_NODE,
     start_time=now - timedelta(days=2),
     end_time=now + timedelta(days=2),
     config={'cpu': 4},
@@ -30,7 +33,7 @@ test_bid_0 = dict(
     start_time=now - timedelta(days=1),
     end_time=now - timedelta(days=1),
     duration=16400,
-    status="available",
+    status=statuses.AVAILABLE,
     config_query={'foo': 'bar', 'specs': [['cpu', '==', 5]]},
     project_id='5599',
     cost=11.5)
@@ -41,27 +44,36 @@ test_bid_1 = dict(
     start_time=now - timedelta(days=1),
     end_time=now - timedelta(days=1),
     duration=16400,
-    status="available",
+    status=statuses.AVAILABLE,
     config_query={'foo': 'bar', 'specs': [['cpu', '==', 4]]},
     project_id='5599',
     cost=11.5)
 
 
-def test_simple_match(app, db, session):
+@mock.patch('flocx_market.resource_objects.ironic_node'
+            '.IronicNode.is_resource_admin')
+def test_simple_match(is_resource_admin, app, db, session):
+    is_resource_admin.return_vale = True
     offer.Offer.create(test_offer_0, scoped_context)
     bid.Bid.create(test_bid_0, scoped_context)
     match_engine.match(scoped_context)
     assert len(contract.Contract.get_all(scoped_context)) == 0
 
 
-def test_simple_unmatch(app, db, session):
+@mock.patch('flocx_market.resource_objects.ironic_node'
+            '.IronicNode.is_resource_admin')
+def test_simple_unmatch(is_resource_admin, app, db, session):
+    is_resource_admin.return_vale = True
     offer.Offer.create(test_offer_0, scoped_context)
     bid.Bid.create(test_bid_1, scoped_context)
     match_engine.match(scoped_context)
     assert len(contract.Contract.get_all(scoped_context)) == 1
 
 
-def test_time_unmatch(app, db, session):
+@mock.patch('flocx_market.resource_objects.ironic_node'
+            '.IronicNode.is_resource_admin')
+def test_time_unmatch(is_resource_admin, app, db, session):
+    is_resource_admin.return_vale = True
     test_offer_0['start_time'] = now - timedelta(days=5)
     test_offer_0['end_time'] = now - timedelta(days=4)
     test_bid_1['start_time'] = now - timedelta(days=3)
@@ -72,7 +84,10 @@ def test_time_unmatch(app, db, session):
     assert len(contract.Contract.get_all(scoped_context)) == 0
 
 
-def test_one_match(app, db, session):
+@mock.patch('flocx_market.resource_objects.ironic_node'
+            '.IronicNode.is_resource_admin')
+def test_one_match(is_resource_admin, app, db, session):
+    is_resource_admin.return_vale = True
     test_offer_0['start_time'] = now - timedelta(days=2)
     test_offer_0['end_time'] = now + timedelta(days=2)
     test_bid_1['start_time'] = now - timedelta(days=1)

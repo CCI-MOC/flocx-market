@@ -1,3 +1,4 @@
+from flocx_market.common import statuses
 from flocx_market.matcher import matcher
 from flocx_market.objects import bid
 from flocx_market.objects import contract
@@ -8,9 +9,9 @@ def prepare_contract(offers_used, bid_, context):
                          end_time=bid_.end_time,
                          cost=bid_.cost,
                          project_id=bid_.project_id,
-                         status='available',
-                         bid_id=bid_.marketplace_bid_id,
-                         offers=[x.marketplace_offer_id for x in offers_used]
+                         status=statuses.AVAILABLE,
+                         bid_id=bid_.bid_id,
+                         offers=[x.offer_id for x in offers_used]
                          )
     bid_.status = 'busy'
     bid_.save(context)
@@ -18,7 +19,7 @@ def prepare_contract(offers_used, bid_, context):
 
 
 def match(context):
-    all_bids = bid.Bid.get_all_by_status('available', context)
+    all_bids = bid.Bid.get_all_by_status(statuses.AVAILABLE, context)
     for b in all_bids:
         offers = matcher.\
                     get_all_matching_offers(context,

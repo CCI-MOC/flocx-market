@@ -20,7 +20,12 @@ class ResourceNotFound(MarketplaceException):
 
 class ResourceNoPermission(MarketplaceException):
     code = 403
-    msg_fmt = "You do not have permissions on {resource_type} {resource_uuid}."
+    msg_fmt = "You do not have permissions on {resource_type} {resource_id}."
+
+
+class ResourceTypeUnknown(MarketplaceException):
+    code = 403
+    msg_fmt = "{resource_type} resource type unknown."
 
 
 class RequiresAdmin(MarketplaceException):

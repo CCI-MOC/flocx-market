@@ -5,6 +5,7 @@ from oslo_service import periodic_task
 from oslo_service import threadgroup
 import datetime
 
+from flocx_market.common import statuses
 from flocx_market.matcher import match_engine
 from flocx_market.objects.offer import Offer
 from flocx_market.objects.bid import Bid
@@ -51,8 +52,8 @@ class Manager(periodic_task.PeriodicTasks):
         for offer in unexpired_offers:
             if offer.end_time < now:
                 offer.expire(context)
-                offer_id = offer.marketplace_offer_id
-                filters = {'marketplace_offer_id': offer_id}
+                offer_id = offer.offer_id
+                filters = {'offer_id': offer_id}
                 unexpired_ocrs = OfferContractRelationship.get_all(context,
                                                                    filters)
                 for ocr in unexpired_ocrs:
@@ -77,23 +78,23 @@ class Manager(periodic_task.PeriodicTasks):
 
     @periodic_task.periodic_task(spacing=CONF.manager.update_expire_frequency,
                                  run_immediately=True)
-    def update_expired_contracts(self, context):
+    def update_contracts(self, context):
         LOG.info("Checking for expiring contracts")
         now = datetime.datetime.utcnow()
+
         unexpired_contracts = Contract.get_all_unexpired(context)
-        exp = 0
         for contract in unexpired_contracts:
             if contract.end_time < now:
                 contract.expire(context)
-                contract_id = contract.contract_id
-                filters = {'contract_id': contract_id}
-                unexpired_ocrs = OfferContractRelationship.get_all(context,
-                                                                   filters)
-                for ocr in unexpired_ocrs:
-                    ocr.expire(context)
-                exp += 1
-        if exp > 0:
-            LOG.info("Updated " + str(exp) + " contracts")
+                LOG.info("Expiring contract " + contract.contract_id)
+
+        LOG.info("Checking for contracts to fulfill")
+        contracts_to_fulfill = Contract.get_all_by_status(
+            context, statuses.AVAILABLE)
+        for contract in contracts_to_fulfill:
+            if contract.start_time >= now:
+                contract.fulfill(context)
+                LOG.info("Fulfilled contract " + contract.contract_id)
 
     @periodic_task.periodic_task(spacing=CONF.manager.matcher_frequency,
                                  run_immediately=True)
